@@ -7,11 +7,11 @@ function Avatar({ type, image, setImage }) {
 	const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 	const [contextMenuCordinates, setContextMenuCordinates] = useState({ x: 0, y: 0 });
 
-	const showContextMenu = (e) => {
-		e.preventDefault();
-		setIsContextMenuVisible(true);
-		setContextMenuCordinates({ x: e.pagex, y: e.pagey });
-	};
+	// const showContextMenu = (e) => {
+	// 	e.preventDefault();
+	// 	setIsContextMenuVisible(true);
+	// 	setContextMenuCordinates({ x: e.pagex, y: e.pagey });
+	// };
 
 	return (
 		<>
