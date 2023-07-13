@@ -12,11 +12,11 @@ const reducer = (state, action) => {
 				...state,
 				userInfo: action.userInfo,
 			};
-		// case reducerCases.SET_NEW_USER:
-		// 	return {
-		// 		...state,
-		// 		newUser: action.newUser,
-		// 	};
+		case reducerCases.SET_NEW_USER:
+			return {
+				...state,
+				newUser: action.newUser,
+			};
 		default:
 			return state;
 	}
