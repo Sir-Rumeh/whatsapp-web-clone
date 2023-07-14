@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaCamera } from "react-icons/fa";
 import ContextMenu from "./ContextMenu";
+import PhotoPicker from "./PhotoPicker";
 
 function Avatar({ type, image, setImage }) {
 	const [hover, setHover] = useState(false);
-	const [image, setImage] = useState("");
 	const [grabPhoto, setGrabPhoto] = useState(false);
 	const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 	const [contextMenuCordinates, setContextMenuCordinates] = useState({ x: 0, y: 0 });
@@ -15,6 +15,16 @@ function Avatar({ type, image, setImage }) {
 		setIsContextMenuVisible(true);
 		setContextMenuCordinates({ x: e.pageX, y: e.pageY });
 	};
+
+	useEffect(() => {
+		if (grabPhoto) {
+			const data = document.getElementById("photo-picker");
+			data.click();
+			document.body.onfocus = (e) => {
+				setGrabPhoto(false);
+			};
+		}
+	}, [grabPhoto]);
 
 	const contextMenuOptions = [
 		{ name: "Take Photo", callback: () => {} },
@@ -32,6 +42,8 @@ function Avatar({ type, image, setImage }) {
 			},
 		},
 	];
+
+	const photoPickerChange = () => {};
 
 	return (
 		<>
@@ -82,6 +94,7 @@ function Avatar({ type, image, setImage }) {
 					setContextMenu={setIsContextMenuVisible}
 				/>
 			) : null}
+			{grabPhoto ? <PhotoPicker onChange={photoPickerChange} /> : null}
 		</>
 	);
 }
