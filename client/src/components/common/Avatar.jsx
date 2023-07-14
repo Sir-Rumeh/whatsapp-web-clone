@@ -1,17 +1,37 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { FaCamera } from "react-icons/fa";
+import ContextMenu from "./ContextMenu";
 
 function Avatar({ type, image, setImage }) {
 	const [hover, setHover] = useState(false);
+	const [image, setImage] = useState("");
+	const [grabPhoto, setGrabPhoto] = useState(false);
 	const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 	const [contextMenuCordinates, setContextMenuCordinates] = useState({ x: 0, y: 0 });
 
 	const showContextMenu = (e) => {
 		e.preventDefault();
 		setIsContextMenuVisible(true);
-		setContextMenuCordinates({ x: e.pagex, y: e.pagey });
+		setContextMenuCordinates({ x: e.pageX, y: e.pageY });
 	};
+
+	const contextMenuOptions = [
+		{ name: "Take Photo", callback: () => {} },
+		{ name: "Choose From Library", callback: () => {} },
+		{
+			name: "Upload Photo",
+			callback: () => {
+				setGrabPhoto(true);
+			},
+		},
+		{
+			name: "Remove Photo",
+			callback: () => {
+				setImage("/default_avatar.png");
+			},
+		},
+	];
 
 	return (
 		<>
@@ -37,13 +57,14 @@ function Avatar({ type, image, setImage }) {
 								hover ? "visible" : "hidden"
 							} z-10`}
 							onClick={(e) => showContextMenu(e)}
+							id="context-opener"
 						>
 							<FaCamera
 								onClick={(e) => showContextMenu(e)}
 								className="text-2xl"
-								id="content-opener"
+								id="context-opener"
 							/>
-							<span onClick={(e) => showContextMenu(e)}>
+							<span onClick={(e) => showContextMenu(e)} id="context-opener">
 								Change <br /> Profile <br /> Photo
 							</span>
 						</div>
@@ -53,6 +74,14 @@ function Avatar({ type, image, setImage }) {
 					</div>
 				)}
 			</div>
+			{isContextMenuVisible ? (
+				<ContextMenu
+					options={contextMenuOptions}
+					cordinates={contextMenuCordinates}
+					contextMenu={isContextMenuVisible}
+					setContextMenu={setIsContextMenuVisible}
+				/>
+			) : null}
 		</>
 	);
 }
