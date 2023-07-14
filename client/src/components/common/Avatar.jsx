@@ -21,7 +21,9 @@ function Avatar({ type, image, setImage }) {
 			const data = document.getElementById("photo-picker");
 			data.click();
 			document.body.onfocus = (e) => {
-				setGrabPhoto(false);
+				setTimeout(() => {
+					setGrabPhoto(false);
+				}, 100);
 			};
 		}
 	}, [grabPhoto]);
@@ -43,7 +45,19 @@ function Avatar({ type, image, setImage }) {
 		},
 	];
 
-	const photoPickerChange = () => {};
+	const photoPickerChange = async (e) => {
+		const file = e.target.files[0];
+		const reader = new FileReader();
+		const data = document.createElement("img");
+		reader.onload = function (event) {
+			data.src = event.target.result;
+			data.setAttribute("data-src", event.target.result);
+		};
+		reader.readAsDataURL(file);
+		setTimeout(() => {
+			setImage(data.src);
+		}, 100);
+	};
 
 	return (
 		<>
