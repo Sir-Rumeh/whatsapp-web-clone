@@ -115,7 +115,7 @@ function Avatar({ type, image, setImage }) {
 					setContextMenu={setIsContextMenuVisible}
 				/>
 			) : null}
-			{PhotoLibrary ? <PhotoLibrary setImage={setImage} hidePhotoLibrary={setShowPhotoLibrary} /> : null}
+			{showPhotoLibrary ? <PhotoLibrary setImage={setImage} hidePhotoLibrary={setShowPhotoLibrary} /> : null}
 			{grabPhoto ? <PhotoPicker onChange={photoPickerChange} /> : null}
 		</>
 	);
