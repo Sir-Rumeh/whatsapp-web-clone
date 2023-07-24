@@ -19,7 +19,11 @@ function CapturePhoto({ hide, setImage }) {
 		};
 	}, []);
 
-	const capturePhoto = () => {};
+	const capturePhoto = () => {
+		const canvas = document.createElement("canvas");
+		canvas.getContext("2d").drawImage(videoRef.current, 0, 0, 300, 150);
+		setImage(canvas.toDataURL("image/jpeg"));
+	};
 	return (
 		<div className="absolute h-4/6 w-2/6 top-1/4 left-1/3 bg-gray-900 gap-3 rounded-lg pt-2 flex items-center justify-center">
 			<div className="flex flex-col gap-4 w-full">
