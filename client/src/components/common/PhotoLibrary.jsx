@@ -1,7 +1,8 @@
 import React from "react";
 import { IoClose } from "react-icons/io5";
+import Image from "next/image";
 
-function PhotoLibrary({ setPhoto, hidePhotoLibrary }) {
+function PhotoLibrary({ setImage, hidePhotoLibrary }) {
 	const images = [
 		"/avatars/1.png",
 		"/avatars/2.png",
@@ -26,11 +27,13 @@ function PhotoLibrary({ setPhoto, hidePhotoLibrary }) {
 					{images.map((image, index) => (
 						<div
 							onClick={() => {
-								setPhoto(images[index]);
+								setImage(images[index]);
 								hidePhotoLibrary(false);
 							}}
 						>
-							<div>{/* <Image src={}/> */}</div>
+							<div className="h-24 w-24 cursor-pointer relative">
+								<Image src={image} alt="avatar" fill />
+							</div>
 						</div>
 					))}
 				</div>
