@@ -23,10 +23,11 @@ function CapturePhoto({ hide, setImage }) {
 		const canvas = document.createElement("canvas");
 		canvas.getContext("2d").drawImage(videoRef.current, 0, 0, 300, 150);
 		setImage(canvas.toDataURL("image/jpeg"));
+		hide(false);
 	};
 	return (
 		<div className="absolute h-4/6 w-2/6 top-1/4 left-1/3 bg-gray-900 gap-3 rounded-lg pt-2 flex items-center justify-center">
-			<div className="flex flex-col gap-4 w-full">
+			<div className="flex flex-col gap-4 w-full items-center justify-center">
 				<div className="pt-2 pr-2 cursor-pointer flex items-end justify-end" onClick={() => hide(false)}>
 					<IoClose className="h-10 w-10 cursor-pointer" />
 				</div>
