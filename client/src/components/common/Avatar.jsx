@@ -109,7 +109,13 @@ function Avatar({ type, image, setImage }) {
 							</span>
 						</div>
 						<div className="relative h-60 w-60">
-							<Image src={image} alt="avatar" className="rounded-full" fill />
+							<Image
+								src={image}
+								alt="avatar"
+								className="rounded-full"
+								fill
+								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+							/>
 						</div>
 					</div>
 				)}

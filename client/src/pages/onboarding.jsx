@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useStateProvider } from "@/context/StateContext";
+import { useRouter } from "next/router";
 import Input from "@/components/common/Input";
 import Avatar from "@/components/common/Avatar";
+import { ONBOARD_USER_ROUTE } from "@/utils/ApiRoutes";
 
 function onboarding() {
 	const [{ userInfo }] = useStateProvider();
@@ -10,10 +12,33 @@ function onboarding() {
 	const [about, setAbout] = useState("");
 	const [image, setImage] = useState("/default_avatar.png");
 
-	const onboardUserHandler = () => {
+	const onboardUserHandler = async () => {
+		const router = useRouter();
 		if (validateDetails()) {
 			const email = userInfo.email;
 			try {
+				const { data } = await axios.post(ONBOARD_USER_ROUTE, {
+					email,
+					name,
+					about,
+					image,
+				});
+				if (data.status) {
+					dispatch({
+						type: reducerCases.SET_NEW_USER,
+						newUser: false,
+					});
+					dispatch({
+						type: reducerCases.SET_USER_INFO,
+						userInfo: {
+							name,
+							email,
+							profileImage: image,
+							status: about,
+						},
+					});
+					router.push("/");
+				}
 			} catch (err) {
 				console.log(err);
 			}
@@ -30,7 +55,7 @@ function onboarding() {
 	return (
 		<div className="bg-panel-header-background h-screen w-screen text-white flex flex-col items-center justify-center">
 			<div className="flex items-center justify-center gap-2">
-				<Image src="/whatsapp.gif" alt="whatsapp" height={300} width={300} />
+				<Image src="/whatsapp.gif" alt="whatsapp" height={300} width={300} priority />
 				<span className="text-7xl">Whatsapp</span>
 			</div>
 			<h2 className="text-2xl">Create your profile</h2>
