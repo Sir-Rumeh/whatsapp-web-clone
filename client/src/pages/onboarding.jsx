@@ -1,19 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useStateProvider } from "@/context/StateContext";
 import { useRouter } from "next/router";
 import Input from "@/components/common/Input";
 import Avatar from "@/components/common/Avatar";
 import { ONBOARD_USER_ROUTE } from "@/utils/ApiRoutes";
+import axios from "axios";
 
 function onboarding() {
-	const [{ userInfo }] = useStateProvider();
+	const router = useRouter();
+
+	const [{ userInfo, newUser }, dispatch] = useStateProvider();
 	const [name, setName] = useState(userInfo?.name || "");
 	const [about, setAbout] = useState("");
 	const [image, setImage] = useState("/default_avatar.png");
 
+	useEffect(() => {
+		if (!newUser && !userInfo?.email) router.push("/login");
+		else if (!newUser && userInfo?.email) router.push("/");
+	}, [newUser, userInfo, router]);
+
 	const onboardUserHandler = async () => {
-		const router = useRouter();
 		if (validateDetails()) {
 			const email = userInfo.email;
 			try {
@@ -31,6 +38,7 @@ function onboarding() {
 					dispatch({
 						type: reducerCases.SET_USER_INFO,
 						userInfo: {
+							id: data.id,
 							name,
 							email,
 							profileImage: image,
