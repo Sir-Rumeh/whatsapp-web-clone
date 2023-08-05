@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { reducerCases } from "@/context/constants";
 import { useStateProvider } from "@/context/StateContext";
 import { useRouter } from "next/router";
 import Input from "@/components/common/Input";

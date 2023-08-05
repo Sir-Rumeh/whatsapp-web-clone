@@ -26,6 +26,7 @@ function PhotoLibrary({ setImage, hidePhotoLibrary }) {
 				<div className="grid grid-cols-3 justify-center items-center gap-16 p-20 w-full">
 					{images.map((image, index) => (
 						<div
+							key={index}
 							onClick={() => {
 								setImage(images[index]);
 								hidePhotoLibrary(false);
