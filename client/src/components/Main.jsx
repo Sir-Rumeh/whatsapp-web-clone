@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ChatList from "./Chatlist/ChatList";
 import Empty from "./Empty";
 import { useRouter } from "next/router";
@@ -24,21 +24,24 @@ function Main() {
 			const { data } = await axios.post(CHECK_USER_ROUTE, {
 				email: currentUser.email,
 			});
+
+			if (!data.status) {
+				router.push("/login");
+			}
+			if (data?.data) {
+				const { id, name, email, profilePicture: profileImage, status } = data.data;
+				dispatch({
+					type: reducerCases.SET_USER_INFO,
+					userInfo: {
+						id,
+						name,
+						email,
+						profileImage,
+						status,
+					},
+				});
+			}
 		}
-		if (!data.status) {
-			router.push("/login");
-		}
-		const { id, name, email, profilePicture: profileImage, status } = data;
-		dispatch({
-			type: reducerCases.SET_USER_INFO,
-			userInfo: {
-				id,
-				name,
-				email,
-				profileImage,
-				status,
-			},
-		});
 	});
 	return (
 		<>
