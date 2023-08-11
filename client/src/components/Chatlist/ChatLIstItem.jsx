@@ -1,9 +1,19 @@
 import React from "react";
 import Avatar from "../common/Avatar";
+import { useStateProvider } from "@/context/StateContext";
+import { reducerCases } from "@/context/constants";
 
 function ChatLIstItem({ data, isContactsPage = false }) {
+	const [{ userInfo, currentChatUser }, dispatch] = useStateProvider();
+	const handleContactClick = () => {
+		dispatch({ type: reducerCases.SET_CURRENTCHATUSER, user: { data } });
+		dispatch({ type: reducerCases.SET_ALL_CONTACTS_PAGE });
+	};
 	return (
-		<div className={`flex cursor-pointer items-center hover:bg-background-default-hover`}>
+		<div
+			className={`flex cursor-pointer items-center hover:bg-background-default-hover`}
+			onClick={handleContactClick}
+		>
 			<div className="min-w-fit px-5 pt-3 pb-1">
 				<Avatar type="lg" image={data?.profilePicture} />
 			</div>
@@ -15,7 +25,7 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 				</div>
 				<div className="flex border-b border-conversation-border pb-2 pt-1 pr-2">
 					<div className="flex justify-betweenw-full">
-						<span className="text-secondary line-clamp-1 text-sm">{data?.about}</span>
+						<span className="text-secondary line-clamp-1 text-sm">{data?.about || "\u00A0"}</span>
 					</div>
 				</div>
 			</div>
