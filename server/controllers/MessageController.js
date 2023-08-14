@@ -1,6 +1,6 @@
-import getPrismaInstance from "../utils/PrismaClient";
+import getPrismaInstance from "../utils/PrismaClient.js";
 
-export const addMessage = async () => {
+export const addMessage = async (req, res, next) => {
 	try {
 		const prisma = getPrismaInstance();
 		const { message, from, to } = req.body;
@@ -18,6 +18,42 @@ export const addMessage = async () => {
 			return res.status(201).send({ message: newMessage });
 		}
 		return res.status(400).send("From, to and Message is required.");
+	} catch (err) {
+		next(err);
+	}
+};
+
+export const getMessages = async (req, res, next) => {
+	try {
+		const prisma = getPrismaInstance();
+		const { from, to } = req.params;
+
+		const messages = await prisma.messages.findMany({
+			where: {
+				OR: [
+					{
+						senderId: parseInt(from),
+						receiverId: parseInt(to),
+					},
+					{
+						senderId: parseInt(to),
+						receiverId: parseInt(from),
+					},
+				],
+			},
+			orderBy: {
+				id: "asc",
+			},
+		});
+
+		const unreadMessages = [];
+
+		messages.forEach((message, index) => {
+			if (message.messageStatus !== "read" && message.senderId === parseInt(to)) {
+				messages[index].messageStatus = "read";
+				unreadMessages.push(message.id);
+			}
+		});
 	} catch (err) {
 		next(err);
 	}

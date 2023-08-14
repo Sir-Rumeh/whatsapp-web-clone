@@ -1,4 +1,6 @@
 import { useStateProvider } from "@/context/StateContext";
+import { ADD_MESSAGE_ROUTE } from "@/utils/ApiRoutes";
+import axios from "axios";
 import React, { useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
@@ -8,8 +10,17 @@ import { MdSend } from "react-icons/md";
 function MessageBar() {
 	const [{ userInfo, currentChatUser }, dispatch] = useStateProvider();
 	const [message, setMessage] = useState("");
-	const sendMessage = () => {
-		alert(message);
+	const sendMessage = async () => {
+		try {
+			const { data } = await axios.post(ADD_MESSAGE_ROUTE, {
+				to: currentChatUser?.id,
+				from: userInfo?.id,
+				message,
+			});
+			setMessage("");
+		} catch (err) {
+			console.log(err);
+		}
 	};
 	return (
 		<div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 relative">
