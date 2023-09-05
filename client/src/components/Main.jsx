@@ -50,7 +50,7 @@ function Main() {
 			try {
 				const {
 					data: { messages },
-				} = await axios.get(`${GET_MESSAGES_ROUTE}/${currentChatUser?.id}/${userInfo.id}`);
+				} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo.id}/${currentChatUser?.id}`);
 				console.log("Main messages", messages);
 				dispatch({ type: reducerCases.SET_MESSAGES, messages });
 			} catch (err) {
