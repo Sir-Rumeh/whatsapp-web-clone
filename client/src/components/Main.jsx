@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "@/utils/FirebaseConfig";
 import axios from "axios";
-import { CHECK_USER_ROUTE } from "@/utils/ApiRoutes";
+import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE } from "@/utils/ApiRoutes";
 import { reducerCases } from "@/context/constants";
 import { useStateProvider } from "@/context/StateContext";
 import Chat from "./Chat/Chat";
@@ -44,6 +44,21 @@ function Main() {
 			}
 		}
 	});
+
+	useEffect(() => {
+		const getMessages = async () => {
+			try {
+				const { data } = await axios.get(`${GET_MESSAGES_ROUTE}/${currentChatUser?.id}/${userInfo.id}`);
+				console.log({ data });
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		if (currentChatUser?.id) {
+			getMessages();
+		}
+	}, [currentChatUser]);
+
 	return (
 		<>
 			<div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">

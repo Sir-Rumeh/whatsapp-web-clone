@@ -54,7 +54,7 @@ export const getMessages = async (req, res, next) => {
 				unreadMessages.push(message.id);
 			}
 		});
-		await prisma.message.updateMany({
+		await prisma.messages.updateMany({
 			where: {
 				id: {
 					in: unreadMessages,
