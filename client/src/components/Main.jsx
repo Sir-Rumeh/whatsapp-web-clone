@@ -10,17 +10,15 @@ import { reducerCases } from "@/context/constants";
 import { useStateProvider } from "@/context/StateContext";
 import Chat from "./Chat/Chat";
 import { io } from "socket.io-client";
+import { data } from "autoprefixer";
 
 function Main() {
 	const router = useRouter();
 	const [{ userInfo, currentChatUser }, dispatch] = useStateProvider();
 	const [redirectLogin, setRedirectLogin] = useState(false);
+	const [socketEvent, setSocketEvent] = useState(false);
 
 	const socket = useRef();
-
-	useEffect(() => {
-		if (redirectLogin) router.push("/login");
-	}, [redirectLogin]);
 
 	onAuthStateChanged(firebaseAuth, async (currentUser) => {
 		if (!currentUser) setRedirectLogin(true);
@@ -49,12 +47,30 @@ function Main() {
 	});
 
 	useEffect(() => {
+		if (redirectLogin) router.push("/login");
+	}, [redirectLogin]);
+
+	useEffect(() => {
 		if (userInfo) {
 			socket.current = io(HOST);
 			socket.current.emit("add-user", userInfo.id);
 			dispatch({ type: reducerCases.SET_SOCKET, socket });
 		}
 	}, [userInfo]);
+
+	useEffect(() => {
+		if (socket.current && !socketEvent) {
+			socket.current.on("msg-receive", (data) => {
+				dispatch({
+					type: reducerCases.ADD_MESSAGE,
+					newMessage: {
+						...data.message,
+					},
+				});
+			});
+			setSocketEvent(true);
+		}
+	}, [socket.current]);
 
 	useEffect(() => {
 		const getMessages = async () => {

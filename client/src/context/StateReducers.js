@@ -36,11 +36,17 @@ const reducer = (state, action) => {
 				...state,
 				messages: action.messages,
 			};
+		case reducerCases.ADD_MESSAGE:
+			return {
+				...state,
+				messages: [...state.messages, action.newMessage],
+			};
 		case reducerCases.SET_SOCKET:
 			return {
 				...state,
 				socket: action.socket,
 			};
+
 		default:
 			return state;
 	}
