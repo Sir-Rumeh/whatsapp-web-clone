@@ -20,7 +20,7 @@ function ChatContainer() {
 							>
 								{message.type === "text" && (
 									<div
-										className={`text-white px-2 py-[5px] text-sm rounded-md flex gap-2 items-end max-w-[45%] ${
+										className={`text-white px-3 py-[10px] text-sm rounded-md flex gap-2 items-end max-w-[45%] ${
 											message.senderId === currentChatUser?.id
 												? "bg-incoming-background"
 												: "bg-outgoing-background"
@@ -28,7 +28,7 @@ function ChatContainer() {
 									>
 										<span className="break-all">{message.message}</span>
 										<div className="flex gap-1 items-end">
-											<span className="text-bubble-meta text-[11px] pt-1 min-w-fit">
+											<span className="text-bubble-meta text-[11px] min-w-fit">
 												{calculateTime(message.createdAt)}
 											</span>
 											<span>
