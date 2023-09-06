@@ -51,7 +51,6 @@ function Main() {
 				const {
 					data: { messages },
 				} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo.id}/${currentChatUser?.id}`);
-				console.log("Main messages", messages);
 				dispatch({ type: reducerCases.SET_MESSAGES, messages });
 			} catch (err) {
 				console.log(err);
