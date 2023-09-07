@@ -8,13 +8,41 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
 import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
+import PhotoPicker from "../common/PhotoPicker";
 
 function MessageBar() {
 	const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
 	const [message, setMessage] = useState("");
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
+	const [grabPhoto, setGrabPhoto] = useState(false);
 	const emojiPickerRef = useRef(null);
+
+	const photoPickerChange = async (e) => {
+		console.log(e.target.files[0]);
+		// const file = e.target.files[0];
+		// const reader = new FileReader();
+		// const data = document.createElement("img");
+		// reader.onload = function (event) {
+		// 	data.src = event.target.result;
+		// 	data.setAttribute("data-src", event.target.result);
+		// };
+		// reader.readAsDataURL(file);
+		// setTimeout(() => {
+		// 	setImage(data.src);
+		// }, 100);
+	};
+
+	useEffect(() => {
+		if (grabPhoto) {
+			const data = document.getElementById("photo-picker");
+			data.click();
+			document.body.onfocus = (e) => {
+				setTimeout(() => {
+					setGrabPhoto(false);
+				}, 100);
+			};
+		}
+	}, [grabPhoto]);
 
 	useEffect(() => {
 		const handleOutsideClick = (event) => {
@@ -33,9 +61,11 @@ function MessageBar() {
 	const handleEmojiModal = () => {
 		setShowEmojiPicker(!showEmojiPicker);
 	};
+
 	const handleEmojiClick = (emoji) => {
 		setMessage((prevMessage) => (prevMessage += emoji.emoji));
 	};
+
 	const sendMessage = async () => {
 		try {
 			const { data } = await axios.post(ADD_MESSAGE_ROUTE, {
@@ -69,7 +99,11 @@ function MessageBar() {
 							<EmojiPicker onEmojiClick={handleEmojiClick} theme="dark" />
 						</div>
 					)}
-					<ImAttachment className="text-panel-header-icon cursor-pointer text-xl" title="Attach File" />
+					<ImAttachment
+						className="text-panel-header-icon cursor-pointer text-xl"
+						title="Attach File"
+						onClick={() => setGrabPhoto(true)}
+					/>
 				</div>
 				<div className="w-full rounded-lg h-10 flex items-center">
 					<input
@@ -91,6 +125,7 @@ function MessageBar() {
 					</button>
 				</div>
 			</>
+			{grabPhoto ? <PhotoPicker onChange={photoPickerChange} /> : null}
 		</div>
 	);
 }
