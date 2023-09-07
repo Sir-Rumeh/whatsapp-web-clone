@@ -61,6 +61,7 @@ function Main() {
 	useEffect(() => {
 		if (socket.current && !socketEvent) {
 			socket.current.on("msg-receive", (data) => {
+				// if (currentChatUser?.id === data?.message.senderId) {
 				dispatch({
 					type: reducerCases.ADD_MESSAGE,
 					newMessage: {
@@ -69,6 +70,7 @@ function Main() {
 						// MOST LIKELY CHANGE THE STATUS HERE FOR THAT SETTING IT TO READ IF USER HAS CHAT OPEN AND RECEIVED THE SENT MESSAGE IN REAL TIME
 					},
 				});
+				// }
 			});
 			setSocketEvent(true);
 		}

@@ -3,7 +3,7 @@ import { reducerCases } from "@/context/constants";
 import { ADD_MESSAGE_ROUTE } from "@/utils/ApiRoutes";
 import axios from "axios";
 import EmojiPicker from "emoji-picker-react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
 import { ImAttachment } from "react-icons/im";
@@ -15,6 +15,20 @@ function MessageBar() {
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
 	const emojiPickerRef = useRef(null);
+
+	useEffect(() => {
+		const handleOutsideClick = (event) => {
+			if (event.target.id !== "emoji-open") {
+				if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
+					setShowEmojiPicker(false);
+				}
+			}
+		};
+		document.addEventListener("click", handleOutsideClick);
+		return () => {
+			document.removeEventListener("click", handleOutsideClick);
+		};
+	}, []);
 
 	const handleEmojiModal = () => {
 		setShowEmojiPicker(!showEmojiPicker);
@@ -51,7 +65,7 @@ function MessageBar() {
 						onClick={handleEmojiModal}
 					/>
 					{showEmojiPicker && (
-						<div className="absolute bottom-24 left-16 z-40 ">
+						<div ref={emojiPickerRef} className="absolute bottom-24 left-4 z-40">
 							<EmojiPicker onEmojiClick={handleEmojiClick} theme="dark" />
 						</div>
 					)}
