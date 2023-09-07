@@ -1,11 +1,10 @@
 import { useStateProvider } from "@/context/StateContext";
 import { calculateTime } from "@/utils/CalculateTime";
-import React, { useRef } from "react";
+import React from "react";
 import MessageStatus from "../common/MessageStatus";
 
 function ChatContainer() {
 	const [{ messages, currentChatUser, userInfo }] = useStateProvider();
-	const messageBoxRef = useRef(null);
 	return (
 		<div className="h-[80vh] w-full relative flex-grow overflow-auto custom-scrollbar">
 			<div className="bg-chat-background bg-fixed h-full w-full opacity-5 fixed left-0 top-0 z-0"></div>

@@ -1,6 +1,6 @@
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
-import { ADD_MESSAGE_ROUTE } from "@/utils/ApiRoutes";
+import { ADD_IMAGE_MESSAGE_ROUTE, ADD_MESSAGE_ROUTE } from "@/utils/ApiRoutes";
 import axios from "axios";
 import EmojiPicker from "emoji-picker-react";
 import React, { useEffect, useRef, useState } from "react";
@@ -16,21 +16,6 @@ function MessageBar() {
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const [grabPhoto, setGrabPhoto] = useState(false);
 	const emojiPickerRef = useRef(null);
-
-	const photoPickerChange = async (e) => {
-		console.log(e.target.files[0]);
-		// const file = e.target.files[0];
-		// const reader = new FileReader();
-		// const data = document.createElement("img");
-		// reader.onload = function (event) {
-		// 	data.src = event.target.result;
-		// 	data.setAttribute("data-src", event.target.result);
-		// };
-		// reader.readAsDataURL(file);
-		// setTimeout(() => {
-		// 	setImage(data.src);
-		// }, 100);
-	};
 
 	useEffect(() => {
 		if (grabPhoto) {
@@ -64,6 +49,37 @@ function MessageBar() {
 
 	const handleEmojiClick = (emoji) => {
 		setMessage((prevMessage) => (prevMessage += emoji.emoji));
+	};
+
+	const photoPickerChange = async (e) => {
+		try {
+			const file = e.target.files[0];
+			const formData = new FormData();
+			formData.append("image", file);
+			const response = await axios.post(ADD_IMAGE_MESSAGE_ROUTE, formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+				params: {
+					from: userInfo?.id,
+					to: currentChatUser?.id,
+				},
+			});
+			if (response.status === 201) {
+				socket.current.emit("send-msg", {
+					from: userInfo?.id,
+					to: currentChatUser?.id,
+					message: response.data.message,
+				});
+				dispatch({
+					type: reducerCases.ADD_MESSAGE,
+					newMessage: { ...response.data.message },
+					fromSelf: true,
+				});
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	const sendMessage = async () => {
