@@ -79,7 +79,7 @@ export const addImageMessage = async (req, res, next) => {
 			const { from, to } = req.query;
 
 			const date = Date.now();
-			let fileName = "uploads/images/image" + date + req.file?.name;
+			let fileName = "uploads/images/" + date + req.file?.originalname;
 			renameSync(req.file?.path, fileName);
 
 			if (from && to) {
