@@ -1,7 +1,8 @@
 import { useStateProvider } from "@/context/StateContext";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaMicrophone, FaPauseCircle, FaPlay, FaStop, FaTrash } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
+import WaveSurfer from "wavesurfer.js";
 
 function CaptureAudio({ hide }) {
 	const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
@@ -16,6 +17,25 @@ function CaptureAudio({ hide }) {
 	const audioRef = useRef(null);
 	const mediaRecorderRef = useRef(null);
 	const waveFormRef = useRef(null);
+
+	useEffect(() => {
+		const waveSurfer = WaveSurfer.create({
+			container: waveFormRef.current,
+			waveColor: "#ccc",
+			progressColor: "#4a9eff",
+			cursorColor: "#7ae3c3",
+			barWidth: 2,
+			height: 30,
+			responsive: true,
+		});
+		setWaveForm(waveSurfer);
+		waveSurfer.on("finish", () => {
+			setIsPlaying(false);
+		});
+		return () => {
+			waveSurfer.destroy();
+		};
+	}, []);
 
 	const handlePlayRecording = () => {};
 	const handlePauseRecording = () => {};
