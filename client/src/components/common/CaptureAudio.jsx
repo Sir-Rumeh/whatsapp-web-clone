@@ -37,18 +37,44 @@ function CaptureAudio({ hide }) {
 		};
 	}, []);
 
+	useEffect(() => {
+		if (waveForm) handleStartRecording();
+	}, [waveForm]);
+
+	const handleStartRecording = () => {
+		setRecordingDuration(0);
+		setCurrentPlaybackTime(0);
+		setTotalDuration(0);
+		setIsRecording(true);
+		navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+			const mediaRecorder = new MediaRecorder(stream);
+			mediaRecorderRef.current = mediaRecorder;
+			audioRef.current.srcObject = stream;
+
+			const chunks = [];
+			mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+			mediaRecorder.onstop = () => {
+				const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+				const audioUrl = URL.createObjectURL(blob);
+				const audio = new Audio(audioUrl);
+				setRecordedAudio(audio);
+
+				waveForm.load(audioUrl);
+			};
+			mediaRecorder.start();
+		});
+	};
+	const handleStopRecording = () => {};
+	const handlePlayRecording = () => {};
+	const handlePauseRecording = () => {};
+	const sendRecording = async () => {};
+
 	const formatTime = (time) => {
 		if (isNaN(time)) return "00:00";
 		const minutes = Math.floor(time / 60);
 		const seconds = Math.floor(time % 60);
 		return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 	};
-
-	const handlePlayRecording = () => {};
-	const handlePauseRecording = () => {};
-	const handleStartRecording = () => {};
-	const handleStopRecording = () => {};
-	const sendRecording = async () => {};
 
 	return (
 		<div className="flex text-2xl w-full justify-end items-center">
