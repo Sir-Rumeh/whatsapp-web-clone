@@ -10,8 +10,7 @@ import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
 import PhotoPicker from "../common/PhotoPicker";
 import dynamic from "next/dynamic";
-
-const CaptureAudio = dynamic(() => import("../common/CaptureAudio"));
+const CaptureAudio = dynamic(() => import("../common/CaptureAudio"), { ssr: false });
 
 function MessageBar() {
 	const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
@@ -156,7 +155,7 @@ function MessageBar() {
 				</>
 			)}
 			{grabPhoto ? <PhotoPicker onChange={photoPickerChange} /> : null}
-			{showAudioRecorder ? <CaptureAudio setAudioRecorder={setShowAudioRecorder} /> : null}
+			{showAudioRecorder ? <CaptureAudio setShowAudioRecorder={setShowAudioRecorder} /> : null}
 		</div>
 	);
 }

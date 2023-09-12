@@ -1,19 +1,22 @@
 import { useStateProvider } from "@/context/StateContext";
+import { reducerCases } from "@/context/constants";
+import { ADD_AUDIO_MESSAGE_ROUTE } from "@/utils/ApiRoutes";
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { FaMicrophone, FaPause, FaPauseCircle, FaPlay, FaTrash } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
 
-function CaptureAudio({ setAudioRecorder }) {
+function CaptureAudio({ setShowAudioRecorder }) {
 	const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
 	const [isRecording, setIsRecording] = useState(false);
 	const [isPlaying, setIsPlaying] = useState(false);
+	const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
+	const [totalDuration, setTotalDuration] = useState(0);
 	const [recordedAudio, setRecordedAudio] = useState(null);
 	const [waveform, setWaveform] = useState(null);
 	const [recordingDuration, setRecordingDuration] = useState(0);
-	const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
-	const [totalDuration, setTotalDuration] = useState(0);
 	const [renderedAudio, setRenderedAudio] = useState(null);
-	const [audioSurfer, setAudioSurfer] = useState(undefined);
+	const [WaveSurfer, setWaveSurfer] = useState(null);
 
 	const audioRef = useRef(null);
 	const mediaRecorderRef = useRef(null);
@@ -23,15 +26,16 @@ function CaptureAudio({ setAudioRecorder }) {
 		setRecordingDuration(0);
 		setCurrentPlaybackTime(0);
 		setTotalDuration(0);
+		setRecordedAudio(null);
 		setIsRecording(true);
 		navigator.mediaDevices
 			.getUserMedia({ audio: true })
 			.then((stream) => {
 				const mediaRecorder = new MediaRecorder(stream);
-				if (mediaRecorderRef) {
+				if (mediaRecorderRef.current === null) {
 					mediaRecorderRef.current = mediaRecorder;
 				}
-				if (audioRef) {
+				if (audioRef.current === null) {
 					audioRef.current.srcObject = stream;
 				}
 
@@ -87,7 +91,7 @@ function CaptureAudio({ setAudioRecorder }) {
 		try {
 			const formData = new FormData();
 			formData.append("audio", renderedAudio);
-			const response = await axios.post(ADD_IMAGE_MESSAGE_ROUTE, formData, {
+			const response = await axios.post(ADD_AUDIO_MESSAGE_ROUTE, formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
@@ -97,6 +101,7 @@ function CaptureAudio({ setAudioRecorder }) {
 				},
 			});
 			if (response.status === 201) {
+				setShowAudioRecorder(false);
 				socket.current.emit("send-msg", {
 					from: userInfo?.id,
 					to: currentChatUser?.id,
@@ -133,14 +138,8 @@ function CaptureAudio({ setAudioRecorder }) {
 	}, [isRecording]);
 
 	useEffect(() => {
-		// const WaveSurfer = async () => await import("wavesurfer.js").default;
-		const WaveSurfer = async () => {
-			const newSurfer = await import("wavesurfer.js").default;
-			setAudioSurfer(newSurfer);
-		};
-		WaveSurfer();
-		// const wavesurfer = WaveSurfer.create({
-		const wavesurfer = audioSurfer?.create({
+		const WaveSurfer = import("wavesurfer.js").default;
+		const wavesurfer = WaveSurfer?.create({
 			container: waveformRef?.current,
 			waveColor: "#ccc",
 			progressColor: "#4a9eff",
@@ -177,10 +176,7 @@ function CaptureAudio({ setAudioRecorder }) {
 	return (
 		<div className="flex text-2xl w-full justify-end items-center">
 			<div className="">
-				<FaTrash
-					className="text-panel-header-icon cursor-pointer"
-					onClick={() => setAudioRecorder(false)}
-				/>
+				<FaTrash className="text-panel-header-icon cursor-pointer" onClick={() => setShowAudioRecorder()} />
 			</div>
 			<div className="mx-4 py-2 px-4 text-white text-lg flex gap-3 justify-center items-center bg-search-input-container-background rounded-full drop-shadow-lg">
 				{isRecording ? (
