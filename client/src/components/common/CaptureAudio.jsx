@@ -13,6 +13,7 @@ function CaptureAudio({ setAudioRecorder }) {
 	const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
 	const [totalDuration, setTotalDuration] = useState(0);
 	const [renderedAudio, setRenderedAudio] = useState(null);
+	const [audioSurfer, setAudioSurfer] = useState(undefined);
 
 	const audioRef = useRef(null);
 	const mediaRecorderRef = useRef(null);
@@ -27,17 +28,22 @@ function CaptureAudio({ setAudioRecorder }) {
 			.getUserMedia({ audio: true })
 			.then((stream) => {
 				const mediaRecorder = new MediaRecorder(stream);
-				mediaRecorderRef.current = mediaRecorder;
-				audioRef.current.srcObject = stream;
+				if (mediaRecorderRef) {
+					mediaRecorderRef.current = mediaRecorder;
+				}
+				if (audioRef) {
+					audioRef.current.srcObject = stream;
+				}
 
 				const chunks = [];
+
 				mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
 				mediaRecorder.onstop = () => {
 					const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
 					const audioUrl = URL.createObjectURL(blob);
 					const audio = new Audio(audioUrl);
 					setRecordedAudio(audio);
-					waveform.load(audioUrl);
+					waveform?.load(audioUrl);
 				};
 				mediaRecorder.start();
 			})
@@ -48,9 +54,9 @@ function CaptureAudio({ setAudioRecorder }) {
 
 	const handleStopRecording = () => {
 		if (mediaRecorderRef.current && isRecording) {
-			mediaRecorderRef.current.stop();
+			mediaRecorderRef?.current.stop();
 			setIsRecording(false);
-			waveform.stop();
+			waveform?.stop();
 
 			const audioChunks = [];
 			mediaRecorderRef.current.addEventListener("dataavailable", (event) => {
@@ -66,17 +72,46 @@ function CaptureAudio({ setAudioRecorder }) {
 	};
 	const handlePlayRecording = () => {
 		if (recordedAudio) {
-			waveform.play();
-			recordedAudio.play();
+			waveform?.play();
+			recordedAudio?.play();
 			setIsPlaying(true);
 		}
 	};
 	const handlePauseRecording = () => {
-		waveform.stop();
-		recordedAudio.pause();
+		waveform?.stop();
+		recordedAudio?.pause();
 		setIsPlaying(false);
 	};
-	const sendRecording = async () => {};
+
+	const sendRecording = async () => {
+		try {
+			const formData = new FormData();
+			formData.append("audio", renderedAudio);
+			const response = await axios.post(ADD_IMAGE_MESSAGE_ROUTE, formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+				params: {
+					from: userInfo?.id,
+					to: currentChatUser?.id,
+				},
+			});
+			if (response.status === 201) {
+				socket.current.emit("send-msg", {
+					from: userInfo?.id,
+					to: currentChatUser?.id,
+					message: response.data.message,
+				});
+				dispatch({
+					type: reducerCases.ADD_MESSAGE,
+					newMessage: { ...response.data.message },
+					fromSelf: true,
+				});
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	const formatTime = (time) => {
 		if (isNaN(time)) return "00:00";
@@ -97,10 +132,16 @@ function CaptureAudio({ setAudioRecorder }) {
 		}
 	}, [isRecording]);
 
-	useEffect(async () => {
-		const WaveSurfer = (await import("wavesurfer.js")).default;
-		const wavesurfer = WaveSurfer.create({
-			container: waveformRef.current,
+	useEffect(() => {
+		// const WaveSurfer = async () => await import("wavesurfer.js").default;
+		const WaveSurfer = async () => {
+			const newSurfer = await import("wavesurfer.js").default;
+			setAudioSurfer(newSurfer);
+		};
+		WaveSurfer();
+		// const wavesurfer = WaveSurfer.create({
+		const wavesurfer = audioSurfer?.create({
+			container: waveformRef?.current,
 			waveColor: "#ccc",
 			progressColor: "#4a9eff",
 			cursorColor: "#7ae3c3",
@@ -109,11 +150,11 @@ function CaptureAudio({ setAudioRecorder }) {
 			responsive: true,
 		});
 		setWaveform(wavesurfer);
-		wavesurfer.on("finish", () => {
+		wavesurfer?.on("finish", () => {
 			setIsPlaying(false);
 		});
 		return () => {
-			wavesurfer.destroy();
+			wavesurfer?.destroy();
 		};
 	}, []);
 
@@ -159,7 +200,7 @@ function CaptureAudio({ setAudioRecorder }) {
 						)}
 					</div>
 				)}
-				<div className="w-60 flex justify-end" ref={waveformRef} hidden={isRecording}>
+				<div className="w-60 flex justify-end" ref={waveformRef} hidden>
 					{recordedAudio && isPlaying && <span>{formatTime(currentPlaybackTime)}</span>}
 					{recordedAudio && !isPlaying && !isRecording && <span>{formatTime(totalDuration)}</span>}
 					<audio ref={audioRef} hidden />
