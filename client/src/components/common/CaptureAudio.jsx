@@ -1,10 +1,9 @@
 import { useStateProvider } from "@/context/StateContext";
 import React, { useEffect, useRef, useState } from "react";
-import { FaMicrophone, FaPauseCircle, FaPlay, FaStop, FaTrash } from "react-icons/fa";
+import { FaMicrophone, FaPause, FaPauseCircle, FaPlay, FaTrash } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
-// import WaveSurfer from "wavesurfer.js";
 
-function CaptureAudio({ hide }) {
+function CaptureAudio({ setAudioRecorder }) {
 	const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
 	const [isRecording, setIsRecording] = useState(false);
 	const [isPlaying, setIsPlaying] = useState(false);
@@ -19,54 +18,6 @@ function CaptureAudio({ hide }) {
 	const mediaRecorderRef = useRef(null);
 	const waveformRef = useRef(null);
 
-	useEffect(() => {
-		if (isRecording) {
-			let interval;
-			interval = setInterval(() => {
-				setRecordingDuration((prevDuration) => {
-					setTotalDuration(prevDuration + 1);
-					return prevDuration + 1;
-				});
-			}, 1000);
-		}
-	}, [isRecording]);
-
-	useEffect(async () => {
-		const WaveSurfer = await import("wavesurfer.js");
-		const wavesurfer = WaveSurfer.create({
-			container: waveformRef.current,
-			waveColor: "#ccc",
-			progressColor: "#4a9eff",
-			cursorColor: "#7ae3c3",
-			barWidth: 2,
-			height: 30,
-			responsive: true,
-		});
-		setWaveform(wavesurfer);
-		wavesurfer.on("finish", () => {
-			setIsPlaying(false);
-		});
-		return () => {
-			wavesurfer.destroy();
-		};
-	}, []);
-
-	useEffect(() => {
-		if (waveform) handleStartRecording();
-	}, [waveform]);
-
-	useEffect(() => {
-		if (recordedAudio) {
-			const updatePlaybackTime = () => {
-				setCurrentPlaybackTime(recordedAudio.currentTime);
-			};
-			recordedAudio.addEventListener("timeupdate", updatePlaybackTime);
-			return () => {
-				recordedAudio.removeEventListener("timeupdate", updatePlaybackTime);
-			};
-		}
-	}, [recordedAudio]);
-
 	const handleStartRecording = () => {
 		setRecordingDuration(0);
 		setCurrentPlaybackTime(0);
@@ -78,8 +29,6 @@ function CaptureAudio({ hide }) {
 				const mediaRecorder = new MediaRecorder(stream);
 				mediaRecorderRef.current = mediaRecorder;
 				audioRef.current.srcObject = stream;
-				// if (audioRef.current !== undefined) {
-				// }
 
 				const chunks = [];
 				mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
@@ -117,7 +66,6 @@ function CaptureAudio({ hide }) {
 	};
 	const handlePlayRecording = () => {
 		if (recordedAudio) {
-			waveform.stop();
 			waveform.play();
 			recordedAudio.play();
 			setIsPlaying(true);
@@ -137,15 +85,66 @@ function CaptureAudio({ hide }) {
 		return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 	};
 
+	useEffect(() => {
+		if (isRecording) {
+			const interval = setInterval(() => {
+				setRecordingDuration((prevDuration) => {
+					setTotalDuration(prevDuration + 1);
+					return prevDuration + 1;
+				});
+			}, 1000);
+			return () => clearInterval(interval);
+		}
+	}, [isRecording]);
+
+	useEffect(async () => {
+		const WaveSurfer = (await import("wavesurfer.js")).default;
+		const wavesurfer = WaveSurfer.create({
+			container: waveformRef.current,
+			waveColor: "#ccc",
+			progressColor: "#4a9eff",
+			cursorColor: "#7ae3c3",
+			barWidth: 2,
+			height: 30,
+			responsive: true,
+		});
+		setWaveform(wavesurfer);
+		wavesurfer.on("finish", () => {
+			setIsPlaying(false);
+		});
+		return () => {
+			wavesurfer.destroy();
+		};
+	}, []);
+
+	useEffect(() => {
+		if (waveform) handleStartRecording();
+	}, [waveform]);
+
+	useEffect(() => {
+		if (recordedAudio) {
+			const updatePlaybackTime = () => {
+				setCurrentPlaybackTime(recordedAudio.currentTime);
+			};
+			recordedAudio.addEventListener("timeupdate", updatePlaybackTime);
+			return () => {
+				recordedAudio.removeEventListener("timeupdate", updatePlaybackTime);
+			};
+		}
+	}, [recordedAudio]);
+
 	return (
 		<div className="flex text-2xl w-full justify-end items-center">
-			<div className="pt-1">
-				<FaTrash className="text-panel-header-icon cursor-pointer" onClick={() => hide()} />
+			<div className="">
+				<FaTrash
+					className="text-panel-header-icon cursor-pointer"
+					onClick={() => setAudioRecorder(false)}
+				/>
 			</div>
 			<div className="mx-4 py-2 px-4 text-white text-lg flex gap-3 justify-center items-center bg-search-input-container-background rounded-full drop-shadow-lg">
 				{isRecording ? (
-					<div className="text-red-500 animate-pulse w-60 text-center">
-						Recording<span>{recordingDuration}</span>
+					<div className="text-red-500 animate-pulse text-center flex gap-x-2">
+						Recording<span className="">{recordingDuration}</span>
 					</div>
 				) : (
 					<div>
@@ -154,7 +153,7 @@ function CaptureAudio({ hide }) {
 								{!isPlaying ? (
 									<FaPlay onClick={handlePlayRecording} className="cursor-pointer" />
 								) : (
-									<FaStop onClick={handlePauseRecording} className="cursor-pointer" />
+									<FaPause onClick={handlePauseRecording} className="cursor-pointer" />
 								)}
 							</>
 						)}
@@ -162,28 +161,23 @@ function CaptureAudio({ hide }) {
 				)}
 				<div className="w-60 flex justify-end" ref={waveformRef} hidden={isRecording}>
 					{recordedAudio && isPlaying && <span>{formatTime(currentPlaybackTime)}</span>}
-					{recordedAudio && !isPlaying && <span>{formatTime(totalDuration)}</span>}
+					{recordedAudio && !isPlaying && !isRecording && <span>{formatTime(totalDuration)}</span>}
 					<audio ref={audioRef} hidden />
-					<div className="mr-4">
-						{!isRecording ? (
-							<FaMicrophone
-								className="text-red-500 cursor-pointer"
-								onClick={handleStartRecording}
-							/>
-						) : (
-							<FaPauseCircle
-								className="text-red-500 cursor-pointer"
-								onClick={handleStopRecording}
-							/>
-						)}
-					</div>
-					<div>
-						<MdSend
-							className="text-panel-header-icon cursor-pointer mr-4"
-							title="Send"
-							onClick={sendRecording}
-						/>
-					</div>
+				</div>
+
+				<div className="mr-4">
+					{!isRecording ? (
+						<FaMicrophone className="text-red-500 cursor-pointer" onClick={handleStartRecording} />
+					) : (
+						<FaPauseCircle className="text-red-500 cursor-pointer" onClick={handleStopRecording} />
+					)}
+				</div>
+				<div>
+					<MdSend
+						className="text-panel-header-icon cursor-pointer mr-4"
+						title="Send"
+						onClick={sendRecording}
+					/>
 				</div>
 			</div>
 		</div>
