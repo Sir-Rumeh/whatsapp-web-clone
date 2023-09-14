@@ -8,6 +8,7 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 	const handleContactClick = () => {
 		dispatch({ type: reducerCases.CHANGE_CURRENT_CHAT_USER, user: { ...data } });
 		dispatch({ type: reducerCases.SET_ALL_CONTACTS_PAGE });
+		// dispatch({ type: reducerCases.SET_MESSAGE_SEARCH });
 	};
 	return (
 		<div
