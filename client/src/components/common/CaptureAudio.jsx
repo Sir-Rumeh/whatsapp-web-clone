@@ -3,7 +3,7 @@ import { reducerCases } from "@/context/constants";
 import { ADD_AUDIO_MESSAGE_ROUTE } from "@/utils/ApiRoutes";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { FaMicrophone, FaPause, FaPauseCircle, FaPlay, FaTrash } from "react-icons/fa";
+import { FaMicrophone, FaPause, FaPlay, FaStopCircle, FaTrash } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
 
 function CaptureAudio({ setShowAudioRecorder }) {
@@ -16,7 +16,6 @@ function CaptureAudio({ setShowAudioRecorder }) {
 	const [waveform, setWaveform] = useState(null);
 	const [recordingDuration, setRecordingDuration] = useState(0);
 	const [renderedAudio, setRenderedAudio] = useState(null);
-	const [WaveSurfer, setWaveSurfer] = useState(null);
 
 	const audioRef = useRef(null);
 	const mediaRecorderRef = useRef(null);
@@ -76,6 +75,7 @@ function CaptureAudio({ setShowAudioRecorder }) {
 	};
 	const handlePlayRecording = () => {
 		if (recordedAudio) {
+			waveform?.stop();
 			waveform?.play();
 			recordedAudio?.play();
 			setIsPlaying(true);
@@ -206,7 +206,7 @@ function CaptureAudio({ setShowAudioRecorder }) {
 					{!isRecording ? (
 						<FaMicrophone className="text-red-500 cursor-pointer" onClick={handleStartRecording} />
 					) : (
-						<FaPauseCircle className="text-red-500 cursor-pointer" onClick={handleStopRecording} />
+						<FaStopCircle className="text-red-500 cursor-pointer" onClick={handleStopRecording} />
 					)}
 				</div>
 				<div>
