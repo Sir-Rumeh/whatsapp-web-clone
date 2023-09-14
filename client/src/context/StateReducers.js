@@ -7,6 +7,7 @@ export const initialState = {
 	currentChatUser: undefined,
 	messages: [],
 	socket: undefined,
+	messageSearch: false,
 };
 
 const reducer = (state, action) => {
@@ -45,6 +46,11 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				socket: action.socket,
+			};
+		case reducerCases.SET_MESSAGE_SEARCH:
+			return {
+				...state,
+				messageSearch: !state.messageSearch,
 			};
 
 		default:
