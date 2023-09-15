@@ -165,6 +165,15 @@ export const getInitialContactsWithMessages = async (req, res, next) => {
 		messages.forEach((msg) => {
 			const isSender = msg.senderId === userId;
 			const calculatedId = isSender ? msg.receiverId : msg.senderId;
+			if (msg.messageStatus === "sent") {
+				messageStatusChange.push(msg.id);
+			}
+
+			if (!users.get(calculatedId)) {
+				const { id, type, message, messageStatus, createdAt, senderId, receiverId } = msg;
+
+				let user = {};
+			}
 		});
 	} catch (err) {
 		next(err);
