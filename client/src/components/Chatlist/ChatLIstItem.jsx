@@ -4,11 +4,13 @@ import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
 
 function ChatLIstItem({ data, isContactsPage = false }) {
-	const [{ userInfo, currentChatUser }, dispatch] = useStateProvider();
+	const [{ userInfo, currentChatUser, messageSearch }, dispatch] = useStateProvider();
 	const handleContactClick = () => {
 		dispatch({ type: reducerCases.CHANGE_CURRENT_CHAT_USER, user: { ...data } });
 		dispatch({ type: reducerCases.SET_ALL_CONTACTS_PAGE });
-		// dispatch({ type: reducerCases.SET_MESSAGE_SEARCH });
+		if (messageSearch) {
+			dispatch({ type: reducerCases.SET_MESSAGE_SEARCH });
+		}
 	};
 	return (
 		<div

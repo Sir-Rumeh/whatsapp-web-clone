@@ -13,7 +13,11 @@ function SearchMessages() {
 	useEffect(() => {
 		if (searchTerm) {
 			setSearchedMessages(
-				messages.filter((message) => message.type === "text" && message.message.includes(searchTerm))
+				messages.filter(
+					(message) =>
+						message.type === "text" &&
+						message.message.toLowerCase().includes(searchTerm.toLowerCase())
+				)
 			);
 		} else {
 			setSearchedMessages([]);
@@ -57,7 +61,10 @@ function SearchMessages() {
 					)}
 					<div className="flex flex-col w-full h-full">
 						{searchedMessages.map((message) => (
-							<div className="flex cursor-pointer flex-col justify-center hover:background-default-hover w-full px-5 border-b-[0.1px] border-secondary py-5">
+							<div
+								key={message.id}
+								className="flex cursor-pointer flex-col justify-center hover:background-default-hover w-full px-5 border-b-[0.1px] border-secondary py-5"
+							>
 								<div className="text-sm text-secondary">{calculateTime(message.createdAt)}</div>
 								<div className="text-icon-green">{message.message}</div>
 							</div>
