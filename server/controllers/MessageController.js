@@ -157,6 +157,15 @@ export const getInitialContactsWithMessages = async (req, res, next) => {
 				},
 			},
 		});
+		const messages = [...user.sentMessages, ...user.receivedMessages];
+		messages.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+		const users = new Map();
+		const messageStatusChange = [];
+
+		messages.forEach((msg) => {
+			const isSender = msg.senderId === userId;
+			const calculatedId = isSender ? msg.receiverId : msg.senderId;
+		});
 	} catch (err) {
 		next(err);
 	}
