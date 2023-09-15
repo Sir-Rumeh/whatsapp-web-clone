@@ -129,3 +129,35 @@ export const addAudioMessage = async (req, res, next) => {
 		next(err);
 	}
 };
+
+export const getInitialContactsWithMessages = async (req, res, next) => {
+	try {
+		const userId = parseInt(req.params.from);
+		const prisma = getPrismaInstance();
+		const user = await prisma.user.findMany({
+			where: { id: userId },
+			include: {
+				sentMessages: {
+					include: {
+						receiver: true,
+						sender: true,
+					},
+					orderBy: {
+						createdAt: "desc",
+					},
+				},
+				receivedMessages: {
+					include: {
+						receiver: true,
+						sender: true,
+					},
+					orderBy: {
+						createdAt: "desc",
+					},
+				},
+			},
+		});
+	} catch (err) {
+		next(err);
+	}
+};
