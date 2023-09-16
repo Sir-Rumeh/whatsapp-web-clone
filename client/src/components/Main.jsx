@@ -62,7 +62,7 @@ function Main() {
 	useEffect(() => {
 		if (socket.current && !socketEvent) {
 			socket.current.on("msg-receive", (data) => {
-				// if (currentChatUser?.id === data?.message.senderId) {
+				// if (userInfo?.id === data?.message.receiverId) {
 				dispatch({
 					type: reducerCases.ADD_MESSAGE,
 					newMessage: {

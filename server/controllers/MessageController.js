@@ -194,6 +194,22 @@ export const getInitialContactsWithMessages = async (req, res, next) => {
 				});
 			}
 		});
+		if (messageStatusChange.length) {
+			await prisma.messages.updateMany({
+				where: {
+					id: {
+						in: messageStatusChange,
+					},
+				},
+				data: {
+					messageStatus: "delivered",
+				},
+			});
+		}
+		return response.status(200).json({
+			users: Array.from(users.values()),
+			onlineUsers: Array.from(onlineUsers.keys()),
+		});
 	} catch (err) {
 		next(err);
 	}
