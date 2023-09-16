@@ -171,8 +171,27 @@ export const getInitialContactsWithMessages = async (req, res, next) => {
 
 			if (!users.get(calculatedId)) {
 				const { id, type, message, messageStatus, createdAt, senderId, receiverId } = msg;
-
-				let user = {};
+				let user = { messageId: id, type, message, messageStatus, createdAt, senderId, receiverId };
+				if (isSender) {
+					user = {
+						...user,
+						...msg.receiver,
+						totalUnreadMessages: 0,
+					};
+				} else {
+					user = {
+						...user,
+						...msg.sender,
+						totalUnreadMessages: messageStatus !== "read" ? 1 : 0,
+					};
+				}
+				users.set(calculatedId, { ...user });
+			} else if (messageStatus !== "read" && !isSender) {
+				const user = users.get(calculatedId);
+				users.set(calculatedId, {
+					...user,
+					totalUnreadMessages: user.totalUnreadMessages + 1,
+				});
 			}
 		});
 	} catch (err) {

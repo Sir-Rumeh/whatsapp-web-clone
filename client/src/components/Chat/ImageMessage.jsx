@@ -16,10 +16,12 @@ function ImageMessage({ message }) {
 			<div className="relative">
 				<Image
 					src={`${HOST}/${message.message}`}
-					className="rounded-lg"
+					className="rounded-lg h-auto max-w-full aspect-auto"
 					alt="asset"
 					height={300}
 					width={300}
+					style={{ height: "auto" }}
+					loading="lazy"
 					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 				/>
 				<div className="absolute bottom-1 right-1 flex items-end gap-1">

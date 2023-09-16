@@ -15,7 +15,7 @@ function ContactsList() {
 			try {
 				const {
 					data: { users },
-				} = await axios.get(`${GET_ALL_CONTACTS}/${userInfo.id}`);
+				} = await axios.get(`${GET_ALL_CONTACTS}/${userInfo?.id}`);
 				setAllContacts(users);
 			} catch (err) {
 				console.log(err);
