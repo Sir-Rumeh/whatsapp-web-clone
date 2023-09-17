@@ -134,7 +134,7 @@ export const getInitialContactsWithMessages = async (req, res, next) => {
 	try {
 		const userId = parseInt(req.params.from);
 		const prisma = getPrismaInstance();
-		const user = await prisma.user.findMany({
+		const user = await prisma.user.findUnique({
 			where: { id: userId },
 			include: {
 				sentMessages: {
@@ -169,8 +169,8 @@ export const getInitialContactsWithMessages = async (req, res, next) => {
 				messageStatusChange.push(msg.id);
 			}
 
+			const { id, type, message, messageStatus, createdAt, senderId, receiverId } = msg;
 			if (!users.get(calculatedId)) {
-				const { id, type, message, messageStatus, createdAt, senderId, receiverId } = msg;
 				let user = { messageId: id, type, message, messageStatus, createdAt, senderId, receiverId };
 				if (isSender) {
 					user = {
@@ -186,7 +186,7 @@ export const getInitialContactsWithMessages = async (req, res, next) => {
 					};
 				}
 				users.set(calculatedId, { ...user });
-			} else if (messageStatus !== "read" && !isSender) {
+			} else if (msg.messageStatus !== "read" && !isSender) {
 				const user = users.get(calculatedId);
 				users.set(calculatedId, {
 					...user,
@@ -206,7 +206,7 @@ export const getInitialContactsWithMessages = async (req, res, next) => {
 				},
 			});
 		}
-		return response.status(200).json({
+		return res.status(200).json({
 			users: Array.from(users.values()),
 			onlineUsers: Array.from(onlineUsers.keys()),
 		});
