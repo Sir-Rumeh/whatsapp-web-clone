@@ -33,6 +33,7 @@ function ContactsList() {
 					data: { users },
 				} = await axios.get(`${GET_ALL_CONTACTS}/${userInfo?.id}`);
 				setAllContacts(users);
+				setSearchedContacts(users);
 			} catch (err) {
 				console.log(err);
 			}
@@ -63,25 +64,31 @@ function ContactsList() {
 								type="text"
 								placeholder="Search Contacts"
 								className="bg-transparent text-sm focus:outline-none text-white w-full"
+								value={searchTerm}
+								onChange={(e) => setSearchTerm(e.target.value)}
 							/>
 						</div>
 					</div>
 				</div>
-				{Object.entries(allContacts).map(([initialLetter, userList]) => {
+				{Object.entries(searchedContacts).map(([initialLetter, userList]) => {
 					return (
 						<div key={Date.now() + initialLetter}>
-							<div className="text-teal-light pl-10 py-5">{initialLetter}</div>
-							<div className="flex flex-col gap-y-2">
-								{userList.map((contact) => {
-									return (
-										<ChatLIstItem
-											data={{ ...contact }}
-											key={contact.id}
-											isContactsPage={true}
-										/>
-									);
-								})}
-							</div>
+							{userList.length && (
+								<>
+									<div className="text-teal-light pl-10 py-5">{initialLetter}</div>
+									<div className="flex flex-col gap-y-2">
+										{userList.map((contact) => {
+											return (
+												<ChatLIstItem
+													data={{ ...contact }}
+													key={contact.id}
+													isContactsPage={true}
+												/>
+											);
+										})}
+									</div>
+								</>
+							)}
 						</div>
 					);
 				})}
