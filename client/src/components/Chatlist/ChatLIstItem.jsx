@@ -57,8 +57,8 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 					)}
 				</div>
 				<div className="flex border-b border-conversation-border pb-2 pt-1 pr-2">
-					<div className="flex justify-betweenw-full">
-						<span className="text-secondary line-clamp-1 text-sm">
+					<div className="flex justify-between w-full ">
+						<span className="text-secondary line-clamp-1 text-sm ">
 							{isContactsPage ? (
 								data?.about || "\u00A0"
 							) : (
@@ -82,6 +82,11 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 								</div>
 							)}
 						</span>
+						{data.totalUnreadMessages > 0 && (
+							<span className="bg-icon-green px-[5px] rounded-full text-sm">
+								{data.totalUnreadMessages}
+							</span>
+						)}
 					</div>
 				</div>
 			</div>

@@ -9,6 +9,22 @@ import ChatLIstItem from "./ChatLIstItem";
 function ContactsList() {
 	const [{ userInfo }, dispatch] = useStateProvider();
 	const [allContacts, setAllContacts] = useState([]);
+	const [searchTerm, setSearchTerm] = useState("");
+	const [searchedContacts, setSearchedContacts] = useState([]);
+
+	useEffect(() => {
+		if (searchTerm.length) {
+			const filteredData = {};
+			Object.keys(allContacts).forEach((key) => {
+				filteredData[key] = allContacts[key].filter((obj) =>
+					obj.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+				);
+			});
+			setSearchedContacts(filteredData);
+		} else {
+			setSearchedContacts(allContacts);
+		}
+	}, [searchTerm]);
 
 	useEffect(() => {
 		const getContacts = async () => {
