@@ -5,7 +5,7 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import ChatLIstItem from "./ChatLIstItem";
 
-function List() {
+function List({ refreshChatList }) {
 	const [{ userInfo, userContacts }, dispatch] = useStateProvider();
 
 	useEffect(() => {
@@ -23,7 +23,7 @@ function List() {
 		if (userInfo?.id) {
 			getContacts();
 		}
-	}, []);
+	}, [refreshChatList]);
 	return (
 		<div className="bg-search-input-container-background flex-auto overflow-auto max-h-full custom-scrollbar">
 			{userContacts?.map((contact) => (

@@ -59,6 +59,8 @@ function Main() {
 		}
 	}, [userInfo]);
 
+	const [refreshChatList, setRefreshChatList] = useState(false);
+
 	useEffect(() => {
 		if (socket.current && !socketEvent) {
 			socket.current.on("msg-receive", (data) => {
@@ -70,6 +72,7 @@ function Main() {
 					},
 				});
 				// }
+				setRefreshChatList((prev) => !prev);
 			});
 			setSocketEvent(true);
 		}
@@ -94,7 +97,7 @@ function Main() {
 	return (
 		<>
 			<div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
-				<ChatList />
+				<ChatList refreshChatList={refreshChatList} />
 				{currentChatUser ? (
 					<div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
 						<Chat />
