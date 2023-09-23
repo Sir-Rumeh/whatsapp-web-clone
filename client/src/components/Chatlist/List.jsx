@@ -20,10 +20,10 @@ function List() {
 				console.log(err);
 			}
 		};
-		if (userInfo.id) {
+		if (userInfo?.id) {
 			getContacts();
 		}
-	});
+	}, []);
 	return (
 		<div className="bg-search-input-container-background flex-auto overflow-auto max-h-full custom-scrollbar">
 			{userContacts?.map((contact) => (

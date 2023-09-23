@@ -14,7 +14,7 @@ function ChatContainer() {
 			<div className="m-6 relative bottom-0 z-40 left-0">
 				<div className="flex w-full">
 					<div className="flex flex-col justify-end w-full gap-1 overflow-auto">
-						{messages.map((message, index) => (
+						{messages?.map((message, index) => (
 							<div
 								key={message.id}
 								className={`flex ${

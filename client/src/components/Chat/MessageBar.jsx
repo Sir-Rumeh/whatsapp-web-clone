@@ -96,9 +96,9 @@ function MessageBar() {
 			socket.current.emit("send-msg", {
 				to: currentChatUser?.id,
 				from: userInfo?.id,
-				message: data.message,
+				message: data?.message,
 			});
-			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { ...data.message }, fromSelf: true });
+			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { ...data?.message }, fromSelf: true });
 			setMessage("");
 		} catch (err) {
 			console.log(err);
