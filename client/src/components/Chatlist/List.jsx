@@ -24,6 +24,7 @@ function List({ refreshChatList }) {
 			getContacts();
 		}
 	}, [refreshChatList]);
+
 	return (
 		<div className="bg-search-input-container-background flex-auto overflow-auto max-h-full custom-scrollbar">
 			{filteredContacts && filteredContacts.length > 0

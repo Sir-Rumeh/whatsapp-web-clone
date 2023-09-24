@@ -10,7 +10,7 @@ import { reducerCases } from "@/context/constants";
 import { useStateProvider } from "@/context/StateContext";
 import Chat from "./Chat/Chat";
 import { io } from "socket.io-client";
-import { data } from "autoprefixer";
+// import { data } from "autoprefixer";
 import SearchMessages from "./Chat/SearchMessages";
 
 function Main() {
@@ -54,7 +54,7 @@ function Main() {
 	useEffect(() => {
 		if (userInfo) {
 			socket.current = io(HOST);
-			socket.current.emit("add-user", userInfo.id);
+			socket.current.emit("add-user", userInfo?.id);
 			dispatch({ type: reducerCases.SET_SOCKET, socket });
 		}
 	}, [userInfo]);
@@ -64,7 +64,7 @@ function Main() {
 	useEffect(() => {
 		if (socket.current && !socketEvent) {
 			socket.current.on("msg-receive", (data) => {
-				// if (userInfo?.id === data?.message.receiverId && currentChatUser?.id === data?.message.senderId) {
+				// if (currentChatUser && (currentChatUser?.id === data?.message?.senderId && userInfo?.id === data?.message?.receiverId)) {
 				dispatch({
 					type: reducerCases.ADD_MESSAGE,
 					newMessage: {
