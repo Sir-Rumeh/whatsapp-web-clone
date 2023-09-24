@@ -57,7 +57,7 @@ export const getAllUsers = async (req, res, next) => {
 		const usersGroupedByInitialLetter = {};
 		const filteredUsers = users.filter((user) => user.id !== parseInt(from));
 
-		filteredUsers.forEach((user) => {
+		filteredUsers?.forEach((user) => {
 			const initialLetter = user.name.charAt(0).toUpperCase();
 			if (!usersGroupedByInitialLetter[initialLetter]) {
 				usersGroupedByInitialLetter[initialLetter] = [];

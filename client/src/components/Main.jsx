@@ -10,12 +10,16 @@ import { reducerCases } from "@/context/constants";
 import { useStateProvider } from "@/context/StateContext";
 import Chat from "./Chat/Chat";
 import { io } from "socket.io-client";
-// import { data } from "autoprefixer";
 import SearchMessages from "./Chat/SearchMessages";
+import VoiceCall from "./Call/VoiceCall";
+import VideoCall from "./Call/VideoCall";
 
 function Main() {
 	const router = useRouter();
-	const [{ userInfo, currentChatUser, messageSearch }, dispatch] = useStateProvider();
+	const [
+		{ userInfo, currentChatUser, messageSearch, voiceCall, videoCall, incomingVoiceCall, incomingVideoCall },
+		dispatch,
+	] = useStateProvider();
 	const [redirectLogin, setRedirectLogin] = useState(false);
 	const [socketEvent, setSocketEvent] = useState(false);
 
@@ -64,7 +68,7 @@ function Main() {
 	useEffect(() => {
 		if (socket.current && !socketEvent) {
 			socket.current.on("msg-receive", (data) => {
-				// if (currentChatUser && (currentChatUser?.id === data?.message?.senderId && userInfo?.id === data?.message?.receiverId)) {
+				// if (currentChatUser && (data?.message?.senderId === currentChatUser?.id )) {
 				dispatch({
 					type: reducerCases.ADD_MESSAGE,
 					newMessage: {
@@ -96,6 +100,16 @@ function Main() {
 
 	return (
 		<>
+			{voiceCall && (
+				<div className="h-screen w-screen max-h-full overflow-hidden">
+					<VoiceCall />
+				</div>
+			)}
+			{videoCall && (
+				<div className="h-screen w-screen max-h-full overflow-hidden">
+					<VideoCall />
+				</div>
+			)}
 			<div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
 				<ChatList refreshChatList={refreshChatList} />
 				{currentChatUser ? (

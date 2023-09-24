@@ -26,7 +26,7 @@ export const getMessages = async (req, res, next) => {
 
 		const unreadMessages = [];
 
-		messages.forEach((message, index) => {
+		messages?.forEach((message, index) => {
 			if (message.messageStatus !== "read" && message.senderId === parseInt(to)) {
 				messages[index].messageStatus = "read";
 				unreadMessages.push(message.id);
@@ -162,7 +162,7 @@ export const getInitialContactsWithMessages = async (req, res, next) => {
 		const users = new Map();
 		const messageStatusChange = [];
 
-		messages.forEach((msg) => {
+		messages?.forEach((msg) => {
 			const isSender = msg.senderId === userId;
 			const calculatedId = isSender ? msg.receiverId : msg.senderId;
 			if (msg.messageStatus === "sent") {

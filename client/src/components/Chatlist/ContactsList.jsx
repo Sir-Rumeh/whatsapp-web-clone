@@ -15,7 +15,7 @@ function ContactsList() {
 	useEffect(() => {
 		if (searchTerm.length) {
 			const filteredData = {};
-			Object.keys(allContacts).forEach((key) => {
+			Object.keys(allContacts)?.forEach((key) => {
 				filteredData[key] = allContacts[key].filter((obj) =>
 					obj.name.toLowerCase().startsWith(searchTerm.toLowerCase())
 				);
@@ -42,7 +42,7 @@ function ContactsList() {
 	}, []);
 	return (
 		<div className="h-full flex flex-col">
-			<div className="h-24 flex items-end px-3 py-4">
+			<div className="h-16  flex items-end px-3 py-4">
 				<div className="flex items-center gap-12 text-white">
 					<BiArrowBack
 						className="cursor-pointer text-xl"
