@@ -110,17 +110,19 @@ function Main() {
 					<VideoCall />
 				</div>
 			)}
-			<div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
-				<ChatList refreshChatList={refreshChatList} />
-				{currentChatUser ? (
-					<div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
-						<Chat />
-						{messageSearch && <SearchMessages />}
-					</div>
-				) : (
-					<Empty />
-				)}
-			</div>
+			{!voiceCall && !videoCall && (
+				<div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
+					<ChatList refreshChatList={refreshChatList} />
+					{currentChatUser ? (
+						<div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
+							<Chat />
+							{messageSearch && <SearchMessages />}
+						</div>
+					) : (
+						<Empty />
+					)}
+				</div>
+			)}
 		</>
 	);
 }
