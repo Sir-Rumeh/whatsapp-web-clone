@@ -21,6 +21,7 @@ function ChatHeader() {
 			},
 		});
 	};
+
 	const handleVideoCall = () => {
 		dispatch({
 			type: reducerCases.SET_VIDEO_CALL,

@@ -83,4 +83,9 @@ io.on("connection", (socket) => {
 		const sendUserSocket = onlineUsers.get(id);
 		socket.to(sendUserSocket).emit("accept-call");
 	});
+
+	socket.on("terminate-call", (data) => {
+		const sendUserSocket = onlineUsers.get(data.to);
+		socket.to(sendUserSocket).emit("call-terminated");
+	});
 });

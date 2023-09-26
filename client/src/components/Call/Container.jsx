@@ -5,11 +5,17 @@ import React, { useState } from "react";
 import { MdOutlineCallEnd } from "react-icons/md";
 
 function Container({ data }) {
-	const [{ socket, userInfo }, dispatch] = useStateProvider();
+	const [{ socket, userInfo, videoCall }, dispatch] = useStateProvider();
 	const [callAccepted, setCallAccepted] = useState(false);
 
 	const endCall = () => {
 		dispatch({ type: reducerCases.END_CALL });
+		socket.current.emit("terminate-call", {
+			to: videoCall.id,
+			from: userInfo?.id,
+			callType: videoCall.callType,
+			roomId: videoCall.roomId,
+		});
 	};
 
 	return (

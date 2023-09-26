@@ -13,6 +13,8 @@ import { io } from "socket.io-client";
 import SearchMessages from "./Chat/SearchMessages";
 import VoiceCall from "./Call/VoiceCall";
 import VideoCall from "./Call/VideoCall";
+import IncomingVoiceCall from "./common/IncomingVoiceCall";
+import IncomingVideoCall from "./common/IncomingVideoCall";
 
 function Main() {
 	const router = useRouter();
@@ -105,6 +107,12 @@ function Main() {
 				});
 			});
 
+			socket.current.on("call-terminated", () => {
+				dispatch({
+					type: reducerCases.END_CALL,
+				});
+			});
+
 			setSocketEvent(true);
 		}
 	}, [socket.current]);
@@ -127,16 +135,21 @@ function Main() {
 
 	return (
 		<>
+			{incomingVoiceCall && <IncomingVoiceCall />}
+			{incomingVideoCall && <IncomingVideoCall />}
+
 			{voiceCall && (
 				<div className="h-screen w-screen max-h-full overflow-hidden">
 					<VoiceCall />
 				</div>
 			)}
+
 			{videoCall && (
 				<div className="h-screen w-screen max-h-full overflow-hidden">
 					<VideoCall />
 				</div>
 			)}
+
 			{!voiceCall && !videoCall && (
 				<div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
 					<ChatList refreshChatList={refreshChatList} />
