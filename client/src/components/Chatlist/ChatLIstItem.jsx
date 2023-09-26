@@ -39,7 +39,7 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 			<div className="min-w-fit px-5 pt-3 pb-1">
 				<Avatar type="lg" image={data?.profilePicture} />
 			</div>
-			<div className="min-h-full flex flex-col justify-center mt-3 pr-2 w-full">
+			<div className="min-h-full flex flex-col justify-center mt-3 pr-4 w-full">
 				<div className="flex justify-between">
 					<div>
 						<span className="text-white">{data?.name}</span>
