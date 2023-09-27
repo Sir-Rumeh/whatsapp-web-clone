@@ -23,7 +23,6 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 		} else {
 			dispatch({ type: reducerCases.CHANGE_CURRENT_CHAT_USER, user: { ...data } });
 		}
-		// dispatch({ type: reducerCases.CHANGE_CURRENT_CHAT_USER, user: { ...data } });
 		if (contactsPage) {
 			dispatch({ type: reducerCases.SET_ALL_CONTACTS_PAGE });
 		}
@@ -33,10 +32,10 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 	};
 	return (
 		<div
-			className={`flex cursor-pointer items-center hover:bg-background-default-hover`}
+			className="flex cursor-pointer items-center hover:bg-background-default-hover"
 			onClick={handleContactClick}
 		>
-			<div className="min-w-fit px-5 pt-3 pb-1">
+			<div className="min-w-fit px-5 py-1">
 				<Avatar type="lg" image={data?.profilePicture} />
 			</div>
 			<div className="min-h-full flex flex-col justify-center mt-3 pr-4 w-full">
