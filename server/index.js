@@ -85,7 +85,7 @@ io.on("connection", (socket) => {
 	});
 
 	socket.on("terminate-call", (data) => {
-		const sendUserSocket = onlineUsers.get(data.to);
+		const sendUserSocket = onlineUsers.get(data.from);
 		socket.to(sendUserSocket).emit("call-terminated");
 	});
 });
