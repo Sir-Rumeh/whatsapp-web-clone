@@ -1,12 +1,37 @@
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
+import { GET_CALL_TOKEN } from "@/utils/ApiRoutes";
+import axios from "axios";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineCallEnd } from "react-icons/md";
 
 function Container({ data }) {
-	const [{ socket }, dispatch] = useStateProvider();
+	const [{ socket, userInfo }, dispatch] = useStateProvider();
 	const [callAccepted, setCallAccepted] = useState(false);
+	const [token, setToken] = useState(undefined);
+
+	useEffect(() => {
+		if (data.type === "out-going") socket.current.on("accept-call", () => setCallAccepted(true));
+		else {
+			setTimeout(() => {
+				setCallAccepted(true);
+			}, 1000);
+		}
+	}, [data]);
+
+	useEffect(() => {
+		const getToken = async () => {
+			try {
+				const {
+					data: { token: returnedToken },
+				} = axios.get(`${GET_CALL_TOKEN}/${userInfo?.id}`);
+				setToken(returnedToken);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+	}, [callAccepted]);
 
 	const endCall = () => {
 		dispatch({ type: reducerCases.END_CALL });
