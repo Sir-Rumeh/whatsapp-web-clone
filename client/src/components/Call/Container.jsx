@@ -10,6 +10,9 @@ function Container({ data }) {
 	const [{ socket, userInfo }, dispatch] = useStateProvider();
 	const [callAccepted, setCallAccepted] = useState(false);
 	const [token, setToken] = useState(undefined);
+	const [zgVar, setZgVar] = useState(undefined);
+	const [localStream, setLocalStream] = useState(undefined);
+	const [publicStream, setPublicStream] = useState(undefined);
 
 	useEffect(() => {
 		if (data.type === "out-going") socket.current.on("accept-call", () => setCallAccepted(true));
@@ -31,7 +34,29 @@ function Container({ data }) {
 				console.log(err);
 			}
 		};
+		getToken();
 	}, [callAccepted]);
+
+	useEffect(() => {
+		const startCall = async () => {
+			import("zego-express-engine-webrtc").then(async ({ ZegoExpressEngine }) => {
+				const zg = new ZegoExpressEngine(
+					process.env.NEXT_PUBLIC_ZEGO_APP_ID,
+					process.env.NEXT_PUBLIC_ZEGO_SERVER_ID
+				);
+				setZgVar(zg);
+				zg.on("roomStreamUpdate", async (roomId, updateType, streamList, extendedDate) => {
+					if (updateType === "ADD") {
+					} else if (updateType === "DELETE" && zg && localStream && streamList[0].streamID) {
+						zg.destroyStream(localStream);
+						zg.stopPublishingStream(streamList[0].streamID);
+						zg.logoutRoom(data.roomId.toString());
+						dispatch({ type: reducerCases.END_CALL });
+					}
+				});
+			});
+		};
+	}, [token]);
 
 	const endCall = () => {
 		dispatch({ type: reducerCases.END_CALL });
