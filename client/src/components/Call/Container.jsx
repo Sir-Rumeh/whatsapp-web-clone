@@ -47,6 +47,18 @@ function Container({ data }) {
 				setZgVar(zg);
 				zg.on("roomStreamUpdate", async (roomId, updateType, streamList, extendedDate) => {
 					if (updateType === "ADD") {
+						const rmVideo = document.getElementById("remote-video");
+						const vd = document.createElement(data.callType === "video" ? "video" : "audio");
+						vd.id = streamList[0].streamID;
+						vd.autoplay = true;
+						vd.muted = false;
+						if (rmVideo) {
+							rmVideo.appendChild(vd);
+						}
+						zg.startPlayingStream(streamList[0].streamID, {
+							audio: true,
+							video: true,
+						}).then((stream) => (vd.srcObject = stream));
 					} else if (updateType === "DELETE" && zg && localStream && streamList[0].streamID) {
 						zg.destroyStream(localStream);
 						zg.stopPublishingStream(streamList[0].streamID);
@@ -85,6 +97,9 @@ function Container({ data }) {
 					/>
 				</div>
 			)}
+			<div className="my-5 relative" id="remote-video">
+				<div className="absolute bottom-5 right-5" id="local-audio"></div>
+			</div>
 			<div className="h-16 w-16 bg-red-600 flex items-center justify-center rounded-full">
 				<MdOutlineCallEnd className="text-3xl cursor-pointer" onClick={endCall} />
 			</div>
