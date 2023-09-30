@@ -66,8 +66,41 @@ function Container({ data }) {
 						dispatch({ type: reducerCases.END_CALL });
 					}
 				});
+				await zg.loginRoom(
+					data.roomId.toString(),
+					token,
+					{ userID: userInfo?.id.toString(), userName: userInfo?.name },
+					{ userUpdate: true }
+				);
+
+				const localStream = await zg.createStream({
+					camera: {
+						audio: true,
+						video: data.callType === "video" ? true : false,
+					},
+				});
+
+				const localVideo = document.getElementById("local-audio");
+				const videoElement = document.createElement(data.callType === "video" ? "video" : "audio");
+				videoElement.id = "video-local-zego";
+				videoElement.className = "h-28 w-32";
+				videoElement.autoplay = true;
+				videoElement.muted = false;
+				videoElement.playsInline = true;
+				localVideo.appendChild(videoElement);
+
+				const td = document.getElementById("video-local-zego");
+				td.srcObject = localStream;
+
+				const streamID = "534" + Date.now();
+				setPublicStream(streamID);
+				setLocalStream(localStream);
+				zg.startPublishingStream(streamID, localStream);
 			});
 		};
+		if (token) {
+			startCall();
+		}
 	}, [token]);
 
 	const endCall = () => {
