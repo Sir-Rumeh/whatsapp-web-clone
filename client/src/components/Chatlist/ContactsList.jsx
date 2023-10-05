@@ -35,7 +35,7 @@ function ContactsList() {
 				setAllContacts(users);
 				setSearchedContacts(users);
 			} catch (err) {
-				console.log(err);
+				return Promise.reject(err);
 			}
 		};
 		getContacts();

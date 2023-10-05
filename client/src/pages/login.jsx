@@ -57,7 +57,7 @@ function login() {
 				}
 			}
 		} catch (err) {
-			console.log(err);
+			return Promise.reject(err);
 		}
 	};
 	return (

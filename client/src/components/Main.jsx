@@ -125,7 +125,7 @@ function Main() {
 				} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
 				dispatch({ type: reducerCases.SET_MESSAGES, messages });
 			} catch (err) {
-				console.log(err);
+				return Promise.reject(err);
 			}
 		};
 		if (currentChatUser?.id) {

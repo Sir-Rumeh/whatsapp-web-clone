@@ -17,7 +17,7 @@ function List({ refreshChatList }) {
 				dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
 				dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
 			} catch (err) {
-				console.log(err);
+				return Promise.reject(err);
 			}
 		};
 		if (userInfo?.id) {

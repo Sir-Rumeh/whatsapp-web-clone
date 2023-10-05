@@ -82,7 +82,7 @@ function MessageBar() {
 				});
 			}
 		} catch (err) {
-			console.log(err);
+			return Promise.reject(err);
 		}
 	};
 
@@ -101,7 +101,7 @@ function MessageBar() {
 			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { ...data?.message }, fromSelf: true });
 			setMessage("");
 		} catch (err) {
-			console.log(err);
+			return Promise.reject(err);
 		}
 	};
 	return (

@@ -51,7 +51,7 @@ function CaptureAudio({ setShowAudioRecorder }) {
 				mediaRecorder.start();
 			})
 			.catch((error) => {
-				console.log("Error accessing microphone:", error);
+				return Promise.reject("Error accessing microphone:", error);
 			});
 	};
 
@@ -114,7 +114,7 @@ function CaptureAudio({ setShowAudioRecorder }) {
 				});
 			}
 		} catch (err) {
-			console.log(err);
+			return Promise.reject(err);
 		}
 	};
 

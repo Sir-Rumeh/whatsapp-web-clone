@@ -79,13 +79,13 @@ export const generateToken = (req, res, next) => {
 		const userId = req.params.userId;
 		const effectiveTime = 3600;
 		const payload = "";
-
-		if (appId && serverSecret && userId) {
-			const token = generateToken04(appId, userId, serverSecret, effectiveTime, payload);
-			res.status(200).json({ token });
+		if (!userId || !appId || !serverSecret) {
+			return res.status(400).send("User id, app id and server secret is required");
 		}
-		return res.status.send("User id, app id and server secret is required");
-	} catch (error) {
+		const token = generateToken04(appId, userId, serverSecret, effectiveTime, payload);
+
+		return res.status(200).json({ token });
+	} catch (err) {
 		next(err);
 	}
 };

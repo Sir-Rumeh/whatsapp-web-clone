@@ -32,13 +32,13 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 	};
 	return (
 		<div
-			className="flex cursor-pointer items-center hover:bg-background-default-hover"
+			className="py-1 flex cursor-pointer items-center hover:bg-background-default-hover"
 			onClick={handleContactClick}
 		>
 			<div className="min-w-fit px-5 py-1">
 				<Avatar type="lg" image={data?.profilePicture} />
 			</div>
-			<div className="min-h-full flex flex-col justify-center mt-3 pr-4 w-full">
+			<div className="min-h-full flex flex-col justify-center mt-3 pr-4 w-full ">
 				<div className="flex justify-between">
 					<div>
 						<span className="text-white">{data?.name}</span>
@@ -55,7 +55,8 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 						</div>
 					)}
 				</div>
-				<div className="flex border-b border-conversation-border pb-2 pt-1 pr-2">
+				{/* {} */}
+				<div className="flex border-b border-conversation-border pb-2 pt-1 pr-2 ">
 					<div className="flex justify-between w-full ">
 						<span className="text-secondary line-clamp-1 text-sm ">
 							{isContactsPage ? (

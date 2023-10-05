@@ -12,11 +12,12 @@ function Container({ data }) {
 	const [token, setToken] = useState(undefined);
 	const [zgVar, setZgVar] = useState(undefined);
 	const [localStream, setLocalStream] = useState(undefined);
-	const [publicStream, setPublicStream] = useState(undefined);
+	const [publishStream, setPublishStream] = useState(undefined);
 
 	useEffect(() => {
-		if (data.type === "out-going") socket.current.on("accept-call", () => setCallAccepted(true));
-		else {
+		if (data.type === "out-going") {
+			socket.current.on("accept-call", () => setCallAccepted(true));
+		} else {
 			setTimeout(() => {
 				setCallAccepted(true);
 			}, 1000);
@@ -28,10 +29,10 @@ function Container({ data }) {
 			try {
 				const {
 					data: { token: returnedToken },
-				} = axios.get(`${GET_CALL_TOKEN}/${userInfo?.id}`);
+				} = await axios.get(`${GET_CALL_TOKEN}/${userInfo?.id}`);
 				setToken(returnedToken);
 			} catch (err) {
-				console.log(err);
+				return Promise.reject(err);
 			}
 		};
 		getToken();
@@ -45,7 +46,15 @@ function Container({ data }) {
 					process.env.NEXT_PUBLIC_ZEGO_SERVER_ID
 				);
 				setZgVar(zg);
-				zg.on("roomStreamUpdate", async (roomId, updateType, streamList, extendedDate) => {
+
+				const localStream = await zg.createStream({
+					camera: {
+						audio: true,
+						video: data.callType === "video" ? true : false,
+					},
+				});
+
+				zg.on("roomStreamUpdate", async (roomId, updateType, streamList, extendedData) => {
 					if (updateType === "ADD") {
 						const rmVideo = document.getElementById("remote-video");
 						const vd = document.createElement(data.callType === "video" ? "video" : "audio");
@@ -66,19 +75,13 @@ function Container({ data }) {
 						dispatch({ type: reducerCases.END_CALL });
 					}
 				});
+
 				await zg.loginRoom(
 					data.roomId.toString(),
 					token,
 					{ userID: userInfo?.id.toString(), userName: userInfo?.name },
 					{ userUpdate: true }
 				);
-
-				const localStream = await zg.createStream({
-					camera: {
-						audio: true,
-						video: data.callType === "video" ? true : false,
-					},
-				});
 
 				const localVideo = document.getElementById("local-audio");
 				const videoElement = document.createElement(data.callType === "video" ? "video" : "audio");
@@ -93,7 +96,7 @@ function Container({ data }) {
 				td.srcObject = localStream;
 
 				const streamID = "534" + Date.now();
-				setPublicStream(streamID);
+				setPublishStream(streamID);
 				setLocalStream(localStream);
 				zg.startPublishingStream(streamID, localStream);
 			});
@@ -104,10 +107,15 @@ function Container({ data }) {
 	}, [token]);
 
 	const endCall = () => {
-		dispatch({ type: reducerCases.END_CALL });
+		if (zgVar && localStream && publishStream) {
+			zgVar.destroyStream(localStream);
+			zgVar.stopPublishingStream(publishStream);
+			zgVar.logoutRoom(data.roomId.toString());
+		}
 		socket.current.emit("terminate-call", {
 			from: data.id,
 		});
+		dispatch({ type: reducerCases.END_CALL });
 	};
 
 	return (
