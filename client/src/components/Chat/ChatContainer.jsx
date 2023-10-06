@@ -22,7 +22,7 @@ function ChatContainer() {
 	return (
 		<div className="h-[80vh] w-full relative flex-grow overflow-auto custom-scrollbar">
 			<div className="bg-chat-background bg-fixed h-full w-full opacity-5 fixed left-0 top-0 z-0"></div>
-			<div className="m-6 relative bottom-0 z-40 left-0">
+			<div className="m-6 relative bottom-0 left-0">
 				<div className="flex w-full">
 					<div className="flex flex-col justify-end w-full gap-[6px] overflow-auto">
 						{messages?.map((message, index) => (

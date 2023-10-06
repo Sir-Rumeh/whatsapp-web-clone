@@ -129,7 +129,7 @@ function Container({ data }) {
 			{(!callAccepted || data.callType === "audio") && (
 				<div className="my-24">
 					<Image
-						src={data.profilePicture}
+						src={data.profilePicture ? data.profilePicture : "/default_avatar.png"}
 						alt="avatar"
 						height={300}
 						width={300}

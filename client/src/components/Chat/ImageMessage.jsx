@@ -20,7 +20,7 @@ function ImageMessage({ message }) {
 					alt="asset"
 					height={300}
 					width={300}
-					style={{ height: "auto" }}
+					style={{ height: "auto", aspectRatio: 1 }}
 					loading="lazy"
 					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 				/>
