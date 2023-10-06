@@ -29,8 +29,19 @@ const io = new Server(server, {
 global.onlineUsers = new Map();
 io.on("connection", (socket) => {
 	global.chatSocket = socket;
+
 	socket.on("add-user", (userId) => {
 		onlineUsers.set(userId, socket.id);
+		socket.broadcast.emit("online-users", {
+			onlineUsers: Array.from(onlineUsers.keys()),
+		});
+	});
+
+	socket.on("logout", (userId) => {
+		onlineUsers.delete(userId);
+		socket.broadcast.emit("online-users", {
+			onlineUsers: Array.from(onlineUsers.keys()),
+		});
 	});
 
 	socket.on("send-msg", (data) => {
