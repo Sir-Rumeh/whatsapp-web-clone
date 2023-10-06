@@ -11,7 +11,7 @@ function IncomingVideoCall() {
 			type: reducerCases.SET_VIDEO_CALL,
 			videoCall: { ...incomingVideoCall, type: "in-coming" },
 		});
-		socket.current.emit("accept-incoming-call", { id: incomingVideoCall.id });
+		socket?.current.emit("accept-incoming-call", { id: incomingVideoCall.id });
 		dispatch({
 			type: reducerCases.SET_INCOMING_VIDEO_CALL,
 			incomingVideoCall: undefined,
@@ -19,7 +19,7 @@ function IncomingVideoCall() {
 	};
 
 	const rejectCall = () => {
-		socket.current.emit("reject-video-call", { from: incomingVideoCall.id });
+		socket?.current.emit("reject-video-call", { from: incomingVideoCall.id });
 		dispatch({ type: reducerCases.END_CALL });
 	};
 

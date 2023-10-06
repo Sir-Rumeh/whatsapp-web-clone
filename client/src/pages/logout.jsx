@@ -9,7 +9,7 @@ function logout() {
 	const [{ socket, userInfo }, dispatch] = useStateProvider();
 	const router = useRouter();
 	useEffect(() => {
-		socket.current.emit("logout", userInfo?.id);
+		socket?.current.emit("logout", userInfo?.id);
 		dispatch({ type: reducerCases.SET_USER_INFO, userInfo: undefined });
 		signOut(firebaseAuth);
 		router.push("/login");

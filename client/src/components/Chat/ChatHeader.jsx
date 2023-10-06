@@ -8,8 +8,24 @@ import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
 import ContextMenu from "../common/ContextMenu";
 
+const OnlineStatus = () => {
+	return (
+		<span className="flex items-center justify-start gap-x-1">
+			<p>online</p> <span className="h-2 w-2 bg-green-400 rounded-full mt-[1px]"></span>
+		</span>
+	);
+};
+
+const OfflineStatus = () => {
+	return (
+		<span className="flex items-center justify-start gap-x-1">
+			<p>offline</p> <span className="h-2 w-2 bg-gray-400 rounded-full "></span>
+		</span>
+	);
+};
+
 function ChatHeader() {
-	const [{ currentChatUser }, dispatch] = useStateProvider();
+	const [{ currentChatUser, onlineUsers }, dispatch] = useStateProvider();
 
 	const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 	const [contextMenuCordinates, setContextMenuCordinates] = useState({ x: 0, y: 0 });
@@ -59,7 +75,9 @@ function ChatHeader() {
 				<Avatar type={"sm"} image={currentChatUser?.profilePicture} />
 				<div className="flex flex-col">
 					<span className="text-primary-strong">{currentChatUser?.name}</span>
-					<span className="text-secondary text-sm">online/offline</span>
+					<span className="text-secondary text-sm">
+						{onlineUsers.includes(currentChatUser.id) ? <OnlineStatus /> : <OfflineStatus />}
+					</span>
 				</div>
 			</div>
 			<div className="flex gap-6">

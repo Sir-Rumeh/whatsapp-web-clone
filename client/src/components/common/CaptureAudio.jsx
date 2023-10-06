@@ -102,7 +102,7 @@ function CaptureAudio({ setShowAudioRecorder }) {
 			});
 			if (response.status === 201) {
 				setShowAudioRecorder(false);
-				socket.current.emit("send-msg", {
+				socket?.current.emit("send-msg", {
 					from: userInfo?.id,
 					to: currentChatUser?.id,
 					message: response.data.message,

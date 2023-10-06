@@ -8,7 +8,7 @@ function VideoCall() {
 
 	useEffect(() => {
 		if (videoCall.type === "out-going") {
-			socket.current.emit("outgoing-video-call", {
+			socket?.current.emit("outgoing-video-call", {
 				to: videoCall.id,
 				from: {
 					id: userInfo?.id,

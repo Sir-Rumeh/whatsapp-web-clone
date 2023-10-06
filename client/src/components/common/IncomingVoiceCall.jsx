@@ -11,7 +11,7 @@ function IncomingCall() {
 			type: reducerCases.SET_VOICE_CALL,
 			voiceCall: { ...incomingVoiceCall, type: "in-coming" },
 		});
-		socket.current.emit("accept-incoming-call", { id: incomingVoiceCall.id });
+		socket?.current.emit("accept-incoming-call", { id: incomingVoiceCall.id });
 		dispatch({
 			type: reducerCases.SET_INCOMING_VOICE_CALL,
 			incomingVoiceCall: undefined,
@@ -19,7 +19,7 @@ function IncomingCall() {
 	};
 
 	const rejectCall = () => {
-		socket.current.emit("reject-voice-call", { from: incomingVoiceCall.id });
+		socket?.current.emit("reject-voice-call", { from: incomingVoiceCall.id });
 		dispatch({ type: reducerCases.END_CALL });
 	};
 

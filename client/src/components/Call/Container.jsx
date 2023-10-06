@@ -16,7 +16,7 @@ function Container({ data }) {
 
 	useEffect(() => {
 		if (data.type === "out-going") {
-			socket.current.on("accept-call", () => setCallAccepted(true));
+			socket?.current.on("accept-call", () => setCallAccepted(true));
 		} else {
 			setTimeout(() => {
 				setCallAccepted(true);
@@ -112,7 +112,7 @@ function Container({ data }) {
 			zgVar.stopPublishingStream(publishStream);
 			zgVar.logoutRoom(data.roomId.toString());
 		}
-		socket.current.emit("terminate-call", {
+		socket?.current.emit("terminate-call", {
 			from: data.id,
 		});
 		dispatch({ type: reducerCases.END_CALL });
