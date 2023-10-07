@@ -22,6 +22,10 @@ function MessageBar() {
 	const emojiPickerRef = useRef(null);
 
 	useEffect(() => {
+		setMessage("");
+	}, [currentChatUser]);
+
+	useEffect(() => {
 		if (grabPhoto) {
 			const data = document.getElementById("photo-picker");
 			data.click();
@@ -41,6 +45,7 @@ function MessageBar() {
 				}
 			}
 		};
+
 		document.addEventListener("click", handleOutsideClick);
 		return () => {
 			document.removeEventListener("click", handleOutsideClick);
@@ -104,6 +109,7 @@ function MessageBar() {
 			return Promise.reject(err);
 		}
 	};
+
 	return (
 		<div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 relative">
 			{!showAudioRecorder && (
@@ -133,6 +139,7 @@ function MessageBar() {
 							className="bg-input-background text-sm focus:outline-none text-white h-10 rounded-lg px-5 py-4 w-full"
 							onChange={(e) => setMessage(e.target.value)}
 							value={message}
+							autoComplete="off"
 						/>
 					</div>
 					<div className="flex w-10 items-center justify-center">
