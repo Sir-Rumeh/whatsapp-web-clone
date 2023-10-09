@@ -32,7 +32,7 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 	};
 	return (
 		<div
-			className="py-1 flex cursor-pointer items-center hover:bg-background-default-hover"
+			className="flex cursor-pointer items-center hover:bg-background-default-hover"
 			onClick={handleContactClick}
 		>
 			<div className="min-w-fit px-5 py-1">
