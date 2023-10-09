@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
 import Image from "next/image";
 
 function IncomingCall() {
 	const [{ incomingVoiceCall, socket }, dispatch] = useStateProvider();
+	const [ringtone] = useState(new Audio("/call-sound.mp3"));
+
+	useEffect(() => {
+		ringtone.play();
+		socket?.current.on("call-terminated", () => {
+			ringtone.pause();
+		});
+	}, []);
 
 	const acceptCall = () => {
 		dispatch({

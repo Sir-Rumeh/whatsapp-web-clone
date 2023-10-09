@@ -13,10 +13,20 @@ function Container({ data }) {
 	const [zgVar, setZgVar] = useState(undefined);
 	const [localStream, setLocalStream] = useState(undefined);
 	const [publishStream, setPublishStream] = useState(undefined);
+	const [ringtone] = useState(new Audio("/call-sound.mp3"));
 
 	useEffect(() => {
 		if (data.type === "out-going") {
-			socket?.current.on("accept-call", () => setCallAccepted(true));
+			socket?.current.on("accept-call", () => {
+				setCallAccepted(true);
+				ringtone.pause();
+			});
+			socket?.current.on("video-call-rejected", () => {
+				ringtone.pause();
+			});
+			socket?.current.on("voice-call-rejected", () => {
+				ringtone.pause();
+			});
 		} else {
 			setTimeout(() => {
 				setCallAccepted(true);
@@ -36,6 +46,12 @@ function Container({ data }) {
 			}
 		};
 		getToken();
+
+		if (data.type === "out-going" && !callAccepted) {
+			ringtone.play();
+		} else {
+			ringtone.pause();
+		}
 	}, [callAccepted]);
 
 	useEffect(() => {
@@ -90,7 +106,7 @@ function Container({ data }) {
 				videoElement.autoplay = true;
 				videoElement.muted = false;
 				videoElement.playsInline = true;
-				localVideo.appendChild(videoElement);
+				localVideo?.appendChild(videoElement);
 
 				const td = document.getElementById("video-local-zego");
 				td.srcObject = localStream;
@@ -116,6 +132,8 @@ function Container({ data }) {
 			from: data.id,
 		});
 		dispatch({ type: reducerCases.END_CALL });
+		setCallAccepted(false);
+		ringtone.pause();
 	};
 
 	return (
