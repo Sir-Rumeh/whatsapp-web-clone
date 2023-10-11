@@ -5,8 +5,9 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import ChatLIstItem from "./ChatLIstItem";
 
-function List({ refreshChatList }) {
-	const [{ userInfo, currentChatUser, userContacts, filteredContacts }, dispatch] = useStateProvider();
+function List() {
+	const [{ userInfo, currentChatUser, userContacts, filteredContacts, refreshChatList }, dispatch] =
+		useStateProvider();
 
 	useEffect(() => {
 		const getContacts = async () => {

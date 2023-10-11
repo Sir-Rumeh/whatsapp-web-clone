@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "../common/Avatar";
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
@@ -7,8 +7,11 @@ import MessageStatus from "../common/MessageStatus";
 import { FaCamera, FaMicrophone } from "react-icons/fa";
 
 function ChatLIstItem({ data, isContactsPage = false }) {
-	const [{ userInfo, currentChatUser, messageSearch, contactsPage }, dispatch] = useStateProvider();
+	const [{ userInfo, messageSearch, contactsPage, refreshChatList }, dispatch] = useStateProvider();
+	const [unreadMessages, setUnreadMessages] = useState(0);
 	const handleContactClick = () => {
+		data.totalUnreadMessages = 0;
+		setUnreadMessages(0);
 		if (!isContactsPage) {
 			dispatch({
 				type: reducerCases.CHANGE_CURRENT_CHAT_USER,
@@ -30,6 +33,9 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 			dispatch({ type: reducerCases.SET_MESSAGE_SEARCH });
 		}
 	};
+	useEffect(() => {
+		setUnreadMessages(data.totalUnreadMessages);
+	}, [refreshChatList]);
 	return (
 		<div
 			className="flex cursor-pointer items-center hover:bg-background-default-hover"
@@ -47,7 +53,7 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 						<div>
 							<span
 								className={`${
-									!data.totalUnreadMessages > 0 ? "text-secondary" : "text-icon-green"
+									!unreadMessages > 0 ? "text-secondary" : "text-icon-green"
 								} text-sm`}
 							>
 								{calculateTime(data.createdAt)}
@@ -55,7 +61,6 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 						</div>
 					)}
 				</div>
-				{/* {} */}
 				<div className="flex border-b border-conversation-border pb-2 pt-1 pr-2 ">
 					<div className="flex justify-between w-full ">
 						<span className="text-secondary line-clamp-1 text-sm ">
@@ -82,11 +87,9 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 								</div>
 							)}
 						</span>
-						{data.totalUnreadMessages > 0 && (
-							<span className="bg-icon-green px-[5px] rounded-full text-sm">
-								{data.totalUnreadMessages}
-							</span>
-						)}
+						{unreadMessages > 0 ? (
+							<span className="bg-icon-green px-[5px] rounded-full text-sm">{unreadMessages}</span>
+						) : null}
 					</div>
 				</div>
 			</div>

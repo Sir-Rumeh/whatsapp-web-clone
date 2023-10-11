@@ -54,6 +54,15 @@ io.on("connection", (socket) => {
 		}
 	});
 
+	socket.on("delete-message", (data) => {
+		const sendUserSocket = onlineUsers.get(data.receiverId);
+		if (sendUserSocket) {
+			socket.to(sendUserSocket).emit("message-deleted", {
+				id: data.id,
+			});
+		}
+	});
+
 	socket.on("outgoing-voice-call", (data) => {
 		const sendUserSocket = onlineUsers.get(data.to);
 		if (sendUserSocket) {

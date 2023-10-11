@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "@/utils/FirebaseConfig";
 import axios from "axios";
-import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE, HOST } from "@/utils/ApiRoutes";
+import { CHECK_USER_ROUTE, GET_INITIAL_CONTACTS_ROUTE, GET_MESSAGES_ROUTE, HOST } from "@/utils/ApiRoutes";
 import { reducerCases } from "@/context/constants";
 import { useStateProvider } from "@/context/StateContext";
 import Chat from "./Chat/Chat";
@@ -76,8 +76,26 @@ function Main() {
 						...data.message,
 					},
 				});
-				setRefreshChatList((prev) => !prev);
-				// HERE
+				dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST });
+				if (data.message.senderId === currentChatUser?.id) {
+					dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST });
+				}
+			});
+
+			socket.current.on("message-deleted", (data) => {
+				const getMessages = async () => {
+					try {
+						const {
+							data: { messages },
+						} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
+						dispatch({ type: reducerCases.SET_MESSAGES, messages });
+					} catch (err) {
+						return Promise.reject(err);
+					}
+				};
+				if (currentChatUser?.id) {
+					getMessages();
+				}
 			});
 
 			socket.current.on("incoming-voice-call", ({ from, roomId, callType }) => {
@@ -158,7 +176,7 @@ function Main() {
 
 			{!voiceCall && !videoCall && (
 				<div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
-					<ChatList refreshChatList={refreshChatList} />
+					<ChatList />
 					{currentChatUser ? (
 						<div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
 							<Chat />

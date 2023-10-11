@@ -8,6 +8,7 @@ export const initialState = {
 	messages: [],
 	socket: undefined,
 	messageSearch: false,
+	refreshChatList: false,
 	userContacts: [],
 	onlineUsers: [],
 	filteredContacts: [],
@@ -64,6 +65,11 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				messageSearch: !state.messageSearch,
+			};
+		case reducerCases.SET_REFRESH_CHAT_LIST:
+			return {
+				...state,
+				refreshChatList: !state.refreshChatList,
 			};
 		case reducerCases.SET_USER_CONTACTS:
 			return {

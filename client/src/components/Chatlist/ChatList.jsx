@@ -5,7 +5,7 @@ import List from "./List";
 import { useStateProvider } from "@/context/StateContext";
 import ContactsList from "./ContactsList";
 
-function ChatList({ refreshChatList }) {
+function ChatList() {
 	const [{ contactsPage }] = useStateProvider();
 	const [pageType, setPageType] = useState("default");
 
@@ -23,7 +23,7 @@ function ChatList({ refreshChatList }) {
 				<>
 					<ChatListHeader />
 					<SearchBar />
-					<List refreshChatList={refreshChatList} />
+					<List />
 				</>
 			)}
 			{pageType === "all-contacts" && (
