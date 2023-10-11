@@ -70,15 +70,14 @@ function Main() {
 	useEffect(() => {
 		if (socket.current && !socketEvent) {
 			socket.current.on("msg-receive", (data) => {
-				// if (currentChatUser && (data?.message?.senderId === currentChatUser?.id )) {
 				dispatch({
 					type: reducerCases.ADD_MESSAGE,
 					newMessage: {
 						...data.message,
 					},
 				});
-				// }
 				setRefreshChatList((prev) => !prev);
+				// HERE
 			});
 
 			socket.current.on("incoming-voice-call", ({ from, roomId, callType }) => {

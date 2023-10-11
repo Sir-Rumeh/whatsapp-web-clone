@@ -49,6 +49,12 @@ const reducer = (state, action) => {
 				...state,
 				messages: [...state.messages, action.newMessage],
 			};
+		case reducerCases.DELETE_MESSAGE:
+			const newMessageArray = state.messages.filter((message) => message.id !== action.deletedMessageId);
+			return {
+				...state,
+				messages: newMessageArray,
+			};
 		case reducerCases.SET_SOCKET:
 			return {
 				...state,

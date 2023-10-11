@@ -1,21 +1,81 @@
 import { useStateProvider } from "@/context/StateContext";
-import { HOST } from "@/utils/ApiRoutes";
+import { DELETE_MESSAGE_ROUTE, GET_MESSAGES_ROUTE, HOST } from "@/utils/ApiRoutes";
 import { calculateTime } from "@/utils/CalculateTime";
 import Image from "next/image";
 import React, { useState } from "react";
 import MessageStatus from "../common/MessageStatus";
+import axios from "axios";
+import { reducerCases } from "@/context/constants";
+import ContextMenu from "../common/ContextMenu";
 
 function ImageMessage({ message }) {
-	const [{ currentChatUser, userInfo }] = useStateProvider();
+	const [{ currentChatUser, userInfo, socket }, dispatch] = useStateProvider();
 	const [showImage, setShowImage] = useState(false);
+	const [isSender, setIsSender] = useState(false);
+
+	const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
+	const [contextMenuCordinates, setContextMenuCordinates] = useState({ x: 0, y: 0 });
+
+	const showContextMenu = (e) => {
+		e.preventDefault();
+		setContextMenuCordinates({ x: e.pageX - 43, y: e.pageY });
+	};
+
+	const deleteMessage = async () => {
+		try {
+			const {
+				data: { deletedMessage },
+			} = await axios.delete(`${DELETE_MESSAGE_ROUTE}/${message.id}/${userInfo?.id}/${currentChatUser?.id}`);
+			if (deletedMessage) {
+				const getMessages = async () => {
+					try {
+						const {
+							data: { messages },
+						} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
+						dispatch({ type: reducerCases.SET_MESSAGES, messages });
+					} catch (err) {
+						return Promise.reject(err);
+					}
+				};
+				if (currentChatUser?.id) {
+					getMessages();
+				}
+				// SOCKET STUFF HERE
+			}
+		} catch (err) {
+			return Promise.reject(err);
+		}
+	};
+
+	const contextMenuOptions = [
+		{
+			name: "Delete Message",
+			callback: async () => {
+				deleteMessage();
+			},
+		},
+	];
 	return (
 		<>
 			<div
+				id="message-box"
 				className={`p-1 rounded-lg ${
 					message.senderId === currentChatUser?.id ? "bg-incoming-background" : "bg-outgoing-background"
 				}`}
+				onMouseOver={(event) => {
+					event.preventDefault();
+					if (message.senderId === userInfo?.id) {
+						setIsSender(true);
+					}
+				}}
+				onContextMenu={(event) => {
+					event.preventDefault();
+					if (isSender) {
+						showContextMenu(event);
+					}
+				}}
 			>
-				<div className="relative">
+				<div id="message-box" className="relative">
 					<Image
 						src={`${HOST}/${message.message}`}
 						className="rounded-lg h-auto max-w-full aspect-auto cursor-pointer"
@@ -56,6 +116,15 @@ function ImageMessage({ message }) {
 						onClick={() => setShowImage(false)}
 					/>
 				</div>
+			)}
+
+			{isContextMenuVisible && (
+				<ContextMenu
+					options={contextMenuOptions}
+					cordinates={contextMenuCordinates}
+					contextMenu={isContextMenuVisible}
+					setContextMenu={setIsContextMenuVisible}
+				/>
 			)}
 		</>
 	);

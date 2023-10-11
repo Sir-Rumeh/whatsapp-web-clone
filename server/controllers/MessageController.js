@@ -72,6 +72,24 @@ export const addMessage = async (req, res, next) => {
 	}
 };
 
+export const deleteMessage = async (req, res, next) => {
+	try {
+		const prisma = getPrismaInstance();
+		const { messageId, from, to } = req.params;
+		if (messageId && from && to) {
+			const deletedMessage = await prisma.messages.delete({
+				where: {
+					id: parseInt(messageId),
+				},
+			});
+			return res.status(200).send({ deletedMessage });
+		}
+		return res.status(400).send("From, to and Message id is required.");
+	} catch (err) {
+		next(err);
+	}
+};
+
 export const addImageMessage = async (req, res, next) => {
 	try {
 		if (req.file) {

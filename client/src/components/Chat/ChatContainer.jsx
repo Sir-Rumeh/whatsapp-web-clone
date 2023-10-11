@@ -3,10 +3,11 @@ import React, { useEffect, useRef } from "react";
 import ImageMessage from "./ImageMessage";
 import TextMessage from "./TextMessage";
 import dynamic from "next/dynamic";
+
 const VoiceMessage = dynamic(() => import("./VoiceMessage"), { ssr: false });
 
 function ChatContainer() {
-	const [{ messages, currentChatUser }] = useStateProvider();
+	const [{ messages, currentChatUser, userInfo, socket }, dispatch] = useStateProvider();
 	const bottomRef = useRef(null);
 
 	useEffect(() => {
