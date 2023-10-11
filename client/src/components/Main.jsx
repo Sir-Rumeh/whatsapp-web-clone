@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "@/utils/FirebaseConfig";
 import axios from "axios";
-import { CHECK_USER_ROUTE, GET_INITIAL_CONTACTS_ROUTE, GET_MESSAGES_ROUTE, HOST } from "@/utils/ApiRoutes";
+import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE, HOST } from "@/utils/ApiRoutes";
 import { reducerCases } from "@/context/constants";
 import { useStateProvider } from "@/context/StateContext";
 import Chat from "./Chat/Chat";
@@ -19,7 +19,16 @@ import IncomingVideoCall from "./common/IncomingVideoCall";
 function Main() {
 	const router = useRouter();
 	const [
-		{ userInfo, currentChatUser, messageSearch, voiceCall, videoCall, incomingVoiceCall, incomingVideoCall },
+		{
+			userInfo,
+			currentChatUser,
+			messageSearch,
+			voiceCall,
+			videoCall,
+			incomingVoiceCall,
+			incomingVideoCall,
+			refreshChatList,
+		},
 		dispatch,
 	] = useStateProvider();
 	const [redirectLogin, setRedirectLogin] = useState(false);
@@ -65,8 +74,6 @@ function Main() {
 		}
 	}, [userInfo]);
 
-	const [refreshChatList, setRefreshChatList] = useState(false);
-
 	useEffect(() => {
 		if (socket.current && !socketEvent) {
 			socket.current.on("msg-receive", (data) => {
@@ -82,20 +89,8 @@ function Main() {
 				}
 			});
 
-			socket.current.on("message-deleted", (data) => {
-				const getMessages = async () => {
-					try {
-						const {
-							data: { messages },
-						} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
-						dispatch({ type: reducerCases.SET_MESSAGES, messages });
-					} catch (err) {
-						return Promise.reject(err);
-					}
-				};
-				if (currentChatUser?.id) {
-					getMessages();
-				}
+			socket.current.on("message-deleted", () => {
+				dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST });
 			});
 
 			socket.current.on("incoming-voice-call", ({ from, roomId, callType }) => {
@@ -155,7 +150,7 @@ function Main() {
 		if (currentChatUser?.id) {
 			getMessages();
 		}
-	}, [currentChatUser]);
+	}, [currentChatUser, refreshChatList]);
 
 	return (
 		<>
