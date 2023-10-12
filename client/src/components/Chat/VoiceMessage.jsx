@@ -8,6 +8,7 @@ import MessageStatus from "../common/MessageStatus";
 import axios from "axios";
 import { reducerCases } from "@/context/constants";
 import ContextMenu from "../common/ContextMenu";
+import WaveSurfer from "wavesurfer.js";
 
 function VoiceMessage({ message }) {
 	const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
@@ -16,8 +17,8 @@ function VoiceMessage({ message }) {
 	const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
 	const [totalDuration, setTotalDuration] = useState(0);
 
-	const waveformRef = useRef(null);
 	const waveform = useRef(null);
+	const waveformRef = useRef(null);
 
 	const handlePlayAudio = () => {
 		if (audioMessage) {
@@ -42,9 +43,8 @@ function VoiceMessage({ message }) {
 
 	useEffect(() => {
 		if (waveform.current === null) {
-			const WaveSurfer = import("wavesurfer.js").default;
 			waveform.current = WaveSurfer?.create({
-				container: waveformRef?.current,
+				container: "#waveformref",
 				waveColor: "#ccc",
 				progressColor: "#4a9eff",
 				cursorColor: "#7ae3c3",
@@ -155,7 +155,7 @@ function VoiceMessage({ message }) {
 					{!isPlaying ? <FaPlay onClick={handlePlayAudio} /> : <FaPause onClick={handlePauseAudio} />}
 				</div>
 				<div id="message-box" className="relative ">
-					<div className="w-60 " ref={waveformRef} />
+					<div id="waveformref" className="w-60 bg-re-400" ref={waveformRef} />
 					<div className="text-bubble-meta text-[11px] pt-1 flex justify-between items-center absolute bottom-[-22px] w-full">
 						<span>{formatTime(isPlaying ? currentPlaybackTime : totalDuration)}</span>
 						<div className="flex gap-1">
