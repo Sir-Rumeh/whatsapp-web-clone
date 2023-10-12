@@ -24,23 +24,27 @@ function ContextMenu({ options, cordinates, contextMenu, setContextMenu }) {
 	};
 
 	return (
-		<div
-			className={`bg-dropdown-background fixed py-1 z-50 shadow-xl`}
-			ref={contextMenuRef}
-			style={{ top: cordinates.y, left: cordinates.x }}
-		>
-			<ul>
-				{options.map(({ name, callback }) => (
-					<li
-						key={name}
-						onClick={(e) => handleClick(e, callback)}
-						className="px-5 py-2 cursor-pointer hover:bg-background-default"
-					>
-						<span className="text-white">{name}</span>
-					</li>
-				))}
-			</ul>
-		</div>
+		<>
+			{contextMenu && (
+				<div
+					className={`bg-dropdown-background fixed py-1 z-50 shadow-xl`}
+					ref={contextMenuRef}
+					style={{ top: cordinates.y, left: cordinates.x }}
+				>
+					<ul>
+						{options.map(({ name, callback }) => (
+							<li
+								key={name}
+								onClick={(e) => handleClick(e, callback)}
+								className="px-5 py-2 cursor-pointer hover:bg-background-default"
+							>
+								<span className="text-white">{name}</span>
+							</li>
+						))}
+					</ul>
+				</div>
+			)}
+		</>
 	);
 }
 
