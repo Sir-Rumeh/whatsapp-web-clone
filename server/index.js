@@ -20,6 +20,10 @@ app.use("/uploads/recordings", express.static("uploads/recordings"));
 app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);
 
+app.get("/", (req, res) => {
+	res.send("Hey this is my API running 🥳");
+});
+
 const server = app.listen(process.env.PORT, () => {
 	console.log(`Server started on port ${process.env.PORT}`);
 });
