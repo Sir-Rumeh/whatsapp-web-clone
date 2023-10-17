@@ -7,11 +7,7 @@ import { Server } from "socket.io";
 
 dotenv.config();
 const app = express();
-app.use(
-	cors({
-		origin: "https://whatsapp-web-clone.up.railway.app",
-	})
-);
+app.use(cors());
 app.use(express.json());
 
 app.use("/uploads/images", express.static("uploads/images"));
