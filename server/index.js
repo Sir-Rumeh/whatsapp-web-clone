@@ -37,6 +37,7 @@ const io = new Server(server, {
 });
 
 global.onlineUsers = new Map();
+
 io.on("connection", (socket) => {
 	global.chatSocket = socket;
 
@@ -120,4 +121,4 @@ io.on("connection", (socket) => {
 	});
 });
 
-// export default app;
+export default app;
