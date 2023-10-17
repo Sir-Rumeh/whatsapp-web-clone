@@ -7,6 +7,7 @@ const nextConfig = {
 	},
 	images: {
 		domains: ["localhost"],
+		domains: ["https://whatsapp-web-clone-production.up.railway.app"],
 	},
 };
 
