@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 const VoiceMessage = dynamic(() => import("./VoiceMessage"), { ssr: false });
 
 function ChatContainer() {
-	const [{ messages, currentChatUser, userInfo, socket }, dispatch] = useStateProvider();
+	const [{ messages, currentChatUser }] = useStateProvider();
 	const bottomRef = useRef(null);
 
 	useEffect(() => {

@@ -5,12 +5,14 @@ import { GET_ALL_CONTACTS } from "@/utils/ApiRoutes";
 import axios from "axios";
 import { BiArrowBack, BiSearchAlt2 } from "react-icons/bi";
 import ChatLIstItem from "./ChatLIstItem";
+import Loader from "../common/Loader";
 
 function ContactsList() {
 	const [{ userInfo }, dispatch] = useStateProvider();
 	const [allContacts, setAllContacts] = useState([]);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchedContacts, setSearchedContacts] = useState([]);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		if (searchTerm.length) {
@@ -29,12 +31,15 @@ function ContactsList() {
 	useEffect(() => {
 		const getContacts = async () => {
 			try {
+				setLoading(true);
 				const {
 					data: { users },
 				} = await axios.get(`${GET_ALL_CONTACTS}/${userInfo?.id}`);
 				setAllContacts(users);
 				setSearchedContacts(users);
+				setLoading(false);
 			} catch (err) {
+				setLoading(false);
 				return Promise.reject(err);
 			}
 		};
@@ -70,28 +75,34 @@ function ContactsList() {
 						</div>
 					</div>
 				</div>
-				{Object.entries(searchedContacts).map(([initialLetter, userList]) => {
-					return (
-						<div key={Date.now() + initialLetter}>
-							{userList.length && (
-								<>
-									<div className="text-teal-light pl-10 py-5">{initialLetter}</div>
-									<div className="flex flex-col gap-y-2">
-										{userList.map((contact) => {
-											return (
-												<ChatLIstItem
-													data={{ ...contact }}
-													key={contact.id}
-													isContactsPage={true}
-												/>
-											);
-										})}
-									</div>
-								</>
-							)}
-						</div>
-					);
-				})}
+				{loading ? (
+					<Loader loading={loading} />
+				) : (
+					<>
+						{Object.entries(searchedContacts).map(([initialLetter, userList]) => {
+							return (
+								<div key={Date.now() + initialLetter}>
+									{userList.length && (
+										<>
+											<div className="text-teal-light pl-10 py-5">{initialLetter}</div>
+											<div className="flex flex-col gap-y-2">
+												{userList.map((contact) => {
+													return (
+														<ChatLIstItem
+															data={{ ...contact }}
+															key={contact.id}
+															isContactsPage={true}
+														/>
+													);
+												})}
+											</div>
+										</>
+									)}
+								</div>
+							);
+						})}
+					</>
+				)}
 			</div>
 		</div>
 	);
