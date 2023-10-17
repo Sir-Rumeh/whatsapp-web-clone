@@ -1,6 +1,6 @@
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
-import { ADD_IMAGE_MESSAGE_ROUTE, ADD_MESSAGE_ROUTE } from "@/utils/ApiRoutes";
+import { ADD_IMAGE_MESSAGE_ROUTE, ADD_MESSAGE_ROUTE, GET_INITIAL_CONTACTS_ROUTE } from "@/utils/ApiRoutes";
 import axios from "axios";
 import EmojiPicker from "emoji-picker-react";
 import React, { useEffect, useRef, useState } from "react";
@@ -98,6 +98,22 @@ function MessageBar() {
 				from: userInfo?.id,
 				message,
 			});
+			if (data) {
+				const getContacts = async () => {
+					try {
+						const {
+							data: { users, onlineUsers },
+						} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo?.id}`);
+						dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
+						dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
+					} catch (err) {
+						return Promise.reject(err);
+					}
+				};
+				if (userInfo?.id) {
+					getContacts();
+				}
+			}
 			socket?.current.emit("send-msg", {
 				to: currentChatUser?.id,
 				from: userInfo?.id,
