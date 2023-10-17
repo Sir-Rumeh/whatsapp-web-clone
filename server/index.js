@@ -20,13 +20,13 @@ app.use("/uploads/recordings", express.static("uploads/recordings"));
 app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);
 
-const PORT = process.env.PORT | 3005;
+const PORT = process.env.PORT | 5002;
 
 app.get("/", (req, res) => {
 	res.send("Hey this is my API running 🥳");
 });
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, "0.0.0.0", () => {
 	console.log(`Server started on port ${PORT}`);
 });
 
