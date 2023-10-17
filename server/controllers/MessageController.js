@@ -52,6 +52,49 @@ export const getMessages = async (req, res, next) => {
 export const addMessage = async (req, res, next) => {
 	try {
 		const prisma = getPrismaInstance();
+
+		// const user = await prisma.user.createMany({
+		// 	data: [
+		// 		{
+		// 			email: "dummy.account1@gmail.com",
+		// 			name: "Yewande",
+		// 			about: "test account for yewande",
+		// 			profilePicture: "/avatars/5.png",
+		// 		},
+		// 		{
+		// 			email: "dummy.account2@gmail.com",
+		// 			name: "Angelique",
+		// 			about: "",
+		// 			profilePicture: "/avatars/6.png",
+		// 		},
+		// 		{
+		// 			email: "dummy.account3@gmail.com",
+		// 			name: "Amarachi",
+		// 			about: "dance club leader",
+		// 			profilePicture: "/avatars/7.png",
+		// 		},
+		// 		{
+		// 			email: "dummy.account4@gmail.com",
+		// 			name: "Damian",
+		// 			about: "Best cuz",
+		// 			profilePicture: "/avatars/8.png",
+		// 		},
+		// 		{
+		// 			email: "dummy.account5@gmail.com",
+		// 			name: "Sterling Sierra",
+		// 			about: "sirras account",
+		// 			profilePicture: "/avatars/9.png",
+		// 		},
+		// 		{
+		// 			email: "dummy.account6@gmail.com",
+		// 			name: "Statham",
+		// 			about: "",
+		// 			profilePicture: "/avatars/2.png",
+		// 		},
+		// 	],
+		// });
+		// console.log(user);
+
 		const { message, from, to } = req.body;
 		const getUser = onlineUsers.get(to);
 		if (message && from && to) {
