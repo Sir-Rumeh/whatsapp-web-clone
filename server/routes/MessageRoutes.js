@@ -10,8 +10,8 @@ import {
 import multer from "multer";
 
 const router = Router();
-const uploadImage = multer({ dest: "uploads/images" });
-const uploadAudio = multer({ dest: "uploads/recordings" });
+const uploadImage = multer({ dest: "/uploads/images" });
+const uploadAudio = multer({ dest: "/uploads/recordings" });
 
 router.post("/add-message", addMessage);
 router.get("/get-messages/:from/:to", getMessages);
