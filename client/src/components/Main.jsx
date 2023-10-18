@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ChatList from "./Chatlist/ChatList";
 import Empty from "./Empty";
-import axios from "axios";
-import { GET_MESSAGES_ROUTE, HOST } from "@/utils/ApiRoutes";
+import { HOST } from "@/utils/ApiRoutes";
 import { reducerCases } from "@/context/constants";
 import { useStateProvider } from "@/context/StateContext";
 import Chat from "./Chat/Chat";
@@ -12,21 +11,15 @@ import VoiceCall from "./Call/VoiceCall";
 import VideoCall from "./Call/VideoCall";
 import IncomingVoiceCall from "./common/IncomingVoiceCall";
 import IncomingVideoCall from "./common/IncomingVideoCall";
+import { useRouter } from "next/router";
 
 function Main() {
+	const router = useRouter();
 	const [
-		{
-			userInfo,
-			currentChatUser,
-			messageSearch,
-			voiceCall,
-			videoCall,
-			incomingVoiceCall,
-			incomingVideoCall,
-			refreshChatList,
-		},
+		{ userInfo, currentChatUser, messageSearch, voiceCall, videoCall, incomingVoiceCall, incomingVideoCall },
 		dispatch,
 	] = useStateProvider();
+
 	const [socketEvent, setSocketEvent] = useState(false);
 
 	const socket = useRef();
@@ -37,7 +30,9 @@ function Main() {
 			socket.current.emit("add-user", userInfo?.id);
 			dispatch({ type: reducerCases.SET_SOCKET, socket });
 		}
-		console.log(userInfo);
+		if (!userInfo) {
+			router.push("/login");
+		}
 	}, [userInfo]);
 
 	useEffect(() => {
@@ -101,22 +96,6 @@ function Main() {
 			setSocketEvent(true);
 		}
 	}, [socket.current]);
-
-	useEffect(() => {
-		const getMessages = async () => {
-			try {
-				const {
-					data: { messages },
-				} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
-				dispatch({ type: reducerCases.SET_MESSAGES, messages });
-			} catch (err) {
-				return Promise.reject(err);
-			}
-		};
-		if (currentChatUser?.id) {
-			getMessages();
-		}
-	}, [currentChatUser, refreshChatList]);
 
 	return (
 		<>

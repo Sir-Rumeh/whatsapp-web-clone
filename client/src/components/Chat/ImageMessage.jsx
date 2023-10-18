@@ -40,7 +40,7 @@ function ImageMessage({ message }) {
 				if (currentChatUser?.id) {
 					getMessages();
 				}
-				socket.current.emit("delete-message", { ...deletedMessage });
+				socket?.current.emit("delete-message", { ...deletedMessage });
 			}
 		} catch (err) {
 			return Promise.reject(err);
@@ -77,6 +77,7 @@ function ImageMessage({ message }) {
 			>
 				<div id="message-box" className="relative">
 					<Image
+						id="message-box"
 						src={`${HOST}/${message.message}`}
 						className="rounded-lg h-auto max-w-full aspect-auto cursor-pointer"
 						alt="asset"

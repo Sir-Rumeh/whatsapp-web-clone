@@ -6,7 +6,7 @@ const nextConfig = {
 		NEXT_PUBLIC_ZEGO_SERVER_ID: "212b3e9dc5c2bb23823f39f9d03bffed",
 	},
 	images: {
-		domains: ["https://whatsapp-web-clone-production.up.railway.app"],
+		domains: ["http://localhost:3000", "https://whatsapp-web-clone-production.up.railway.app"],
 	},
 };
 

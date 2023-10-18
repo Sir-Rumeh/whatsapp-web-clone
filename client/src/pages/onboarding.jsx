@@ -7,6 +7,7 @@ import Input from "@/components/common/Input";
 import Avatar from "@/components/common/Avatar";
 import { ONBOARD_USER_ROUTE } from "@/utils/ApiRoutes";
 import axios from "axios";
+import Loader from "@/components/common/Loader";
 
 function onboarding() {
 	const router = useRouter();

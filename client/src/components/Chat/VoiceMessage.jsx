@@ -113,7 +113,7 @@ function VoiceMessage({ message }) {
 				if (currentChatUser?.id) {
 					getMessages();
 				}
-				socket.current.emit("delete-message", { ...deletedMessage });
+				socket?.current.emit("delete-message", { ...deletedMessage });
 			}
 		} catch (err) {
 			return Promise.reject(err);
