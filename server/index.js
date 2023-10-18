@@ -32,7 +32,7 @@ const server = app.listen(PORT, "0.0.0.0", () => {
 
 const io = new Server(server, {
 	cors: {
-		origin: "https://whatsapp-web-clone.up.railway.app",
+		origin: ["http://localhost:3000", "https://whatsapp-web-clone.up.railway.app"],
 	},
 });
 
