@@ -6,7 +6,7 @@ import Image from "next/image";
 import Input from "@/components/common/Input";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
-import { FcGoogle } from "react-icons/fc";
+import { BiLogInCircle } from "react-icons/bi";
 import Loader from "@/components/common/Loader";
 
 function login() {
@@ -103,10 +103,10 @@ function login() {
 						{!detailsValidated && <p className="text-red-400">Username is required</p>}
 					</div>
 					<button
-						className="flex items-center justify-center gap-7 bg-search-input-container-background p-5 rounded-lg"
+						className="flex items-center justify-center gap-4 bg-search-input-container-background p-5 rounded-lg"
 						onClick={handleLogin}
 					>
-						<FcGoogle className="text-4x1" />
+						<BiLogInCircle className="text-4x1 text-teal-light text-3xl" />
 
 						<span className="text-white text-2x1">Login to Your Account</span>
 					</button>
