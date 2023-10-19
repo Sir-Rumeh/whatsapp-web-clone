@@ -13,7 +13,7 @@ function onboarding() {
 	const router = useRouter();
 
 	const [{ userInfo, newUser }, dispatch] = useStateProvider();
-	const [name, setName] = useState("");
+	const [name, setName] = useState(userInfo?.name || "");
 	const [about, setAbout] = useState("");
 	const [detailsValidated, setDetailsValidated] = useState(true);
 	const [image, setImage] = useState("/default_avatar.png");
