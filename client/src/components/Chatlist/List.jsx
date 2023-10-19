@@ -5,8 +5,10 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import ChatLIstItem from "./ChatLIstItem";
 import Loader from "../common/Loader";
+import { useRouter } from "next/router";
 
 function List() {
+	const router = useRouter();
 	const [{ userInfo, currentChatUser, userContacts, filteredContacts, refreshChatList }, dispatch] =
 		useStateProvider();
 	const [loading, setLoading] = useState(false);
@@ -38,7 +40,7 @@ function List() {
 					<Loader loading={loading} />
 				</div>
 			) : (
-				<div className="bg-search-input-container-background flex-auto overflow-auto max-h-full custom-scrollbar px-1">
+				<div className="bg-search-input-container-background flex-auto overflow-auto max-h-full custom-scrollbar px-1 relative">
 					{filteredContacts && filteredContacts.length > 0
 						? filteredContacts?.map((contact) => (
 								<div className="" key={contact.id}>
@@ -55,6 +57,14 @@ function List() {
 									<ChatLIstItem data={contact} />
 								</div>
 						  ))}
+					<div className="absolute bottom-3 w-full px-3">
+						<button
+							className="w-full px-3 py-3 rounded-md font-bold bg-outgoing-background text-white text-xl"
+							onClick={() => router.push("/aichat")}
+						>
+							Chat with AI Bot
+						</button>
+					</div>
 				</div>
 			)}
 		</>

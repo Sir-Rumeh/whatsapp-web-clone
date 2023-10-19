@@ -3,6 +3,7 @@ import {
 	addAudioMessage,
 	addImageMessage,
 	addMessage,
+	chatWithAi,
 	deleteMessage,
 	getInitialContactsWithMessages,
 	getMessages,
@@ -19,5 +20,6 @@ router.post("/add-image-message", uploadImage.single("image"), addImageMessage);
 router.post("/add-audio-message", uploadAudio.single("audio"), addAudioMessage);
 router.get("/get-initial-contacts/:from", getInitialContactsWithMessages);
 router.delete("/delete-message/:messageId/:from/:to", deleteMessage);
+router.post("/chat-with-ai", chatWithAi);
 
 export default router;

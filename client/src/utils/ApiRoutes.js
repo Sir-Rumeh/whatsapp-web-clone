@@ -1,5 +1,5 @@
-// export const HOST = "http://localhost:5002";
-export const HOST = "https://whatsapp-web-clone-production.up.railway.app";
+export const HOST = "http://localhost:5002";
+// export const HOST = "https://whatsapp-web-clone-production.up.railway.app";
 
 const AUTH_ROUTE = `${HOST}/api/auth`;
 const MESSAGE_ROUTE = `${HOST}/api/messages`;
@@ -15,3 +15,4 @@ export const ADD_IMAGE_MESSAGE_ROUTE = `${MESSAGE_ROUTE}/add-image-message`;
 export const ADD_AUDIO_MESSAGE_ROUTE = `${MESSAGE_ROUTE}/add-audio-message`;
 export const GET_INITIAL_CONTACTS_ROUTE = `${MESSAGE_ROUTE}/get-initial-contacts`;
 export const DELETE_MESSAGE_ROUTE = `${MESSAGE_ROUTE}/delete-message`;
+export const CHAT_WITH_AI_ROUTE = `${MESSAGE_ROUTE}/chat-with-ai`;

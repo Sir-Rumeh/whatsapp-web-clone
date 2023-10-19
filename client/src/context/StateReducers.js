@@ -6,6 +6,7 @@ export const initialState = {
 	contactsPage: false,
 	currentChatUser: undefined,
 	messages: [],
+	aiMessages: [],
 	socket: undefined,
 	messageSearch: false,
 	refreshChatList: false,
@@ -49,6 +50,11 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				messages: [...state.messages, action.newMessage],
+			};
+		case reducerCases.ADD_AI_MESSAGES:
+			return {
+				...state,
+				aiMessages: [...state.aiMessages, action.newMessage],
 			};
 		case reducerCases.DELETE_MESSAGE:
 			const newMessageArray = state.messages.filter((message) => message.id !== action.deletedMessageId);
