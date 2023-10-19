@@ -6,7 +6,7 @@ const AIChatHeader = () => {
 			<div className="flex items-center justify-center gap-6">
 				<Avatar type={"sm"} image="/gpt-logo.webp" />
 				<div className="flex flex-col">
-					<span className="text-primary-strong text-lg">Chat With Bot ( 4 tries per day )</span>
+					<span className="text-primary-strong text-lg">Chat With Bot ( 5 tries per day )</span>
 				</div>
 			</div>
 		</div>

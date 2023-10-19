@@ -8,7 +8,7 @@ import ContextMenu from "../common/ContextMenu";
 
 function ChatListHeader() {
 	const router = useRouter();
-	const [{ userInfo }, dispatch] = useStateProvider();
+	const [{ socket, userInfo }, dispatch] = useStateProvider();
 
 	const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 	const [contextMenuCordinates, setContextMenuCordinates] = useState({ x: 0, y: 0 });
@@ -24,7 +24,9 @@ function ChatListHeader() {
 			name: "Logout",
 			callback: async () => {
 				setIsContextMenuVisible(false);
-				router.push("/logout");
+				socket?.current.emit("logout", userInfo?.id);
+				dispatch({ type: reducerCases.SET_USER_INFO, userInfo: undefined });
+				router.push("/");
 			},
 		},
 	];

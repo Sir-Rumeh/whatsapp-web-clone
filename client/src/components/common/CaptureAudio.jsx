@@ -219,11 +219,13 @@ function CaptureAudio({ setShowAudioRecorder }) {
 					)}
 				</div>
 				<div>
-					<MdSend
-						className="text-panel-header-icon cursor-pointer mr-4"
-						title="Send"
-						onClick={sendRecording}
-					/>
+					{!isRecording && (
+						<MdSend
+							className="text-panel-header-icon cursor-pointer mr-4"
+							title="Send"
+							onClick={sendRecording}
+						/>
+					)}
 				</div>
 			</div>
 		</div>

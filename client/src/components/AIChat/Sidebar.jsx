@@ -12,7 +12,7 @@ const Sidebar = () => {
 				</div>
 				<button
 					className="mt-12 w-full px-3 py-3 rounded-md font-bold bg-outgoing-background  text-xl text-white"
-					onClick={() => router.push("/")}
+					onClick={() => router.push("/home")}
 				>
 					Back to main chat
 				</button>

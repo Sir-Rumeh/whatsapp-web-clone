@@ -20,8 +20,8 @@ function onboarding() {
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		if (!newUser && !userInfo?.email) router.push("/login");
-		else if (!newUser && userInfo?.email) router.push("/");
+		if (!newUser && !userInfo?.email) router.push("/");
+		else if (!newUser && userInfo?.email) router.push("/home");
 	}, [newUser, userInfo, router]);
 
 	const onboardUserHandler = async () => {
@@ -51,7 +51,7 @@ function onboarding() {
 							status: about,
 						},
 					});
-					router.push("/");
+					router.push("/home");
 				}
 				setLoading(false);
 			} catch (err) {

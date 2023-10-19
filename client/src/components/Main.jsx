@@ -31,7 +31,7 @@ function Main() {
 			dispatch({ type: reducerCases.SET_SOCKET, socket });
 		}
 		if (!userInfo) {
-			router.push("/login");
+			router.push("/");
 		}
 	}, [userInfo]);
 

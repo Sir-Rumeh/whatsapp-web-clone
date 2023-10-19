@@ -47,7 +47,7 @@ const AIMessageBar = () => {
 				show_original_response: false,
 				fallback_providers: "",
 				providers: "openai",
-				text: "Hello i need your help ! ",
+				text: `${message}`,
 				chatbot_global_action: "Act as an assistant",
 				previous_history: [],
 				temperature: 0.0,

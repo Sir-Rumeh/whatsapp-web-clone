@@ -1,7 +1,7 @@
 import { useStateProvider } from "@/context/StateContext";
 
 const AIChatContainer = () => {
-	const [{ aiMessages }, dispatch] = useStateProvider();
+	const [{ aiMessages }] = useStateProvider();
 	return (
 		<div className="h-[80vh] w-full relative flex-grow overflow-auto custom-scrollbar">
 			<div className="bg-chat-background bg-fixed h-full w-full opacity-5 fixed left-0 top-0 z-0"></div>

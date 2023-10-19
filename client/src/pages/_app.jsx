@@ -16,13 +16,12 @@ export default function App({ Component, pageProps }) {
 			const dateSet = localStorage.getItem("ai-chat-lock-time");
 			if (lockValue === "true") {
 				const timePassed = diff_hours(Date.now(), parseInt(dateSet));
-				if (timePassed > 0.04) {
+				if (timePassed > 18) {
 					localStorage.setItem("ai-chat-lock", false);
 					localStorage.setItem("ai-chat-count", 4);
 				}
 			}
-		}, 8000);
-		// }, 18 * 60 * 60 * 1000);
+		}, 18 * 60 * 60 * 1000);
 		return () => clearInterval(interval);
 	}, []);
 
