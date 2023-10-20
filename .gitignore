@@ -13,7 +13,6 @@ server/package-lock.json
 client/yarn.lock
 server/yarn.lock
 
-server/uploads/
 # next.js
 client/.next/
 /out/

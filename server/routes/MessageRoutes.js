@@ -12,7 +12,13 @@ import multer from "multer";
 
 const router = Router();
 const uploadImage = multer({ dest: "/uploads/images" });
+// process.env.ENV === "production"
+// 	? multer({ dest: "https://whatsapp-web-clone-production.up.railway.app/uploads/images" })
+// 	: multer({ dest: "/uploads/images" });
 const uploadAudio = multer({ dest: "/uploads/recordings" });
+// process.env.ENV === "production"
+// 	? multer({ dest: "https://whatsapp-web-clone-production.up.railway.app/uploads/recordings" })
+// 	: multer({ dest: "/uploads/recordings" });
 
 router.post("/add-message", addMessage);
 router.get("/get-messages/:from/:to", getMessages);
