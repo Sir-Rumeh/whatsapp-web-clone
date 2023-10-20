@@ -13,5 +13,9 @@
 7. Vercel and Railway to deploy.
 
 
-![Screenshot (302)](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/c09f13be-461f-40a6-af01-4020965cd3f0)
+![1](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/1964cfb9-2242-4d87-99d7-1d7140dbcea6)
+![2](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/13d82c41-7db2-470d-bdc6-b415e2b33e37)
+![3](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/e4d0d1e3-979b-4c49-83fd-353f9efa0711)
+![4](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/89cb4b14-4808-44e7-90f2-6dd5ff040ced)
+![5](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/28e06344-5b7c-4c7a-a6bf-ad08da55a351)
 
