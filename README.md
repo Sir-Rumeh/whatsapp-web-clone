@@ -1,6 +1,6 @@
 ## nextjs-whatsapp-web-clone
 
-## [Live Site Here]([https://react-dashboard-project-v1.netlify.app/](https://whatsapp-web-clone.up.railway.app/))
+# [Live Site Here]([https://react-dashboard-project-v1.netlify.app/](https://whatsapp-web-clone.up.railway.app/))
 
 ## Technologies used for this application
 
