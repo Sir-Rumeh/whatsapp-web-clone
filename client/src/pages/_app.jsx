@@ -18,7 +18,7 @@ export default function App({ Component, pageProps }) {
 				const timePassed = diff_hours(Date.now(), parseInt(dateSet));
 				if (timePassed > 18) {
 					localStorage.setItem("ai-chat-lock", false);
-					localStorage.setItem("ai-chat-count", 4);
+					localStorage.setItem("ai-chat-count", 9);
 				}
 			}
 		}, 18 * 60 * 60 * 1000);

@@ -25,7 +25,7 @@ const AIMessageBar = () => {
 		}
 		const aiChatCount = localStorage.getItem("ai-chat-count");
 		if (!aiChatCount) {
-			localStorage.setItem("ai-chat-count", 4);
+			localStorage.setItem("ai-chat-count", 9);
 		} else {
 			if (parseInt(aiChatCount) > 0) {
 				localStorage.setItem("ai-chat-count", parseInt(aiChatCount) - 1);

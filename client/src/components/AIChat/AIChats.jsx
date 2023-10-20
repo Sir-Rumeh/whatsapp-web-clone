@@ -1,4 +1,40 @@
 import { useStateProvider } from "@/context/StateContext";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import Loader from "../common/Loader";
+
+const ChatContents = ({ message }) => {
+	const [loading, setLoading] = useState(message.fromSelf ? false : true);
+
+	useEffect(() => {
+		const loadReply = async () => {
+			try {
+				let res = await axios.get("https://jsonplaceholder.typicode.com/todos/1");
+				if (res) {
+					res = null;
+				}
+				setLoading(false);
+			} catch (error) {
+				return Promise.reject(error);
+			}
+		};
+		if (!message.fromSelf) {
+			loadReply();
+		}
+	}, []);
+
+	return (
+		<>
+			{loading ? (
+				<div className="scale-75">
+					<Loader />
+				</div>
+			) : (
+				<div className="">{message.message}</div>
+			)}
+		</>
+	);
+};
 
 const AIChatContainer = () => {
 	const [{ aiMessages }] = useStateProvider();
@@ -20,7 +56,8 @@ const AIChatContainer = () => {
 											: "bg-outgoing-background"
 									}`}
 								>
-									<div className="">{message.message}</div>
+									{/* <div className="">{message.message}</div> */}
+									<ChatContents message={message} />
 								</div>
 							</div>
 						))}

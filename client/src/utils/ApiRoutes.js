@@ -1,5 +1,5 @@
 // export const HOST = "http://localhost:5002";
-export const HOST = "https://whatsapp-web-clone-production.up.railway.app";
+export const HOST = process.env.NEXT_HOST;
 
 const AUTH_ROUTE = `${HOST}/api/auth`;
 const MESSAGE_ROUTE = `${HOST}/api/messages`;
