@@ -90,7 +90,7 @@ function TextMessage({ message }) {
 						{calculateTime(message.createdAt)}
 					</span>
 					<span className="">
-						{message.senderId === userInfo.id && (
+						{message.senderId === userInfo?.id && (
 							<MessageStatus messageStatus={message.messageStatus} />
 						)}
 					</span>
