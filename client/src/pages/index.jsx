@@ -107,7 +107,7 @@ function login() {
 					>
 						<BiLogInCircle className="text-4x1 text-teal-light text-3xl" />
 
-						<span className="text-white text-2x1">Login to Your Account</span>
+						<span className="text-white text-2x1">Login to your Account</span>
 					</button>
 				</div>
 			)}
