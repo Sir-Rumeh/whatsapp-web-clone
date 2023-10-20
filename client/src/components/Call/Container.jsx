@@ -49,7 +49,7 @@ function Container({ data }) {
 
 		if (data.type === "out-going" && !callAccepted) {
 			ringtone.play();
-		} else {
+		} else if (callAccepted) {
 			ringtone.pause();
 		}
 	}, [callAccepted]);
@@ -106,10 +106,14 @@ function Container({ data }) {
 				videoElement.autoplay = true;
 				videoElement.muted = false;
 				videoElement.playsInline = true;
-				localVideo?.appendChild(videoElement);
+				if (localVideo) {
+					localVideo.appendChild(videoElement);
+				}
 
 				const td = document.getElementById("video-local-zego");
-				td.srcObject = localStream;
+				if (td) {
+					td.srcObject = localStream;
+				}
 
 				const streamID = "534" + Date.now();
 				setPublishStream(streamID);
