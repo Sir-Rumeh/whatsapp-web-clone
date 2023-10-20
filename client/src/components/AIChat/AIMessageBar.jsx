@@ -26,10 +26,13 @@ const AIMessageBar = () => {
 		const aiChatCount = localStorage.getItem("ai-chat-count");
 		if (!aiChatCount) {
 			localStorage.setItem("ai-chat-count", 9);
+			dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: 9 });
 		} else {
 			if (parseInt(aiChatCount) > 0) {
 				localStorage.setItem("ai-chat-count", parseInt(aiChatCount) - 1);
+				dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: parseInt(aiChatCount) - 1 });
 			} else {
+				dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: parseInt(aiChatCount) - 1 });
 				localStorage.setItem("ai-chat-lock", true);
 				localStorage.setItem("ai-chat-lock-time", Date.now());
 			}
@@ -98,6 +101,7 @@ const AIMessageBar = () => {
 							onChange={(e) => setMessage(e.target.value)}
 							value={message}
 							autoComplete="off"
+							autoFocus
 						/>
 					</div>
 					<div className="flex w-10 items-center justify-center">

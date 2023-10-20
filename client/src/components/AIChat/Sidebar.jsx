@@ -11,7 +11,7 @@ const Sidebar = () => {
 					<h1 className="text-white text-xl">Chat-GPT Bot</h1>
 				</div>
 				<button
-					className="mt-12 w-full px-3 py-3 rounded-md font-bold bg-outgoing-background  text-xl text-white"
+					className="mt-12 w-full p-3 rounded-md font-bold bg-outgoing-background  text-xl text-white"
 					onClick={() => router.push("/home")}
 				>
 					Back to main chat

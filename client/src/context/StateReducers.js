@@ -17,6 +17,7 @@ export const initialState = {
 	videoCall: undefined,
 	incomingVoiceCall: undefined,
 	incomingVideoCall: undefined,
+	aiMessagingCount: undefined,
 };
 
 const reducer = (state, action) => {
@@ -129,6 +130,11 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				currentChatUser: undefined,
+			};
+		case reducerCases.SET_AI_CHAT_COUNT:
+			return {
+				...state,
+				aiMessagingCount: action.newCount,
 			};
 
 		default:
