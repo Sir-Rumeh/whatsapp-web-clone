@@ -26,6 +26,7 @@ function ChatListHeader() {
 				setIsContextMenuVisible(false);
 				socket?.current.emit("logout", userInfo?.id);
 				dispatch({ type: reducerCases.SET_USER_INFO, userInfo: undefined });
+				dispatch({ type: reducerCases.CHANGE_CURRENT_CHAT_USER, user: undefined });
 				router.push("/");
 			},
 		},
