@@ -9,7 +9,7 @@ const nextConfig = {
 			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzk5ZTZkZWItNzM0OC00OWQ0LTgxNmEtMzVkYmI1MzgyNmYzIiwidHlwZSI6ImFwaV90b2tlbiJ9.P06bufY6AEpkanaLSkBy1kwzQd8XRr-WRluU4s7gv0s",
 	},
 	images: {
-		domains: ["http://localhost:3000", "https://whatsapp-web-clone-production.up.railway.app"],
+		domains: ["https://whatsapp-web-clone-production.up.railway.app"],
 	},
 };
 
