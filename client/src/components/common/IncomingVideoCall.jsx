@@ -11,10 +11,13 @@ function IncomingVideoCall() {
 		ringtone.play();
 		socket?.current.on("call-terminated", () => {
 			ringtone.pause();
+			ringtone.currentTime = 0;
 		});
 	}, []);
 
 	const acceptCall = () => {
+		ringtone.pause();
+		ringtone.currentTime = 0;
 		dispatch({
 			type: reducerCases.SET_VIDEO_CALL,
 			videoCall: { ...incomingVideoCall, type: "in-coming" },
@@ -27,6 +30,8 @@ function IncomingVideoCall() {
 	};
 
 	const rejectCall = () => {
+		ringtone.pause();
+		ringtone.currentTime = 0;
 		socket?.current.emit("reject-video-call", { from: incomingVideoCall.id });
 		dispatch({ type: reducerCases.END_CALL });
 	};
