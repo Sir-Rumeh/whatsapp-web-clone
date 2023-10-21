@@ -20,12 +20,15 @@ function Container({ data }) {
 			socket?.current.on("accept-call", () => {
 				setCallAccepted(true);
 				ringtone.pause();
+				ringtone.currentTime = 0;
 			});
 			socket?.current.on("video-call-rejected", () => {
 				ringtone.pause();
+				ringtone.currentTime = 0;
 			});
 			socket?.current.on("voice-call-rejected", () => {
 				ringtone.pause();
+				ringtone.currentTime = 0;
 			});
 		} else {
 			setTimeout(() => {
@@ -51,6 +54,7 @@ function Container({ data }) {
 			ringtone.play();
 		} else if (callAccepted) {
 			ringtone.pause();
+			ringtone.currentTime = 0;
 		}
 	}, [callAccepted]);
 
