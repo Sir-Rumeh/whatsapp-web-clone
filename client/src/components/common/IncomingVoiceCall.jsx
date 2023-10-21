@@ -11,10 +11,13 @@ function IncomingCall() {
 		ringtone.play();
 		socket?.current.on("call-terminated", () => {
 			ringtone.pause();
+			ringtone.currentTime = 0;
 		});
 	}, []);
 
 	const acceptCall = () => {
+		ringtone.pause();
+		ringtone.currentTime = 0;
 		dispatch({
 			type: reducerCases.SET_VOICE_CALL,
 			voiceCall: { ...incomingVoiceCall, type: "in-coming" },
@@ -27,6 +30,8 @@ function IncomingCall() {
 	};
 
 	const rejectCall = () => {
+		ringtone.pause();
+		ringtone.currentTime = 0;
 		socket?.current.emit("reject-voice-call", { from: incomingVoiceCall.id });
 		dispatch({ type: reducerCases.END_CALL });
 	};
