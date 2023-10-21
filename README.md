@@ -1,6 +1,6 @@
 ## nextjs-whatsapp-web-clone
 
-## [Live Site Here](https://whatsapp-web-clone.up.railway.app/)
+## [Live Site Here](https://whatsapp-web-clone-client.vercel.app/)
 
 ## Technologies used for this application
 
