@@ -62,8 +62,8 @@ function Container({ data }) {
 	}, [callAccepted]);
 
 	useEffect(() => 
-		if(callAccepted || data.type === "in-coming"){
-			const timer = setInterval(()=>{
+		if(callAccepted){
+			const timer = setInterval(() => {
 				if (seconds === 59){
 					setSeconds(0);
 					if (minutes === 59){
@@ -77,7 +77,7 @@ function Container({ data }) {
 				}
 			},1000)
 			return () => clearInterval(timer);
-			}
+		}
 	}, [callAccepted]);
 
 	useEffect(() => {
