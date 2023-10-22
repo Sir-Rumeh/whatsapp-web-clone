@@ -1,5 +1,5 @@
 import { useStateProvider } from "@/context/StateContext";
-import { DELETE_MESSAGE_ROUTE, GET_MESSAGES_ROUTE, HOST } from "@/utils/ApiRoutes";
+import { DELETE_MESSAGE_ROUTE, HOST } from "@/utils/ApiRoutes";
 import { calculateTime } from "@/utils/CalculateTime";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -9,7 +9,7 @@ import { reducerCases } from "@/context/constants";
 import ContextMenu from "../common/ContextMenu";
 
 function ImageMessage({ message }) {
-	const [{ currentChatUser, userInfo, socket }, dispatch] = useStateProvider();
+	const [{ currentChatUser, userInfo, socket, messages }, dispatch] = useStateProvider();
 	const [showImage, setShowImage] = useState(false);
 	const [isSender, setIsSender] = useState(false);
 
@@ -23,23 +23,14 @@ function ImageMessage({ message }) {
 
 	const deleteMessage = async () => {
 		try {
+			const updateMessage = (msg) => {
+			  return msg.id !== message.id;
+			}
+			dispatch({ type: reducerCases.SET_MESSAGES, messages:messages.filter(updateMessage)});
 			const {
 				data: { deletedMessage },
 			} = await axios.delete(`${DELETE_MESSAGE_ROUTE}/${message.id}/${userInfo?.id}/${currentChatUser?.id}`);
 			if (deletedMessage) {
-				const getMessages = async () => {
-					try {
-						const {
-							data: { messages },
-						} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
-						dispatch({ type: reducerCases.SET_MESSAGES, messages });
-					} catch (err) {
-						return Promise.reject(err);
-					}
-				};
-				if (currentChatUser?.id) {
-					getMessages();
-				}
 				socket?.current.emit("delete-message", { ...deletedMessage });
 			}
 		} catch (err) {
