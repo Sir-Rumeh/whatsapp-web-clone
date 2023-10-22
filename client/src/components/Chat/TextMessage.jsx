@@ -8,7 +8,7 @@ import ContextMenu from "../common/ContextMenu";
 import { reducerCases } from "@/context/constants";
 
 function TextMessage({ message }) {
-	const [{ currentChatUser, userInfo, socket }, dispatch] = useStateProvider();
+	const [{ currentChatUser, userInfo, socket, messages }, dispatch] = useStateProvider();
 	const messageLengthBreak = 70;
 
 	const [isSender, setIsSender] = useState(false);
@@ -22,7 +22,10 @@ function TextMessage({ message }) {
 	};
 
 	const deleteMessage = async () => {
-		dispatch({ type: reducerCases.SET_MESSAGES, messages:messages.filter((msg)=>msg.id !== message.id)});
+		const updateMessage = (msg) => {
+		  return msg.id !== message.id;
+		}
+		dispatch({ type: reducerCases.SET_MESSAGES, messages:messages.filter(updateMessage)});
 		try {
 			const {
 				data: { deletedMessage },
