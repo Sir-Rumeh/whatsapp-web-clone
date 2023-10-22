@@ -2,28 +2,32 @@ import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
 import { GET_INITIAL_CONTACTS_ROUTE } from "@/utils/ApiRoutes";
 import axios from "axios";
+// import Loader from "../common/Loader";
 import React, { useEffect } from "react";
 import ChatLIstItem from "./ChatLIstItem";
 import { useRouter } from "next/router";
+
 
 function List() {
 	const router = useRouter();
 	const [{ userInfo, currentChatUser, userContacts, filteredContacts }, dispatch] =
 		useStateProvider();
+	// const [loading, setLoading] = useState(false);
+	
 	
 
 	useEffect(() => {
 		const getContacts = async () => {
 			try {
-				setLoading(true);
+				// setLoading(true);
 				const {
 					data: { users, onlineUsers },
 				} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo?.id}`);
 				dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
 				dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
-				setLoading(false);
+				// setLoading(false);
 			} catch (err) {
-				setLoading(false);
+				// setLoading(false);
 				return Promise.reject(err);
 			}
 		};
