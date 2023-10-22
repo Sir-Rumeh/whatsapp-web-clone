@@ -61,7 +61,7 @@ function Container({ data }) {
 		}
 	}, [callAccepted]);
 
-	useEffect(() => 
+	useEffect(() => {
 		if(callAccepted){
 			const timer = setInterval(() => {
 				if (seconds === 59){
