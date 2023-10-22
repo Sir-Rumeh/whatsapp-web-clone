@@ -83,6 +83,7 @@ const AIMessageBar = () => {
 			localStorage.setItem("ai-chat-count", parseInt(aiChatCount) - 1);
 			dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: parseInt(aiChatCount) - 1 });
 		} else {
+			localStorage.setItem("ai-chat-count", parseInt(aiChatCount) - 1);
 			dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: parseInt(aiChatCount) - 1 });
 			localStorage.setItem("ai-chat-lock", true);
 			localStorage.setItem("ai-chat-lock-time", Date.now());
