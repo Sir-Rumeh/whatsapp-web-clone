@@ -3,7 +3,7 @@ import { calculateTime } from "@/utils/CalculateTime";
 import React, { useState } from "react";
 import MessageStatus from "../common/MessageStatus";
 import axios from "axios";
-import { DELETE_MESSAGE_ROUTE, GET_MESSAGES_ROUTE } from "@/utils/ApiRoutes";
+import { DELETE_MESSAGE_ROUTE } from "@/utils/ApiRoutes";
 import ContextMenu from "../common/ContextMenu";
 import { reducerCases } from "@/context/constants";
 
@@ -22,28 +22,15 @@ function TextMessage({ message }) {
 	};
 
 	const deleteMessage = async () => {
-		const updateMessage = (msg) => {
-		  return msg.id !== message.id;
-		}
-		dispatch({ type: reducerCases.SET_MESSAGES, messages:messages.filter(updateMessage)});
 		try {
+			const updateMessage = (msg) => {
+			  return msg.id !== message.id;
+			}
+			dispatch({ type: reducerCases.SET_MESSAGES, messages:messages.filter(updateMessage)});
 			const {
 				data: { deletedMessage },
 			} = await axios.delete(`${DELETE_MESSAGE_ROUTE}/${message.id}/${userInfo?.id}/${currentChatUser?.id}`);
 			if (deletedMessage) {
-				const getMessages = async () => {
-					try {
-						const {
-							data: { messages },
-						} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
-						dispatch({ type: reducerCases.SET_MESSAGES, messages });
-					} catch (err) {
-						return Promise.reject(err);
-					}
-				};
-				if (currentChatUser?.id) {
-					getMessages();
-				}
 				socket?.current.emit("delete-message", { ...deletedMessage });
 			}
 		} catch (err) {
