@@ -14,6 +14,9 @@ function Container({ data }) {
 	const [localStream, setLocalStream] = useState(undefined);
 	const [publishStream, setPublishStream] = useState(undefined);
 	const [ringtone] = useState(new Audio("/call-sound.mp3"));
+	const [hours, setHours] = useState(0);
+        const [minutes, setMinutes] = useState(0);
+        const [seconds, setSeconds] = useState(0);
 
 	useEffect(() => {
 		if (data.type === "out-going") {
@@ -56,6 +59,25 @@ function Container({ data }) {
 			ringtone.pause();
 			ringtone.currentTime = 0;
 		}
+	}, [callAccepted]);
+
+	useEffect(() => 
+		if(callAccepted || data.type === "in-coming"){
+			const timer = setInterval(()=>{
+				if (seconds === 59){
+					setSeconds(0);
+					if (minutes === 59){
+						setMinutes(0);
+						setHours((prev)=>prev + 1);	
+					} else {
+						setMinutes((prev)=>prev + 1);
+					}
+				} else {
+					setSeconds((prev)=>prev + 1);
+				}
+			},1000)
+			return () => clearInterval(timer);
+			}
 	}, [callAccepted]);
 
 	useEffect(() => {
@@ -164,6 +186,13 @@ function Container({ data }) {
 					/>
 				</div>
 			)}
+			{
+				callAccepted && (
+					<div className="my-6">
+						<span className="text-5xl">{hours} : {minutes} : {seconds}</span>
+					</div>
+				)
+			}
 			<div className="my-5 relative" id="remote-video">
 				<div className="absolute bottom-5 right-5" id="local-audio"></div>
 			</div>
