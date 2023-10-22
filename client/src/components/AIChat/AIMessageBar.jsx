@@ -7,7 +7,7 @@ import { MdSend } from "react-icons/md";
 const AIMessageBar = () => {
 	const [{}, dispatch] = useStateProvider();
 	const [message, setMessage] = useState("");
-	const [localCount, setLocalCount] = useState(0);
+	const [localCount, setLocalCount] = useState(undefined);
 	const [lockChat, setLockChat] = useState(false);
 
 	useEffect(() => {
@@ -18,27 +18,22 @@ const AIMessageBar = () => {
 			setLockChat(false);
 		}
 	}, [localCount]);
+	useEffect(() => {
+		const aiChatCount = localStorage.getItem("ai-chat-count");
+		if(aiChatCount){
+			return
+		} else {
+			localStorage.setItem("ai-chat-count", 9);
+			dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: 9 });
+		}
+	}, []);
 
 	const sendAIMessage = async () => {
 		if (!message.length) {
 			return;
 		}
-		const aiChatCount = localStorage.getItem("ai-chat-count");
-		if (!aiChatCount) {
-			localStorage.setItem("ai-chat-count", 9);
-			dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: 9 });
-		} else {
-			if (parseInt(aiChatCount) > 0) {
-				localStorage.setItem("ai-chat-count", parseInt(aiChatCount) - 1);
-				dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: parseInt(aiChatCount) - 1 });
-			} else {
-				dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: parseInt(aiChatCount) - 1 });
-				localStorage.setItem("ai-chat-lock", true);
-				localStorage.setItem("ai-chat-lock-time", Date.now());
-			}
-		}
-
-		setLocalCount((prev) => prev + 1);
+		
+		setLocalCount(Date.now());
 
 		const options = {
 			method: "POST",
@@ -81,6 +76,18 @@ const AIMessageBar = () => {
 		} catch (err) {
 			return Promise.reject(err);
 		}
+		
+		const aiChatCount = localStorage.getItem("ai-chat-count");
+	
+		if (parseInt(aiChatCount) > 0) {
+			localStorage.setItem("ai-chat-count", parseInt(aiChatCount) - 1);
+			dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: parseInt(aiChatCount) - 1 });
+		} else {
+			dispatch({ type: reducerCases.SET_AI_CHAT_COUNT, newCount: parseInt(aiChatCount) - 1 });
+			localStorage.setItem("ai-chat-lock", true);
+			localStorage.setItem("ai-chat-lock-time", Date.now());
+		}
+		
 	};
 
 	return (
