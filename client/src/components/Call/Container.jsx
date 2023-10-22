@@ -189,7 +189,7 @@ function Container({ data }) {
 			{
 				callAccepted && (
 					<div className="my-6">
-						<span className="text-5xl">{hours} : {minutes} : {seconds}</span>
+						<span className="text-5xl">{hours < 10 ? 0${hours} : hours} : {minutes < 10 ? 0${minutes} : minutes} : {seconds < 10 ? 0${seconds} : seconds}</span>
 					</div>
 				)
 			}
