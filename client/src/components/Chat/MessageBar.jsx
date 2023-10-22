@@ -13,7 +13,7 @@ import dynamic from "next/dynamic";
 const CaptureAudio = dynamic(() => import("../common/CaptureAudio"), { ssr: false });
 
 function MessageBar() {
-	const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
+	const [{ userInfo, currentChatUser, socket, messages }, dispatch] = useStateProvider();
 	const [message, setMessage] = useState("");
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const [grabPhoto, setGrabPhoto] = useState(false);
@@ -93,11 +93,22 @@ function MessageBar() {
 
 	const sendMessage = async () => {
 		try {
+			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { id:"temp", senderId:userInfo?.id, receiverId:currentChatUser?.id, type:"text", message, messageStatus:"sent", createdAt:Date.now()}, fromSelf: true });
 			const { data } = await axios.post(ADD_MESSAGE_ROUTE, {
 				to: currentChatUser?.id,
 				from: userInfo?.id,
 				message,
 			});
+			socket?.current.emit("send-msg", {
+				to: currentChatUser?.id,
+				from: userInfo?.id,
+				message: data?.message,
+			});
+			dispatch({ type: reducerCases.SET_MESSAGES, messages:messages.filter((msg)=>{
+				return msg.id !== "temp"
+			})});
+			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { ...data?.message }, fromSelf: true });
+			setMessage("");
 			if (data) {
 				const getContacts = async () => {
 					try {
@@ -114,13 +125,6 @@ function MessageBar() {
 					getContacts();
 				}
 			}
-			socket?.current.emit("send-msg", {
-				to: currentChatUser?.id,
-				from: userInfo?.id,
-				message: data?.message,
-			});
-			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { ...data?.message }, fromSelf: true });
-			setMessage("");
 		} catch (err) {
 			return Promise.reject(err);
 		}
