@@ -22,6 +22,7 @@ function TextMessage({ message }) {
 	};
 
 	const deleteMessage = async () => {
+		dispatch({ type: reducerCases.SET_MESSAGES, messages:messages.filter((msg)=>msg.id !== message.id)});
 		try {
 			const {
 				data: { deletedMessage },
