@@ -101,7 +101,7 @@ function onboarding() {
 							<div>
 								<Input name="Display Name" state={name} setState={setName} label />
 								{!detailsValidated && (
-									<p className="text-red-400">Display name / Username is required</p>
+									<p className="text-red-400">Username / Display name is required</p>
 								)}
 							</div>
 							<Input name="About" state={about} setState={setAbout} label />

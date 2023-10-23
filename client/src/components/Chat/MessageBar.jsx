@@ -18,6 +18,7 @@ function MessageBar() {
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const [grabPhoto, setGrabPhoto] = useState(false);
 	const [showAudioRecorder, setShowAudioRecorder] = useState(false);
+	const [enterTrigger, setEnterTrigger] = useState(undefined);
 
 	const emojiPickerRef = useRef(null);
 
@@ -36,21 +37,6 @@ function MessageBar() {
 			};
 		}
 	}, [grabPhoto]);
-
-	useEffect(() => {
-		const handleOutsideClick = (event) => {
-			if (event.target.id !== "emoji-open") {
-				if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
-					setShowEmojiPicker(false);
-				}
-			}
-		};
-
-		document.addEventListener("click", handleOutsideClick);
-		return () => {
-			document.removeEventListener("click", handleOutsideClick);
-		};
-	}, []);
 
 	const handleEmojiModal = () => {
 		setShowEmojiPicker(!showEmojiPicker);
@@ -92,8 +78,24 @@ function MessageBar() {
 	};
 
 	const sendMessage = async () => {
+		if (!message.length) {
+			return;
+		}
 		try {
-			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { id:"temp", senderId:userInfo?.id, receiverId:currentChatUser?.id, type:"text", message, messageStatus:"sent", createdAt:Date.now()}, fromSelf: true });
+			dispatch({
+				type: reducerCases.ADD_MESSAGE,
+				newMessage: {
+					id: "temp",
+					senderId: userInfo?.id,
+					receiverId: currentChatUser?.id,
+					type: "text",
+					message,
+					messageStatus: "sent",
+					createdAt: Date.now(),
+				},
+				fromSelf: true,
+			});
+			setMessage("");
 			const { data } = await axios.post(ADD_MESSAGE_ROUTE, {
 				to: currentChatUser?.id,
 				from: userInfo?.id,
@@ -104,11 +106,13 @@ function MessageBar() {
 				from: userInfo?.id,
 				message: data?.message,
 			});
-			dispatch({ type: reducerCases.SET_MESSAGES, messages:messages.filter((msg)=>{
-				return msg.id !== "temp"
-			})});
+			dispatch({
+				type: reducerCases.SET_MESSAGES,
+				messages: messages.filter((msg) => {
+					return msg.id !== "temp";
+				}),
+			});
 			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { ...data?.message }, fromSelf: true });
-			setMessage("");
 			if (data) {
 				const getContacts = async () => {
 					try {
@@ -130,8 +134,36 @@ function MessageBar() {
 		}
 	};
 
+	useEffect(() => {
+		sendMessage();
+	}, [enterTrigger]);
+
+	useEffect(() => {
+		let input = document.getElementById("text_input");
+		const handleEnterTrigger = (event) => {
+			if (event.code === "Enter") {
+				setEnterTrigger(Date.now());
+			}
+		};
+
+		const handleOutsideClick = (event) => {
+			if (event.target.id !== "emoji-open") {
+				if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
+					setShowEmojiPicker(false);
+				}
+			}
+		};
+
+		input.addEventListener("keypress", handleEnterTrigger);
+		document.addEventListener("click", handleOutsideClick);
+		return () => {
+			document.removeEventListener("click", handleOutsideClick);
+			input.removeEventListener("keypress", handleEnterTrigger);
+		};
+	}, []);
+
 	return (
-		<div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 relative">
+		<div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 relative" id="text_input">
 			{!showAudioRecorder && (
 				<>
 					<div className="flex gap-6">
@@ -183,6 +215,7 @@ function MessageBar() {
 			)}
 			{grabPhoto ? <PhotoPicker onChange={photoPickerChange} /> : null}
 			{showAudioRecorder ? <CaptureAudio setShowAudioRecorder={setShowAudioRecorder} /> : null}
+			<script></script>
 		</div>
 	);
 }

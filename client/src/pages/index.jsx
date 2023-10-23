@@ -96,12 +96,7 @@ function login() {
 						</span>
 					</div>
 					<div className="mt-2">
-						<Input
-							name="Enter a username to continue"
-							state={userName}
-							setState={setUserName}
-							label
-						/>
+						<Input name="Enter username to continue" state={userName} setState={setUserName} label />
 						{!detailsValidated && <p className="text-red-400">Username is required</p>}
 					</div>
 					<button

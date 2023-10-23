@@ -7,14 +7,10 @@ import React, { useState, useEffect } from "react";
 import ChatLIstItem from "./ChatLIstItem";
 import { useRouter } from "next/router";
 
-
 function List() {
 	const router = useRouter();
-	const [{ userInfo, currentChatUser, userContacts, filteredContacts, refreshChatList }, dispatch] =
-		useStateProvider();
+	const [{ userInfo, currentChatUser, userContacts, filteredContacts }, dispatch] = useStateProvider();
 	const [loading, setLoading] = useState(false);
-	
-	
 
 	useEffect(() => {
 		const getContacts = async () => {
@@ -34,7 +30,7 @@ function List() {
 		if (userInfo?.id) {
 			getContacts();
 		}
-	}, [refreshChatList]);
+	}, []);
 
 	return (
 		<>
@@ -44,30 +40,30 @@ function List() {
 				</div>
 			) : (
 				<div className="bg-search-input-container-background flex-auto overflow-auto max-h-full custom-scrollbar px-1 relative">
-						{filteredContacts && filteredContacts.length > 0
-							? filteredContacts?.map((contact) => (
-									<div className="" key={contact.id}>
-										<ChatLIstItem data={contact} />
-									</div>
-							  ))
-							: userContacts?.map((contact) => (
-									<div
-										className={`${
-											currentChatUser?.id === contact.id ? " bg-[#2e3d4b] rounded-sm" : ""
-										}`}
-										key={contact.id}
-									>
-										<ChatLIstItem data={contact} />
-									</div>
-							  ))}
-						<div className="absolute bottom-3 w-full px-3">
-							<button
-								className="w-full px-3 py-3 rounded-md font-bold bg-outgoing-background text-white text-xl"
-								onClick={() => router.push("/aichat")}
-							>
-								Chat with AI Bot
-							</button>
-						</div>
+					{filteredContacts && filteredContacts.length > 0
+						? filteredContacts?.map((contact) => (
+								<div className="" key={contact.id}>
+									<ChatLIstItem data={contact} />
+								</div>
+						  ))
+						: userContacts?.map((contact) => (
+								<div
+									className={`${
+										currentChatUser?.id === contact.id ? " bg-[#2e3d4b] rounded-sm" : ""
+									}`}
+									key={contact.id}
+								>
+									<ChatLIstItem data={contact} />
+								</div>
+						  ))}
+					<div className="absolute bottom-3 w-full px-3">
+						<button
+							className="w-full px-3 py-3 rounded-md font-bold bg-outgoing-background text-white text-xl"
+							onClick={() => router.push("/aichat")}
+						>
+							Chat with AI Bot
+						</button>
+					</div>
 				</div>
 			)}
 		</>
