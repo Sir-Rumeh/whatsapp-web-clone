@@ -6,7 +6,7 @@
 
 1. Next.js 13 and Node.js Express framework.
 2. Tailwind CSS.
-3. Postgress SQL database
+3. PostgresSQL database
 4. Prisma ORM For database manipulation.
 5. Sockets for real-time connections.
 6. Zegocloud voice and video call SDK.
