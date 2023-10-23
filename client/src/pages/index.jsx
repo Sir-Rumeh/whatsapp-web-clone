@@ -81,7 +81,7 @@ function login() {
 				</div>
 			) : (
 				<div className="flex justify-center items-center bg-panel-header-background h-screen w-screen flex-col gap-6">
-					<div className="flex items-center justify-center gap-2 text-white">
+					<div className="md:flex items-center justify-center gap-2 text-white">
 						<Image
 							src="/whatsapp.gif"
 							alt="Whatsapp"
@@ -89,8 +89,11 @@ function login() {
 							width={300}
 							priority
 							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+							className="scale-75 md:scale-100"
 						/>
-						<span className="text-7xl">Whatsapp</span>
+						<span className="flex justify-center w-full text-center text-5xl md:text-7xl">
+							Whatsapp
+						</span>
 					</div>
 					<div className="mt-2">
 						<Input
@@ -102,7 +105,7 @@ function login() {
 						{!detailsValidated && <p className="text-red-400">Username is required</p>}
 					</div>
 					<button
-						className="flex items-center justify-center gap-4 bg-search-input-container-background p-5 rounded-lg"
+						className="flex items-center justify-center gap-4 bg-search-input-container-background p-3 md:p-5 rounded-lg"
 						onClick={handleLogin}
 					>
 						<BiLogInCircle className="text-4x1 text-teal-light text-3xl" />
