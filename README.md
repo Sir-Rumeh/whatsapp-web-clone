@@ -6,11 +6,12 @@
 
 1. Next.js 13 and Node.js Express framework.
 2. Tailwind CSS.
-3. Prisma ORM For database manipulation.
-4. Sockets for real-time connections.
-5. Zegocloud voice and video call SDK.
-6. Eden AI-powered assistant for chatbot ( using OpenAI’s GPT-3 model ).
-7. Vercel and Railway to deploy.
+3. Postgress SQL database
+4. Prisma ORM For database manipulation.
+5. Sockets for real-time connections.
+6. Zegocloud voice and video call SDK.
+7. Eden AI-powered assistant for chatbot ( using OpenAI’s GPT-3 model ).
+8. Vercel and Railway to deploy.
 
 
 ![1](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/1964cfb9-2242-4d87-99d7-1d7140dbcea6)
