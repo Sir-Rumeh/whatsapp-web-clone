@@ -5,8 +5,13 @@ import AIChatWrapper from "@/components/AIChat/AIChatWrapper";
 function aichat() {
 	return (
 		<>
-			<div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
+			{/* DESKTOP VIEW */}
+			<div className="hidden md:grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
 				<Sidebar />
+				<AIChatWrapper />
+			</div>
+			{/* MOBILE VIEW */}
+			<div className="flex md:hidden h-screen w-screen max-h-screen max-w-full overflow-hidden">
 				<AIChatWrapper />
 			</div>
 		</>

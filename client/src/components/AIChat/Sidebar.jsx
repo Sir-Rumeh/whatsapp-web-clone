@@ -4,7 +4,7 @@ import Avatar from "../common/Avatar";
 const Sidebar = () => {
 	const router = useRouter();
 	return (
-		<div className="bg-panel-header-background flex flex-col max-h-screen z-20">
+		<div className="bg-panel-header-background hidden md:flex flex-col max-h-screen z-20 ">
 			<div className="w-full px-3 mt-10 flex flex-col">
 				<div className="flex items-center justify-center gap-x-4 scale-150">
 					<Avatar type={"lg"} image="/gpt-logo.webp" />

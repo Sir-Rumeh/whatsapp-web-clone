@@ -142,7 +142,11 @@ function VoiceMessage({ message }) {
 				}}
 			>
 				<div id="message-box">
-					<Avatar type="lg" image={currentChatUser?.profilePicture} />
+					{currentChatUser?.profilePicture ? (
+						<Avatar type="lg" image={currentChatUser?.profilePicture} />
+					) : (
+						<Avatar type="lg" image="/default_avatar.png" />
+					)}
 				</div>
 				<div id="message-box" className="cursor-pointer text-xl">
 					{!isPlaying ? <FaPlay onClick={handlePlayAudio} /> : <FaPause onClick={handlePauseAudio} />}

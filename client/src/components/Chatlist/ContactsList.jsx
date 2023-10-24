@@ -84,8 +84,8 @@ function ContactsList() {
 								<div key={Date.now() + initialLetter}>
 									{userList.length && (
 										<>
-											<div className="text-teal-light pl-10 py-5">{initialLetter}</div>
-											<div className="flex flex-col gap-y-2">
+											<div className="text-teal-light pl-10 py-4">{initialLetter}</div>
+											<div className="flex flex-col">
 												{userList.map((contact) => {
 													return (
 														<ChatLIstItem

@@ -38,7 +38,9 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 	}, [refreshChatList]);
 	return (
 		<div
-			className="flex cursor-pointer items-center hover:bg-background-default-hover"
+			className={`flex cursor-pointer items-center hover:bg-background-default-hover ${
+				isContactsPage ? "py-1" : ""
+			}`}
 			onClick={handleContactClick}
 		>
 			<div className="min-w-fit px-5 py-1">
