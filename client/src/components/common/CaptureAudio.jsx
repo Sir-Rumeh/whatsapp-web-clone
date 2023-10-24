@@ -183,7 +183,7 @@ function CaptureAudio({ setShowAudioRecorder }) {
 	}, [recordedAudio]);
 
 	return (
-		<div className="flex text-2xl w-full justify-end items-center">
+		<div className="flex text-2xl w-full justify-end items-center overflow-x-hidden relative px-1">
 			<div className="">
 				<FaTrash className="text-panel-header-icon cursor-pointer" onClick={() => setShowAudioRecorder()} />
 			</div>
@@ -205,7 +205,12 @@ function CaptureAudio({ setShowAudioRecorder }) {
 						)}
 					</div>
 				)}
-				<div id="waveformcontainer" className="w-60 flex justify-end" ref={waveformRef} hidden>
+				<div
+					id="waveformcontainer"
+					className="w-[100px] min-w-[60px] sm:w-60 flex justify-end"
+					ref={waveformRef}
+					hidden
+				>
 					{recordedAudio && isPlaying && <span>{formatTime(currentPlaybackTime)}</span>}
 					{recordedAudio && !isPlaying && !isRecording && <span>{formatTime(totalDuration)}</span>}
 					<audio ref={audioRef} hidden />

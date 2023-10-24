@@ -9,7 +9,7 @@ import { reducerCases } from "@/context/constants";
 
 function TextMessage({ message }) {
 	const [{ currentChatUser, userInfo, socket, messages }, dispatch] = useStateProvider();
-	const messageLengthBreak = 70;
+	const messageLengthBreak = 45;
 
 	const [isSender, setIsSender] = useState(false);
 	const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
@@ -24,9 +24,9 @@ function TextMessage({ message }) {
 	const deleteMessage = async () => {
 		try {
 			const updateMessage = (msg) => {
-			  return msg.id !== message.id;
-			}
-			dispatch({ type: reducerCases.SET_MESSAGES, messages:messages.filter(updateMessage)});
+				return msg.id !== message.id;
+			};
+			dispatch({ type: reducerCases.SET_MESSAGES, messages: messages.filter(updateMessage) });
 			const {
 				data: { deletedMessage },
 			} = await axios.delete(`${DELETE_MESSAGE_ROUTE}/${message.id}/${userInfo?.id}/${currentChatUser?.id}`);
@@ -69,7 +69,7 @@ function TextMessage({ message }) {
 					}
 				}}
 			>
-				<div id="message-box" className="">
+				<div id="message-box" className="break-all">
 					{message.message}
 				</div>
 				<div

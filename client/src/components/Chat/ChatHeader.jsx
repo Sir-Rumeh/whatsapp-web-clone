@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Avatar from "../common/Avatar";
-import { MdCall } from "react-icons/md";
-import { IoVideocam } from "react-icons/io5";
+import { MdCall, MdArrowBack, MdArrowCircleLeft } from "react-icons/md";
+import { IoVideocam, IoArrowBack, IoArrowBackCircle } from "react-icons/io5";
 import { BiSearchAlt2 } from "react-icons/bi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useStateProvider } from "@/context/StateContext";
@@ -76,7 +76,7 @@ function ChatHeader() {
 				<div className="flex flex-col">
 					<span className="text-primary-strong">{currentChatUser?.name}</span>
 					<span className="text-secondary text-sm">
-						{onlineUsers.includes(currentChatUser.id) ? <OnlineStatus /> : <OfflineStatus />}
+						{onlineUsers.includes(currentChatUser?.id) ? <OnlineStatus /> : <OfflineStatus />}
 					</span>
 				</div>
 			</div>
@@ -88,10 +88,15 @@ function ChatHeader() {
 					onClick={() => dispatch({ type: reducerCases.SET_MESSAGE_SEARCH })}
 				/>
 				<BsThreeDotsVertical
-					className="text-panel-header-icon cursor-pointer text-xl"
+					className="text-panel-header-icon cursor-pointer text-xl hidden sm:flex"
 					id="context-opener"
 					onClick={(e) => showContextMenu(e)}
 				/>
+				<IoArrowBackCircle
+					className="text-panel-header-icon cursor-pointer text-xl sm:hidden scale-125"
+					onClick={() => dispatch({ type: reducerCases.SET_EXIT_CHAT })}
+				/>
+
 				{isContextMenuVisible ? (
 					<ContextMenu
 						options={contextMenuOptions}

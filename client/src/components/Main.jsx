@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ChatList from "./Chatlist/ChatList";
 import Empty from "./Empty";
-import { HOST } from "@/utils/ApiRoutes";
+import { GET_INITIAL_CONTACTS_ROUTE, HOST } from "@/utils/ApiRoutes";
 import { reducerCases } from "@/context/constants";
 import { useStateProvider } from "@/context/StateContext";
 import Chat from "./Chat/Chat";
@@ -12,6 +12,7 @@ import VideoCall from "./Call/VideoCall";
 import IncomingVoiceCall from "./common/IncomingVoiceCall";
 import IncomingVideoCall from "./common/IncomingVideoCall";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 function Main() {
 	const router = useRouter();
@@ -35,6 +36,18 @@ function Main() {
 		}
 	}, [userInfo]);
 
+	const getContacts = async () => {
+		try {
+			const {
+				data: { users, onlineUsers },
+			} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo?.id}`);
+			dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
+			dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
+		} catch (err) {
+			return Promise.reject(err);
+		}
+	};
+
 	useEffect(() => {
 		if (socket.current && !socketEvent) {
 			socket.current.on("msg-receive", (data) => {
@@ -48,6 +61,7 @@ function Main() {
 				if (data.message.senderId === currentChatUser?.id) {
 					dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST });
 				}
+				getContacts();
 			});
 
 			socket.current.on("message-deleted", () => {
@@ -115,17 +129,34 @@ function Main() {
 			)}
 
 			{!voiceCall && !videoCall && (
-				<div className="grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
-					<ChatList />
-					{currentChatUser ? (
-						<div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
-							<Chat />
-							{messageSearch && <SearchMessages />}
+				<>
+					{/* DESKTOP VIEW */}
+					<div className="hidden sm:grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden">
+						<ChatList />
+						{currentChatUser ? (
+							<div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
+								<Chat />
+								{messageSearch && <SearchMessages />}
+							</div>
+						) : (
+							<Empty />
+						)}
+					</div>
+					{/* MOBILE VIEW */}
+					<div className="sm:hidden flex h-screen w-screen max-h-screen max-w-full overflow-hidden relative">
+						<ChatList />
+						<div
+							className={`fixed w-full ${
+								currentChatUser ? "translate-x-0" : "translate-x-[100%]"
+							} transition-all z-20`}
+						>
+							<div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
+								<Chat />
+								{messageSearch && <SearchMessages />}
+							</div>
 						</div>
-					) : (
-						<Empty />
-					)}
-				</div>
+					</div>
+				</>
 			)}
 		</>
 	);

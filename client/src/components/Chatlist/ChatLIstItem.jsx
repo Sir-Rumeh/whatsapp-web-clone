@@ -71,7 +71,9 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 									{data.senderId === userInfo?.id && (
 										<MessageStatus messageStatus={data.messageStatus} />
 									)}
-									{data.type === "text" && <span className="truncate">{data.message}</span>}
+									{data.type === "text" && (
+										<span className="truncate md:-pr-4">{data.message}</span>
+									)}
 									{data.type === "image" && (
 										<span className="flex gap-1 items-center">
 											<FaCamera className="text-panel-header-icon" />

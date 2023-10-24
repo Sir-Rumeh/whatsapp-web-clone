@@ -2,9 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+	scroll-behavior: smooth;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
 	height: 8px !important;
-	width: 8px;
+	width: 2px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
