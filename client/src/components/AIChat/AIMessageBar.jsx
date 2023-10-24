@@ -9,6 +9,7 @@ const AIMessageBar = () => {
 	const [message, setMessage] = useState("");
 	const [localCount, setLocalCount] = useState(undefined);
 	const [lockChat, setLockChat] = useState(false);
+	const [enterTrigger, setEnterTrigger] = useState(undefined);
 
 	useEffect(() => {
 		const lockAIChat = localStorage.getItem("ai-chat-lock");
@@ -18,6 +19,7 @@ const AIMessageBar = () => {
 			setLockChat(false);
 		}
 	}, [localCount]);
+
 	useEffect(() => {
 		const aiChatCount = localStorage.getItem("ai-chat-count");
 		if (aiChatCount) {
@@ -90,8 +92,26 @@ const AIMessageBar = () => {
 		}
 	};
 
+	useEffect(() => {
+		let input = document.getElementById("text_input");
+		const handleEnterTrigger = (event) => {
+			if (event.code === "Enter") {
+				setEnterTrigger(Date.now());
+			}
+		};
+
+		input.addEventListener("keypress", handleEnterTrigger);
+		return () => {
+			input.removeEventListener("keypress", handleEnterTrigger);
+		};
+	}, []);
+
+	useEffect(() => {
+		sendAIMessage();
+	}, [enterTrigger]);
+
 	return (
-		<div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 relative">
+		<div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 relative" id="text_input">
 			{lockChat ? (
 				<div className="w-full flex rounded-lg bg-input-background p-2 ">
 					<p className="text-white text-xl text-center leading-12 w-full tracking-wider">
