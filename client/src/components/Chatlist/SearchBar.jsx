@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useId } from "react";
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
 import { BiSearchAlt2 } from "react-icons/bi";
 
 function SearchBar() {
 	const [{}, dispatch] = useStateProvider();
+	const inputId = useId();
 
 	return (
 		<div className="bg-search-input-container-background flex py-3 px-3 items-center gap-3 h-14">
@@ -15,8 +16,8 @@ function SearchBar() {
 				<div>
 					<input
 						type="text"
-						id="search-chat-list"
-						name="search-chat-list"
+						id={inputId}
+						name="search-contact-chat-list"
 						placeholder="Search chat list"
 						className="bg-transparent text-sm focus:outline-none text-white w-full"
 						onChange={(e) => {

@@ -5,7 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 import Input from "@/components/common/Input";
 import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId } from "react";
 import { BiLogInCircle } from "react-icons/bi";
 import Loader from "@/components/common/Loader";
 
@@ -89,13 +89,13 @@ function login() {
 				<div
 					className={`flex justify-center items-center bg-panel-header-background h-screen w-screen flex-col gap-6 max-h-[${pageHeight}] md:max-h-screen`}
 				>
-					<div className="md:flex items-center justify-center gap-2 text-white">
+					<div className="md:flex h-[300px] relative items-center justify-center gap-2 text-white">
 						<Image
 							src="/whatsapp.gif"
 							alt="Whatsapp"
 							height={0}
 							width={0}
-							style={{ width: "300px", height: "300px" }}
+							style={{ width: "300px", height: "100%" }}
 							priority
 							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 							className="scale-75 md:scale-100"

@@ -66,7 +66,7 @@ function ImageMessage({ message }) {
 					}
 				}}
 			>
-				<div id="message-box" className="relative">
+				<div id="message-box" className="relative h-[300px]">
 					<Image
 						id="message-box"
 						src={`${HOST}/${message.message}`}
@@ -74,7 +74,7 @@ function ImageMessage({ message }) {
 						alt="asset"
 						height={0}
 						width={0}
-						style={{ width: "300px", height: "300px" }}
+						style={{ width: "300px", height: "100%" }}
 						loading="lazy"
 						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 						onClick={() => setShowImage(true)}
@@ -96,10 +96,10 @@ function ImageMessage({ message }) {
 					className="fixed inset-0 w-full h-[100vh] flex items-center justify-center z-40"
 					onClick={() => setShowImage(false)}
 				>
-					<div className="absolute flex items-center justify-center backdrop-blur-sm inset-0 w-full h-screen">
+					<div className="absolute flex items-center justify-center backdrop-blur-sm inset-0 w-full h-screen ">
 						<Image
 							src={`${HOST}/${message.message}`}
-							className="rounded-sm z-50 "
+							className="rounded-xl z-50 "
 							alt="asset"
 							height={0}
 							width={0}

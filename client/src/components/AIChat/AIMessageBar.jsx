@@ -1,7 +1,7 @@
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
 import { MdSend } from "react-icons/md";
 
 const AIMessageBar = () => {
@@ -10,6 +10,7 @@ const AIMessageBar = () => {
 	const [localCount, setLocalCount] = useState(undefined);
 	const [lockChat, setLockChat] = useState(false);
 	const [enterTrigger, setEnterTrigger] = useState(undefined);
+	const inputId = useId();
 
 	useEffect(() => {
 		const lockAIChat = localStorage.getItem("ai-chat-lock");
@@ -122,8 +123,8 @@ const AIMessageBar = () => {
 				<>
 					<div className="w-full rounded-lg h-10 flex items-center">
 						<input
-							id="input-field"
-							name="input-field"
+							id={inputId}
+							name="message-field"
 							type="text"
 							placeholder="Type a message"
 							className="bg-input-background text-sm focus:outline-none text-white h-10 rounded-lg px-5 py-4 w-full"

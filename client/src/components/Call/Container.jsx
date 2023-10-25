@@ -175,13 +175,13 @@ function Container({ data }) {
 				</span>
 			</div>
 			{(!callAccepted || data.callType === "audio") && (
-				<div className="my-24">
+				<div className="my-24 h-[300px] relative">
 					<Image
 						src={data.profilePicture ? data.profilePicture : "/default_avatar.png"}
 						alt="avatar"
 						height={0}
 						width={0}
-						style={{ width: "300px", height: "300px" }}
+						style={{ width: "300px", height: "100%" }}
 						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 						className="rounded-full"
 					/>

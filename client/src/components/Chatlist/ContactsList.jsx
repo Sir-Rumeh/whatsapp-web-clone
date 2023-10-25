@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId } from "react";
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
 import { GET_ALL_CONTACTS } from "@/utils/ApiRoutes";
@@ -13,6 +13,7 @@ function ContactsList() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchedContacts, setSearchedContacts] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const inputId = useId();
 
 	useEffect(() => {
 		if (searchTerm.length) {
@@ -66,8 +67,8 @@ function ContactsList() {
 						</div>
 						<div>
 							<input
-								id="html-form-field"
-								name="html-form-field"
+								id={inputId}
+								name="html-form-search-two-field"
 								type="text"
 								placeholder="Search Contacts"
 								className="bg-transparent text-sm focus:outline-none text-white w-full"

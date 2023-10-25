@@ -1,7 +1,7 @@
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
 import { calculateTime } from "@/utils/CalculateTime";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useId } from "react";
 import { BiSearchAlt2 } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 
@@ -9,6 +9,7 @@ function SearchMessages() {
 	const [{ currentChatUser, messages }, dispatch] = useStateProvider();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchedMessages, setSearchedMessages] = useState([]);
+	const inputId = useId();
 
 	useEffect(() => {
 		if (searchTerm) {
@@ -42,8 +43,8 @@ function SearchMessages() {
 							</div>
 							<div>
 								<input
-									id="html-form-field"
-									name="html-form-field"
+									id={inputId}
+									name="html-form-search-field"
 									type="text"
 									placeholder="Search Messages"
 									className="bg-transparent text-sm focus:outline-none text-white w-full"

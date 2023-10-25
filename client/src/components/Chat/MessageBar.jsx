@@ -3,7 +3,7 @@ import { reducerCases } from "@/context/constants";
 import { ADD_IMAGE_MESSAGE_ROUTE, ADD_MESSAGE_ROUTE, GET_INITIAL_CONTACTS_ROUTE } from "@/utils/ApiRoutes";
 import axios from "axios";
 import EmojiPicker from "emoji-picker-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useId } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
 import { ImAttachment } from "react-icons/im";
@@ -19,6 +19,8 @@ function MessageBar() {
 	const [showAudioRecorder, setShowAudioRecorder] = useState(false);
 	const [enterTrigger, setEnterTrigger] = useState(undefined);
 	const fileRef = useRef(null);
+	const inputId1 = useId();
+	const inputId2 = useId();
 
 	const emojiPickerRef = useRef(null);
 
@@ -180,8 +182,8 @@ function MessageBar() {
 						)}
 						<div className="relative">
 							<input
-								id="html-form-field"
-								name="html-form-field"
+								id={inputId1}
+								name="photo-picker-form-field"
 								type="file"
 								ref={fileRef}
 								className="absolute inset-0 z-10 hidden"
@@ -205,8 +207,8 @@ function MessageBar() {
 					</div>
 					<div className="w-full rounded-lg h-10 flex items-center">
 						<input
-							id="html-form-field"
-							name="html-form-field"
+							id={inputId2}
+							name="html-form-message-field"
 							type="text"
 							placeholder="Type a message"
 							className="bg-input-background text-sm focus:outline-none text-white h-10 rounded-lg px-5 py-4 w-full"

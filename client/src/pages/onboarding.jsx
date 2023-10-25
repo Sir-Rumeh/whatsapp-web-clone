@@ -86,13 +86,13 @@ function onboarding() {
 				<div
 					className={`bg-panel-header-background h-screen w-screen text-white flex flex-col items-center justify-center max-h-[${pageHeight}] md:max-h-screen`}
 				>
-					<div className="hidden md:flex items-center justify-center gap-2">
+					<div className="hidden h-[300px] relative md:flex items-center justify-center gap-2">
 						<Image
 							src="/whatsapp.gif"
 							alt="whatsapp"
 							height={0}
 							width={0}
-							style={{ width: "300px", height: "300px" }}
+							style={{ width: "300px", height: "100%" }}
 							priority
 							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 							className="scale-75 md:scale-100"
