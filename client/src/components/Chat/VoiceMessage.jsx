@@ -141,7 +141,21 @@ function VoiceMessage({ message }) {
 					}
 				}}
 			>
-				<div id="message-box">
+				<div
+					id="message-box"
+					onMouseOver={(event) => {
+						event.preventDefault();
+						if (message.senderId === userInfo?.id) {
+							setIsSender(true);
+						}
+					}}
+					onContextMenu={(event) => {
+						event.preventDefault();
+						if (isSender) {
+							showContextMenu(event);
+						}
+					}}
+				>
 					{currentChatUser?.profilePicture ? (
 						<Avatar type="lg" image={currentChatUser?.profilePicture} />
 					) : (
@@ -151,7 +165,22 @@ function VoiceMessage({ message }) {
 				<div id="message-box" className="cursor-pointer text-xl">
 					{!isPlaying ? <FaPlay onClick={handlePlayAudio} /> : <FaPause onClick={handlePauseAudio} />}
 				</div>
-				<div id="message-box" className="relative ">
+				<div
+					id="message-box"
+					className="relative"
+					onMouseOver={(event) => {
+						event.preventDefault();
+						if (message.senderId === userInfo?.id) {
+							setIsSender(true);
+						}
+					}}
+					onContextMenu={(event) => {
+						event.preventDefault();
+						if (isSender) {
+							showContextMenu(event);
+						}
+					}}
+				>
 					<div id="waveformref" className="w-60 bg-re-400" ref={waveformRef} />
 					<div className="text-bubble-meta text-[11px] pt-1 flex justify-between items-center absolute bottom-[-22px] w-full">
 						<span>{formatTime(isPlaying ? currentPlaybackTime : totalDuration)}</span>

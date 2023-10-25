@@ -84,6 +84,7 @@ function Avatar({ type, image, setImage }) {
 								alt="avatar"
 								className="rounded-full"
 								fill
+								style={{ height: "100%" }}
 								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 							/>
 						) : (
@@ -92,6 +93,7 @@ function Avatar({ type, image, setImage }) {
 								alt="avatar"
 								className="rounded-full"
 								fill
+								style={{ height: "100%" }}
 								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 							/>
 						)}
@@ -99,13 +101,25 @@ function Avatar({ type, image, setImage }) {
 				)}
 				{type === "lg" && (
 					<div className="relative h-14 w-14">
-						<Image
-							src={image}
-							alt="avatar"
-							className="rounded-full"
-							fill
-							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-						/>
+						{image ? (
+							<Image
+								src={image}
+								alt="avatar"
+								className="rounded-full"
+								fill
+								style={{ height: "100%" }}
+								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+							/>
+						) : (
+							<Image
+								src="/default_avatar.png"
+								alt="avatar"
+								className="rounded-full"
+								fill
+								style={{ height: "100%" }}
+								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+							/>
+						)}
 					</div>
 				)}
 				{type === "xl" && (
@@ -131,13 +145,25 @@ function Avatar({ type, image, setImage }) {
 							</span>
 						</div>
 						<div className="relative h-60 w-60">
-							<Image
-								src={image}
-								alt="avatar"
-								className="rounded-full"
-								fill
-								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-							/>
+							{image ? (
+								<Image
+									src={image}
+									alt="avatar"
+									className="rounded-full"
+									fill
+									style={{ height: "100%" }}
+									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+								/>
+							) : (
+								<Image
+									src="/default_avatar.png"
+									alt="avatar"
+									className="rounded-full"
+									fill
+									style={{ height: "100%" }}
+									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+								/>
+							)}
 						</div>
 					</div>
 				)}

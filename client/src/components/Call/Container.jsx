@@ -15,8 +15,8 @@ function Container({ data }) {
 	const [publishStream, setPublishStream] = useState(undefined);
 	const [ringtone] = useState(new Audio("/call-sound.mp3"));
 	const [hours, setHours] = useState(0);
-        const [minutes, setMinutes] = useState(0);
-        const [seconds, setSeconds] = useState(0);
+	const [minutes, setMinutes] = useState(0);
+	const [seconds, setSeconds] = useState(0);
 
 	useEffect(() => {
 		if (data.type === "out-going") {
@@ -62,18 +62,18 @@ function Container({ data }) {
 	}, [callAccepted]);
 
 	useEffect(() => {
-		if(callAccepted){
+		if (callAccepted) {
 			const timer = setInterval(() => {
-				if (seconds === 59){
+				if (seconds === 59) {
 					setSeconds(0);
-					if (minutes === 59){
+					if (minutes === 59) {
 						setMinutes(0);
-						setHours((prev)=>prev + 1);	
+						setHours((prev) => prev + 1);
 					} else {
-						setMinutes((prev)=>prev + 1);
+						setMinutes((prev) => prev + 1);
 					}
 				} else {
-					setSeconds((prev)=>prev + 1);
+					setSeconds((prev) => prev + 1);
 				}
 			}, 1000);
 			return () => clearInterval(timer);
@@ -179,20 +179,22 @@ function Container({ data }) {
 					<Image
 						src={data.profilePicture ? data.profilePicture : "/default_avatar.png"}
 						alt="avatar"
-						height={300}
-						width={300}
+						height={0}
+						width={0}
+						style={{ width: "300px", height: "300px" }}
 						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 						className="rounded-full"
 					/>
 				</div>
 			)}
-			{
-				callAccepted && (
-					<div className="my-6">
-						<span className="text-5xl">{hours < 10 ? `0${hours}` : hours} : {minutes < 10 ? `0${minutes}` : minutes} : {seconds < 10 ? `0${seconds}` : seconds}</span>
-					</div>
-				)
-			}
+			{callAccepted && (
+				<div className="my-6">
+					<span className="text-5xl">
+						{hours < 10 ? `0${hours}` : hours} : {minutes < 10 ? `0${minutes}` : minutes} :{" "}
+						{seconds < 10 ? `0${seconds}` : seconds}
+					</span>
+				</div>
+			)}
 			<div className="my-5 relative" id="remote-video">
 				<div className="absolute bottom-5 right-5" id="local-audio"></div>
 			</div>

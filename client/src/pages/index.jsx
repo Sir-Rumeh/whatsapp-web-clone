@@ -93,8 +93,9 @@ function login() {
 						<Image
 							src="/whatsapp.gif"
 							alt="Whatsapp"
-							height={300}
-							width={300}
+							height={0}
+							width={0}
+							style={{ width: "300px", height: "300px" }}
 							priority
 							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 							className="scale-75 md:scale-100"
@@ -104,7 +105,12 @@ function login() {
 						</span>
 					</div>
 					<div className="mt-2">
-						<Input name="Enter username to continue" state={userName} setState={setUserName} label />
+						<Input
+							id="Enter username to continue"
+							name="Enter username to continue"
+							state={userName}
+							setState={setUserName}
+						/>
 						{!detailsValidated && <p className="text-red-400">Username is required</p>}
 					</div>
 					<button

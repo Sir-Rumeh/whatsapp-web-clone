@@ -15,6 +15,8 @@ function SearchBar() {
 				<div>
 					<input
 						type="text"
+						id="search-chat-list"
+						name="search-chat-list"
 						placeholder="Search chat list"
 						className="bg-transparent text-sm focus:outline-none text-white w-full"
 						onChange={(e) => {

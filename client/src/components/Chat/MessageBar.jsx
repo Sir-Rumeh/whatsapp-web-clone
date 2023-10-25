@@ -180,6 +180,8 @@ function MessageBar() {
 						)}
 						<div className="relative">
 							<input
+								id="html-form-field"
+								name="html-form-field"
 								type="file"
 								ref={fileRef}
 								className="absolute inset-0 z-10 hidden"
@@ -203,6 +205,8 @@ function MessageBar() {
 					</div>
 					<div className="w-full rounded-lg h-10 flex items-center">
 						<input
+							id="html-form-field"
+							name="html-form-field"
 							type="text"
 							placeholder="Type a message"
 							className="bg-input-background text-sm focus:outline-none text-white h-10 rounded-lg px-5 py-4 w-full"

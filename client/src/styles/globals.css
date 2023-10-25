@@ -8,7 +8,7 @@ html {
 
 .custom-scrollbar::-webkit-scrollbar {
 	height: 8px !important;
-	width: 2px;
+	width: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {

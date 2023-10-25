@@ -42,6 +42,8 @@ function SearchMessages() {
 							</div>
 							<div>
 								<input
+									id="html-form-field"
+									name="html-form-field"
 									type="text"
 									placeholder="Search Messages"
 									className="bg-transparent text-sm focus:outline-none text-white w-full"

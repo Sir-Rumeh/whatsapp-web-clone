@@ -66,6 +66,8 @@ function ContactsList() {
 						</div>
 						<div>
 							<input
+								id="html-form-field"
+								name="html-form-field"
 								type="text"
 								placeholder="Search Contacts"
 								className="bg-transparent text-sm focus:outline-none text-white w-full"

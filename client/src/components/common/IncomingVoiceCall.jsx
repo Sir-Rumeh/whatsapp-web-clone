@@ -46,8 +46,9 @@ function IncomingCall() {
 							: "/default_avatar.png"
 					}
 					alt="avatar"
-					width={70}
-					height={70}
+					height={0}
+					width={0}
+					style={{ width: "70px", height: "70px" }}
 					className="rounded-full"
 					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 				/>

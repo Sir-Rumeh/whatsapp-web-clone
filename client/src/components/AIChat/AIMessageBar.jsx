@@ -122,6 +122,8 @@ const AIMessageBar = () => {
 				<>
 					<div className="w-full rounded-lg h-10 flex items-center">
 						<input
+							id="input-field"
+							name="input-field"
 							type="text"
 							placeholder="Type a message"
 							className="bg-input-background text-sm focus:outline-none text-white h-10 rounded-lg px-5 py-4 w-full"

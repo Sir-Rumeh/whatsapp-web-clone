@@ -24,9 +24,9 @@ function ImageMessage({ message }) {
 	const deleteMessage = async () => {
 		try {
 			const updateMessage = (msg) => {
-			  return msg.id !== message.id;
-			}
-			dispatch({ type: reducerCases.SET_MESSAGES, messages:messages.filter(updateMessage)});
+				return msg.id !== message.id;
+			};
+			dispatch({ type: reducerCases.SET_MESSAGES, messages: messages.filter(updateMessage) });
 			const {
 				data: { deletedMessage },
 			} = await axios.delete(`${DELETE_MESSAGE_ROUTE}/${message.id}/${userInfo?.id}/${currentChatUser?.id}`);
@@ -96,17 +96,19 @@ function ImageMessage({ message }) {
 					className="fixed inset-0 w-full h-[100vh] flex items-center justify-center z-40"
 					onClick={() => setShowImage(false)}
 				>
-					<Image
-						src={`${HOST}/${message.message}`}
-						className="rounded-sm z-50 absolute right-0 mr-14"
-						alt="asset"
-						height={0}
-						width={0}
-						style={{ width: "1000px", height: "550px" }}
-						loading="lazy"
-						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-						onClick={() => setShowImage(false)}
-					/>
+					<div className="absolute flex items-center justify-center backdrop-blur-sm inset-0 w-full h-screen">
+						<Image
+							src={`${HOST}/${message.message}`}
+							className="rounded-sm z-50 "
+							alt="asset"
+							height={0}
+							width={0}
+							style={{ width: "90vw", height: "90vh" }}
+							loading="lazy"
+							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+							onClick={() => setShowImage(false)}
+						/>
+					</div>
 				</div>
 			)}
 

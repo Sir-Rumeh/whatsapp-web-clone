@@ -1,16 +1,16 @@
 import React from "react";
 
-function Input({ name, state, setState, label = false }) {
+function Input({ name, id, state, setState }) {
 	return (
 		<div className="flex gap-1 flex-col">
-			{label && (
-				<label htmlFor={name} className="text-teal-light text-lg px-1">
-					{name}
-				</label>
-			)}
+			<label htmlFor={id} className="text-teal-light text-lg px-1">
+				{name}
+			</label>
+
 			<div>
 				<input
 					type="text"
+					id={id}
 					name={name}
 					value={state}
 					onChange={(e) => setState(e.target.value)}

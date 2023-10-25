@@ -7,8 +7,9 @@ function Empty() {
 			<Image
 				src="/whatsapp.gif"
 				alt="whatsapp"
-				height={300}
-				width={300}
+				height={0}
+				width={0}
+				style={{ width: "300px", height: "300px" }}
 				sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 				priority
 			/>

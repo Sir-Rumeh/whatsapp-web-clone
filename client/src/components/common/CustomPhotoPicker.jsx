@@ -21,7 +21,14 @@ const FileUpload = ({ handleFileChange }) => {
 
 	return (
 		<div className="relative">
-			<input type="file" ref={fileRef} className="absolute inset-0 z-10 hidden" onChange={handleFileChange} />
+			<input
+				id="html-form-field"
+				name="html-form-field"
+				type="file"
+				ref={fileRef}
+				className="absolute inset-0 z-10 hidden"
+				onChange={handleFileChange}
+			/>
 			<button
 				type="button"
 				className="cursor-pointer px-10 py-4 w-full p-6 border-2 rounded-xl flex items-center justify-center border-dashed"

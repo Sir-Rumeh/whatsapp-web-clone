@@ -90,8 +90,9 @@ function onboarding() {
 						<Image
 							src="/whatsapp.gif"
 							alt="whatsapp"
-							height={300}
-							width={300}
+							height={0}
+							width={0}
+							style={{ width: "300px", height: "300px" }}
 							priority
 							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 							className="scale-75 md:scale-100"
@@ -107,12 +108,12 @@ function onboarding() {
 						</div>
 						<div className="flex flex-col items-center justify-center mt-5 gap-6">
 							<div>
-								<Input name="Display Name" state={name} setState={setName} label />
+								<Input id="Display Name" name="Display Name" state={name} setState={setName} />
 								{!detailsValidated && (
 									<p className="text-red-400">Username / Display name is required</p>
 								)}
 							</div>
-							<Input name="About" state={about} setState={setAbout} label />
+							<Input id="About" name="About" state={about} setState={setAbout} />
 							<div className="flex items-center justify-center">
 								<button
 									className="flex items-center justify-center gap-7 bg-search-input-container-background p-3 md:p-5 rounded-lg"
