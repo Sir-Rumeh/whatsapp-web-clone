@@ -89,7 +89,7 @@ function login() {
 				<div
 					className={`flex justify-center items-center bg-panel-header-background h-screen w-screen flex-col gap-6 max-h-[${pageHeight}] md:max-h-screen`}
 				>
-					<div className="md:flex h-[300px] relative items-center justify-center gap-2 text-white">
+					<div className="md:flex h-[300px] relative items-center justify-center gap-2 text-white -translate-y-10 md:-translate-y-0">
 						<Image
 							src="/whatsapp.gif"
 							alt="Whatsapp"
