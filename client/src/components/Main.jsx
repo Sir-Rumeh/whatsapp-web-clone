@@ -14,7 +14,7 @@ import IncomingVideoCall from "./common/IncomingVideoCall";
 import { useRouter } from "next/router";
 import axios from "axios";
 
-function Main() {
+const Main = () => {
 	const router = useRouter();
 	const [
 		{ userInfo, currentChatUser, messageSearch, voiceCall, videoCall, incomingVoiceCall, incomingVideoCall },
@@ -22,19 +22,41 @@ function Main() {
 	] = useStateProvider();
 
 	const [socketEvent, setSocketEvent] = useState(false);
-
 	const socket = useRef();
+	const [pageHeight, setPageHeight] = useState(undefined);
 
 	useEffect(() => {
+		const { innerHeight } = window;
+		setPageHeight(innerHeight);
+	}, []);
+
+	useEffect(() => {
+		const hasSignedIn = localStorage.getItem("hasSignedIn");
+		if (hasSignedIn === "false") {
+			router.push("/");
+		}
 		if (userInfo) {
 			socket.current = io(HOST);
 			socket.current.emit("add-user", userInfo?.id);
 			dispatch({ type: reducerCases.SET_SOCKET, socket });
 		}
-		if (!userInfo) {
+		const localData =
+			localStorage.getItem("signedInUserInfo") !== "undefined"
+				? JSON.parse(localStorage.getItem("signedInUserInfo"))
+				: null;
+		if (localData && !userInfo) {
+			if (hasSignedIn === "true") {
+				dispatch({
+					type: reducerCases.SET_USER_INFO,
+					userInfo: localData,
+				});
+			} else {
+				router.push("/");
+			}
+		} else if (!userInfo && !localData) {
 			router.push("/");
 		}
-	}, [userInfo]);
+	}, []);
 
 	const getContacts = async () => {
 		try {
@@ -61,7 +83,9 @@ function Main() {
 				if (data.message.senderId === currentChatUser?.id) {
 					dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST });
 				}
-				getContacts();
+				if (userInfo?.id) {
+					getContacts();
+				}
 			});
 
 			socket.current.on("message-deleted", () => {
@@ -109,6 +133,22 @@ function Main() {
 
 			setSocketEvent(true);
 		}
+		const localData =
+			localStorage.getItem("signedInUserInfo") !== "undefined"
+				? JSON.parse(localStorage.getItem("signedInUserInfo"))
+				: null;
+		const getContactsAgain = async () => {
+			try {
+				const {
+					data: { users, onlineUsers },
+				} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${localData?.id}`);
+				dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
+				dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
+			} catch (err) {
+				return Promise.reject(err);
+			}
+		};
+		getContactsAgain();
 	}, [socket.current]);
 
 	return (
@@ -143,7 +183,9 @@ function Main() {
 						)}
 					</div>
 					{/* MOBILE VIEW */}
-					<div className="sm:hidden flex h-screen w-screen max-h-screen max-w-full overflow-hidden relative">
+					<div
+						className={`sm:hidden flex h-screen w-screen max-w-full overflow-hidden relative max-h-[${pageHeight}]`}
+					>
 						<ChatList />
 						<div
 							className={`fixed w-full ${
@@ -160,6 +202,6 @@ function Main() {
 			)}
 		</>
 	);
-}
+};
 
 export default Main;

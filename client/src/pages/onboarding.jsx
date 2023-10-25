@@ -18,6 +18,12 @@ function onboarding() {
 	const [detailsValidated, setDetailsValidated] = useState(true);
 	const [image, setImage] = useState("/default_avatar.png");
 	const [loading, setLoading] = useState(false);
+	const [pageHeight, setPageHeight] = useState(undefined);
+
+	useEffect(() => {
+		const { innerHeight } = window;
+		setPageHeight(innerHeight);
+	}, []);
 
 	useEffect(() => {
 		if (!newUser && !userInfo?.email) router.push("/");
@@ -77,7 +83,9 @@ function onboarding() {
 					<Loader loading={loading} />
 				</div>
 			) : (
-				<div className="bg-panel-header-background h-screen w-screen text-white flex flex-col items-center justify-center">
+				<div
+					className={`bg-panel-header-background h-screen w-screen text-white flex flex-col items-center justify-center max-h-[${pageHeight}] md:max-h-screen`}
+				>
 					<div className="hidden md:flex items-center justify-center gap-2">
 						<Image
 							src="/whatsapp.gif"

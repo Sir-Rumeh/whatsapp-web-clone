@@ -15,6 +15,12 @@ function login() {
 	const [userName, setUserName] = useState("");
 	const [detailsValidated, setDetailsValidated] = useState(true);
 	const [loading, setLoading] = useState(false);
+	const [pageHeight, setPageHeight] = useState(undefined);
+
+	useEffect(() => {
+		const { innerHeight } = window;
+		setPageHeight(innerHeight);
+	}, []);
 
 	useEffect(() => {
 		if (userInfo?.id && !newUser) router.push("/home");
@@ -80,7 +86,9 @@ function login() {
 					<Loader loading={loading} />
 				</div>
 			) : (
-				<div className="flex justify-center items-center bg-panel-header-background h-screen w-screen flex-col gap-6">
+				<div
+					className={`flex justify-center items-center bg-panel-header-background h-screen w-screen flex-col gap-6 max-h-[${pageHeight}] md:max-h-screen`}
+				>
 					<div className="md:flex items-center justify-center gap-2 text-white">
 						<Image
 							src="/whatsapp.gif"

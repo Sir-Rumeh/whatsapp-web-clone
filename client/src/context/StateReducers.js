@@ -23,6 +23,8 @@ export const initialState = {
 const reducer = (state, action) => {
 	switch (action.type) {
 		case reducerCases.SET_USER_INFO:
+			localStorage.setItem("signedInUserInfo", JSON.stringify(action.userInfo));
+			localStorage.setItem("hasSignedIn", true);
 			return {
 				...state,
 				userInfo: action.userInfo,

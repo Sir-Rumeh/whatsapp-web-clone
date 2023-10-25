@@ -9,7 +9,11 @@ dotenv.config();
 const app = express();
 app.use(
 	cors({
-		origin: ["https://whatsapp-web-clone-client.vercel.app","https://whatsapp-web-clone.up.railway.app", "http://localhost:3000"],
+		origin: [
+			"https://whatsapp-web-clone-client.vercel.app",
+			"https://whatsapp-web-clone.up.railway.app",
+			"http://localhost:3000",
+		],
 	})
 );
 app.use(express.json());
@@ -32,7 +36,11 @@ const server = app.listen(PORT, "0.0.0.0", () => {
 
 const io = new Server(server, {
 	cors: {
-		origin: ["https://whatsapp-web-clone-client.vercel.app","https://whatsapp-web-clone.up.railway.app", "http://localhost:3000"],
+		origin: [
+			"https://whatsapp-web-clone-client.vercel.app",
+			"https://whatsapp-web-clone.up.railway.app",
+			"http://localhost:3000",
+		],
 	},
 });
 
