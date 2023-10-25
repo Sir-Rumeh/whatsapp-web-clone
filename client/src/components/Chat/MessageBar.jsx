@@ -8,7 +8,6 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { FaMicrophone } from "react-icons/fa";
 import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
-import PhotoPicker from "../common/PhotoPicker";
 import dynamic from "next/dynamic";
 const CaptureAudio = dynamic(() => import("../common/CaptureAudio"), { ssr: false });
 
@@ -49,50 +48,30 @@ function MessageBar() {
 
 	const photoPickerChange = async (e) => {
 		const file = e.target.files[0];
-		console.log("hello");
-		dispatch({
-			type: reducerCases.ADD_MESSAGE,
-			newMessage: {
-				id: "temp",
-				senderId: userInfo?.id,
-				receiverId: currentChatUser?.id,
-				type: "image",
-				message: file?.path,
-				messageStatus: "sent",
-				createdAt: Date.now(),
-			},
-			fromSelf: true,
-		});
 		try {
-			// const formData = new FormData();
-			// formData.append("image", file);
-			// const response = await axios.post(ADD_IMAGE_MESSAGE_ROUTE, formData, {
-			// 	headers: {
-			// 		"Content-Type": "multipart/form-data",
-			// 	},
-			// 	params: {
-			// 		from: userInfo?.id,
-			// 		to: currentChatUser?.id,
-			// 	},
-			// });
-			// if (response.status === 201) {
-			// 	socket?.current.emit("send-msg", {
-			// 		from: userInfo?.id,
-			// 		to: currentChatUser?.id,
-			// 		message: response.data.message,
-			// 	});
-			// 	dispatch({
-			// 		type: reducerCases.SET_MESSAGES,
-			// 		messages: messages.filter((msg) => {
-			// 			return msg.id !== "temp";
-			// 		}),
-			// 	});
-			// 	dispatch({
-			// 		type: reducerCases.ADD_MESSAGE,
-			// 		newMessage: { ...response.data.message },
-			// 		fromSelf: true,
-			// 	});
-			// }
+			const formData = new FormData();
+			formData.append("image", file);
+			const response = await axios.post(ADD_IMAGE_MESSAGE_ROUTE, formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+				params: {
+					from: userInfo?.id,
+					to: currentChatUser?.id,
+				},
+			});
+			if (response.status === 201) {
+				socket?.current.emit("send-msg", {
+					from: userInfo?.id,
+					to: currentChatUser?.id,
+					message: response.data.message,
+				});
+				dispatch({
+					type: reducerCases.ADD_MESSAGE,
+					newMessage: { ...response.data.message },
+					fromSelf: true,
+				});
+			}
 		} catch (err) {
 			return Promise.reject(err);
 		}
@@ -187,7 +166,7 @@ function MessageBar() {
 		<div className="bg-panel-header-background h-20 px-4 flex items-center gap-6 relative" id="text_input">
 			{!showAudioRecorder && (
 				<>
-					<div className="flex gap-6">
+					<div className="flex items-center gap-6">
 						<BsEmojiSmile
 							className="text-panel-header-icon cursor-pointer text-xl"
 							title="Emoji"
@@ -199,11 +178,6 @@ function MessageBar() {
 								<EmojiPicker onEmojiClick={handleEmojiClick} theme="dark" />
 							</div>
 						)}
-						{/* <ImAttachment
-							className="text-panel-header-icon cursor-pointer text-xl"
-							title="Attach File"
-							onClick={() => setGrabPhoto(true)}
-						/> */}
 						<div className="relative">
 							<input
 								type="file"
@@ -213,7 +187,7 @@ function MessageBar() {
 							/>
 							<button
 								type="button"
-								className="cursor-pointer px-10 py-4 w-full p-6 border-2 rounded-xl flex items-center justify-center border-dashed"
+								className="cursor-pointer p-1 rounded-lg flex items-center justify-center"
 								onClick={() => {
 									if (fileRef.current) {
 										fileRef.current.click();
@@ -256,9 +230,7 @@ function MessageBar() {
 					</div>
 				</>
 			)}
-			{grabPhoto ? <PhotoPicker onChange={photoPickerChange} /> : null}
 			{showAudioRecorder ? <CaptureAudio setShowAudioRecorder={setShowAudioRecorder} /> : null}
-			<script></script>
 		</div>
 	);
 }
