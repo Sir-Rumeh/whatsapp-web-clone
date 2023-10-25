@@ -184,7 +184,7 @@ const Main = () => {
 					</div>
 					{/* MOBILE VIEW */}
 					<div
-						className={`sm:hidden flex w-screen h-[${pageHeight}] max-w-full overflow-hidden relative`}
+						className={`sm:hidden flex h-screen w-screen max-w-full overflow-hidden relative max-h-[${pageHeight}]`}
 					>
 						<ChatList />
 						<div
