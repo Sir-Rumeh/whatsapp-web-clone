@@ -181,7 +181,7 @@ function VoiceMessage({ message }) {
 						}
 					}}
 				>
-					<div id="waveformref" className="w-60 bg-re-400" ref={waveformRef} />
+					<div id="waveformref" className="w-60" ref={waveformRef} />
 					<div className="text-bubble-meta text-[11px] pt-1 flex justify-between items-center absolute bottom-[-22px] w-full">
 						<span>{formatTime(isPlaying ? currentPlaybackTime : totalDuration)}</span>
 						<div className="flex gap-1">
