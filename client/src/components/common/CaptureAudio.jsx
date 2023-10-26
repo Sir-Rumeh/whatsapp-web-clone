@@ -5,7 +5,6 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { FaMicrophone, FaPause, FaPlay, FaStopCircle, FaTrash } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
-import WaveSurfer from "wavesurfer.js";
 
 function CaptureAudio({ setShowAudioRecorder }) {
 	const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
@@ -20,8 +19,6 @@ function CaptureAudio({ setShowAudioRecorder }) {
 
 	const audioRef = useRef(null);
 	const mediaRecorderRef = useRef(null);
-	const usewaveform = useRef(null);
-	const waveformRef = useRef(null);
 
 	const handleStartRecording = () => {
 		setRecordingDuration(0);
@@ -132,6 +129,32 @@ function CaptureAudio({ setShowAudioRecorder }) {
 		return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 	};
 
+	const waveSurferRef = useRef(null);
+	const waveformRef = useRef(null);
+
+	useEffect(() => {
+		waveSurferRef.current = WaveSurfer.create({
+			container: waveformRef?.current,
+			waveColor: "#ccc",
+			progressColor: "#4a9eff",
+			cursorColor: "#7ae3c3",
+			barWidth: 2,
+			height: 40,
+			width: 150,
+			responsive: true,
+		});
+
+		setWaveform(waveSurferRef.current);
+
+		waveSurferRef.current?.on("finish", () => {
+			setIsPlaying(false);
+		});
+
+		return () => {
+			waveSurferRef.current?.destroy();
+		};
+	}, []);
+
 	useEffect(() => {
 		if (isRecording) {
 			const interval = setInterval(() => {
@@ -143,28 +166,6 @@ function CaptureAudio({ setShowAudioRecorder }) {
 			return () => clearInterval(interval);
 		}
 	}, [isRecording]);
-
-	useEffect(() => {
-		if (usewaveform.current === null) {
-			usewaveform.current = WaveSurfer?.create({
-				container: "#waveformcontainer",
-				waveColor: "#ccc",
-				progressColor: "#4a9eff",
-				cursorColor: "#7ae3c3",
-				barWidth: 2,
-				height: 30,
-				responsive: true,
-			});
-			setWaveform(usewaveform.current);
-			usewaveform.current?.on("finish", () => {
-				setIsPlaying(false);
-			});
-		}
-
-		return () => {
-			usewaveform.current?.destroy();
-		};
-	}, []);
 
 	useEffect(() => {
 		if (waveform) handleStartRecording();
@@ -207,9 +208,8 @@ function CaptureAudio({ setShowAudioRecorder }) {
 				)}
 				<div
 					id="waveformcontainer"
-					className="w-[100px] min-w-[60px] sm:w-60 flex justify-end"
+					className="w-[100px] min-w-[60px] sm:w-60 flex items-center gap-x-3 justify-end bg-red-40 -translate-x-3"
 					ref={waveformRef}
-					hidden
 				>
 					{recordedAudio && isPlaying && <span>{formatTime(currentPlaybackTime)}</span>}
 					{recordedAudio && !isPlaying && !isRecording && <span>{formatTime(totalDuration)}</span>}

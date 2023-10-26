@@ -8,7 +8,6 @@ import MessageStatus from "../common/MessageStatus";
 import axios from "axios";
 import { reducerCases } from "@/context/constants";
 import ContextMenu from "../common/ContextMenu";
-import WaveSurfer from "wavesurfer.js";
 
 function VoiceMessage({ message }) {
 	const [{ userInfo, currentChatUser, socket, messages }, dispatch] = useStateProvider();
@@ -16,20 +15,19 @@ function VoiceMessage({ message }) {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
 	const [totalDuration, setTotalDuration] = useState(0);
-
-	const waveform = useRef(null);
-	const waveformRef = useRef(null);
+	const [waveFormEvent, setWaveFormEvent] = useState(false);
+	const [waveFormState, setWaveFormState] = useState(undefined);
 
 	const handlePlayAudio = () => {
 		if (audioMessage) {
-			waveform?.current?.stop();
-			waveform?.current?.play();
+			waveFormState?.stop();
+			waveFormState?.play();
 			audioMessage?.play();
 			setIsPlaying(true);
 		}
 	};
 	const handlePauseAudio = () => {
-		waveform?.current?.stop();
+		waveFormState?.stop();
 		audioMessage?.pause();
 		setIsPlaying(false);
 	};
@@ -41,38 +39,40 @@ function VoiceMessage({ message }) {
 		return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 	};
 
-	useEffect(() => {
-		if (waveform.current === null) {
-			waveform.current = WaveSurfer?.create({
-				container: "#waveformref",
-				waveColor: "#ccc",
-				progressColor: "#4a9eff",
-				cursorColor: "#7ae3c3",
-				barWidth: 2,
-				height: 30,
-				responsive: true,
-			});
-			waveform?.current?.on("finish", () => {
-				setIsPlaying(false);
-			});
-		}
+	const waveSurferRef = useRef(null);
+	const waveformRef = useRef(null);
 
+	useEffect(() => {
+		const audioURL = `${HOST}/${message.message}`;
+
+		waveSurferRef.current = WaveSurfer.create({
+			container: waveformRef?.current,
+			waveColor: "#ccc",
+			progressColor: "#4a9eff",
+			cursorColor: "#7ae3c3",
+			barWidth: 2,
+			height: 40,
+			width: 150,
+			responsive: true,
+		});
+		waveSurferRef.current.load(audioURL);
+		setWaveFormState(waveSurferRef.current);
 		return () => {
-			waveform?.current?.destroy();
+			waveSurferRef.current.destroy();
 		};
-	}, []);
+	}, [message.message]);
 
 	useEffect(() => {
 		const audioURL = `${HOST}/${message.message}`;
 		if (audioURL) {
 			const audio = new Audio(audioURL);
 			setAudioMessage(audio);
-			waveform.current?.load(audioURL);
-			waveform.current?.on("ready", () => {
-				setTotalDuration(waveform.current.getDuration());
+			waveFormState?.load(audioURL, { type: "data", data: [0.1, -0.4] });
+			waveFormState?.on("ready", () => {
+				setTotalDuration(waveform?.current?.getDuration());
 			});
 		}
-	}, [message.message]);
+	}, []);
 
 	useEffect(() => {
 		if (audioMessage) {
@@ -125,7 +125,7 @@ function VoiceMessage({ message }) {
 		<>
 			<div
 				id="message-box"
-				className={`flex items-center gap-5 text-white px-4 pr-2 py-3 md:py-4 text-sm rounded-md w-[300px] sm:w-auto ${
+				className={`flex items-center text-white gap-x-4 px-4 py-3 md:py-4 text-sm rounded-md w-[300px] sm:w-auto ${
 					message.senderId === currentChatUser?.id ? "bg-incoming-background" : "bg-outgoing-background"
 				}`}
 				onMouseOver={(event) => {
@@ -141,21 +141,7 @@ function VoiceMessage({ message }) {
 					}
 				}}
 			>
-				<div
-					id="message-box"
-					onMouseOver={(event) => {
-						event.preventDefault();
-						if (message.senderId === userInfo?.id) {
-							setIsSender(true);
-						}
-					}}
-					onContextMenu={(event) => {
-						event.preventDefault();
-						if (isSender) {
-							showContextMenu(event);
-						}
-					}}
-				>
+				<div id="message-box">
 					{currentChatUser?.profilePicture ? (
 						<Avatar type="lg" image={currentChatUser?.profilePicture} />
 					) : (
@@ -165,24 +151,11 @@ function VoiceMessage({ message }) {
 				<div id="message-box" className="cursor-pointer text-xl">
 					{!isPlaying ? <FaPlay onClick={handlePlayAudio} /> : <FaPause onClick={handlePauseAudio} />}
 				</div>
-				<div
-					id="message-box"
-					className="relative"
-					onMouseOver={(event) => {
-						event.preventDefault();
-						if (message.senderId === userInfo?.id) {
-							setIsSender(true);
-						}
-					}}
-					onContextMenu={(event) => {
-						event.preventDefault();
-						if (isSender) {
-							showContextMenu(event);
-						}
-					}}
-				>
-					<div id="waveformref" className="w-60" ref={waveformRef} />
-					<div className="text-bubble-meta text-[11px] pt-1 flex justify-between items-center absolute bottom-[-22px] w-full">
+
+				<div id="waveformref" className="w-40 flex items-center h-10 overflow-x-hidden" ref={waveformRef} />
+
+				<div className="relative">
+					<div className="text-bubble-meta text-[11px] pt-1 justify-between items-center  w-full flex">
 						<span>{formatTime(isPlaying ? currentPlaybackTime : totalDuration)}</span>
 						<div className="flex gap-1">
 							<span>{calculateTime(message.createdAt)}</span>

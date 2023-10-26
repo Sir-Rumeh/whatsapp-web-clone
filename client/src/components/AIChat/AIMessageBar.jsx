@@ -116,7 +116,7 @@ const AIMessageBar = () => {
 			{lockChat ? (
 				<div className="w-full flex rounded-lg bg-input-background p-2 ">
 					<p className="text-white text-xl text-center leading-12 w-full tracking-wider">
-						Sorry, you have reached your chat limit for the day Try again after 24 hours.
+						Sorry, you have reached your chat limit for the day Try again later.
 					</p>
 				</div>
 			) : (
