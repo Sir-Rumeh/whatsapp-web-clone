@@ -8,6 +8,7 @@ import MessageStatus from "../common/MessageStatus";
 import axios from "axios";
 import { reducerCases } from "@/context/constants";
 import ContextMenu from "../common/ContextMenu";
+import WaveSurfer from "wavesurfer.js";
 
 function VoiceMessage({ message }) {
 	const [{ userInfo, currentChatUser, socket, messages }, dispatch] = useStateProvider();

@@ -5,6 +5,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { FaMicrophone, FaPause, FaPlay, FaStopCircle, FaTrash } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
+import WaveSurfer from "wavesurfer.js";
 
 function CaptureAudio({ setShowAudioRecorder }) {
 	const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider();
@@ -184,56 +185,67 @@ function CaptureAudio({ setShowAudioRecorder }) {
 	}, [recordedAudio]);
 
 	return (
-		<div className="flex text-2xl w-full justify-end items-center overflow-x-hidden relative px-1">
-			<div className="">
-				<FaTrash className="text-panel-header-icon cursor-pointer" onClick={() => setShowAudioRecorder()} />
-			</div>
-			<div className="mx-4 py-2 px-4 text-white text-lg flex gap-3 justify-center items-center bg-search-input-container-background rounded-full drop-shadow-lg">
-				{isRecording ? (
-					<div className="text-red-500 animate-pulse text-center flex gap-x-2">
-						Recording<span className="">{recordingDuration}</span>
+		<>
+			<div className="flex text-2xl w-full justify-end items-center overflow-x-hidden relative px-1">
+				<div className="">
+					<FaTrash
+						className="text-panel-header-icon cursor-pointer"
+						onClick={() => setShowAudioRecorder()}
+					/>
+				</div>
+				<div className="mx-4 py-2 px-4 text-white text-lg flex gap-3 justify-center items-center bg-search-input-container-background rounded-full drop-shadow-lg">
+					{isRecording ? (
+						<div className="text-red-500 animate-pulse text-center flex gap-x-2">
+							Recording<span className="">{recordingDuration}</span>
+						</div>
+					) : (
+						<div>
+							{recordedAudio && (
+								<>
+									{!isPlaying ? (
+										<FaPlay onClick={handlePlayRecording} className="cursor-pointer" />
+									) : (
+										<FaPause onClick={handlePauseRecording} className="cursor-pointer" />
+									)}
+								</>
+							)}
+						</div>
+					)}
+					<div
+						id="waveformcontainer"
+						className="w-[100px] min-w-[60px] sm:w-60 flex items-center gap-x-3 justify-end bg-red-40 -translate-x-3"
+						ref={waveformRef}
+					>
+						{recordedAudio && isPlaying && <span>{formatTime(currentPlaybackTime)}</span>}
+						{recordedAudio && !isPlaying && !isRecording && <span>{formatTime(totalDuration)}</span>}
+						<audio ref={audioRef} hidden />
 					</div>
-				) : (
-					<div>
-						{recordedAudio && (
-							<>
-								{!isPlaying ? (
-									<FaPlay onClick={handlePlayRecording} className="cursor-pointer" />
-								) : (
-									<FaPause onClick={handlePauseRecording} className="cursor-pointer" />
-								)}
-							</>
+
+					<div className="mr-4">
+						{!isRecording ? (
+							<FaMicrophone
+								className="text-red-500 cursor-pointer"
+								onClick={handleStartRecording}
+							/>
+						) : (
+							<FaStopCircle
+								className="text-red-500 cursor-pointer"
+								onClick={handleStopRecording}
+							/>
 						)}
 					</div>
-				)}
-				<div
-					id="waveformcontainer"
-					className="w-[100px] min-w-[60px] sm:w-60 flex items-center gap-x-3 justify-end bg-red-40 -translate-x-3"
-					ref={waveformRef}
-				>
-					{recordedAudio && isPlaying && <span>{formatTime(currentPlaybackTime)}</span>}
-					{recordedAudio && !isPlaying && !isRecording && <span>{formatTime(totalDuration)}</span>}
-					<audio ref={audioRef} hidden />
-				</div>
-
-				<div className="mr-4">
-					{!isRecording ? (
-						<FaMicrophone className="text-red-500 cursor-pointer" onClick={handleStartRecording} />
-					) : (
-						<FaStopCircle className="text-red-500 cursor-pointer" onClick={handleStopRecording} />
-					)}
-				</div>
-				<div>
-					{!isRecording && (
-						<MdSend
-							className="text-panel-header-icon cursor-pointer mr-4"
-							title="Send"
-							onClick={sendRecording}
-						/>
-					)}
+					<div>
+						{!isRecording && (
+							<MdSend
+								className="text-panel-header-icon cursor-pointer mr-4"
+								title="Send"
+								onClick={sendRecording}
+							/>
+						)}
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
 
