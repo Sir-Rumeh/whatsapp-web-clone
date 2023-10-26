@@ -12,7 +12,7 @@ import Loader from "@/components/common/Loader";
 function onboarding() {
 	const router = useRouter();
 
-	const [{ userInfo, newUser }, dispatch] = useStateProvider();
+	const [{ userInfo, newUser, socket }, dispatch] = useStateProvider();
 	const [name, setName] = useState(userInfo?.name || "");
 	const [about, setAbout] = useState("");
 	const [detailsValidated, setDetailsValidated] = useState(true);
@@ -57,6 +57,7 @@ function onboarding() {
 							status: about,
 						},
 					});
+					socket?.current.emit("add-user", { userId: id });
 					router.push("/home");
 				}
 				setLoading(false);
