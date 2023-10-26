@@ -58,7 +58,7 @@ io.on("connection", (socket) => {
 
 	socket.on("logout", (userId) => {
 		onlineUsers.delete(userId);
-		socket.broadcast.emit("online-users", {
+		socket.broadcast.emit("offline-users", {
 			onlineUsers: Array.from(onlineUsers.keys()),
 		});
 	});
@@ -125,6 +125,7 @@ io.on("connection", (socket) => {
 
 	socket.on("terminate-call", (data) => {
 		const sendUserSocket = onlineUsers.get(data.from);
+
 		socket.to(sendUserSocket).emit("call-terminated");
 	});
 });

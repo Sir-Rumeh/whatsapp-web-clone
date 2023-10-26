@@ -130,6 +130,12 @@ const Main = () => {
 					onlineUsers,
 				});
 			});
+			socket.current.on("offline-users", ({ onlineUsers }) => {
+				dispatch({
+					type: reducerCases.SET_ONLINE_USERS,
+					onlineUsers,
+				});
+			});
 
 			setSocketEvent(true);
 		}
