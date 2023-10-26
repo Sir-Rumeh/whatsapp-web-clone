@@ -64,17 +64,17 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 					)}
 				</div>
 				<div className="flex border-b border-conversation-border pb-2 pt-1 pr-2 ">
-					<div className="flex justify-between w-full ">
+					<div className="flex items-center justify-between w-full ">
 						<span className="text-secondary line-clamp-1 text-sm ">
 							{isContactsPage ? (
 								data?.about || "\u00A0"
 							) : (
-								<div className="flex items-center gap-1 max-w-[200px] sm:max-w-[250px] md:max-w-[300px] lg:max-w-[200px] xl:max-w-[300px]">
+								<div className="flex items-center gap-1 max-w-[200px] sm:max-w-[250px] md:max-w-[300px] lg:max-w-[200px] xl:max-w-[300px] ">
 									{data.senderId === userInfo?.id && (
 										<MessageStatus messageStatus={data.messageStatus} />
 									)}
 									{data.type === "text" && (
-										<span className="truncate md:-pr-4">{data.message}</span>
+										<span className="truncate md:-pr-4 w-[9rem]">{data.message}</span>
 									)}
 									{data.type === "image" && (
 										<span className="flex gap-1 items-center">
