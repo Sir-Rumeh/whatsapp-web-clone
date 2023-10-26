@@ -43,7 +43,7 @@ function ChatLIstItem({ data, isContactsPage = false }) {
 			}`}
 			onClick={handleContactClick}
 		>
-			<div className="min-w-fit px-5 py-1">
+			<div className="min-w-fit px-3 lg:px-5 py-1">
 				<Avatar type="lg" image={data?.profilePicture} />
 			</div>
 			<div className="min-h-full flex flex-col justify-center mt-3 pr-4 w-full ">
