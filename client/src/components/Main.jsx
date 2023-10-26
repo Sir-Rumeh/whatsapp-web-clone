@@ -79,13 +79,26 @@ const Main = () => {
 						...data.message,
 					},
 				});
+				const getContactsAgain = async () => {
+					try {
+						const {
+							data: { users, onlineUsers },
+						} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${localData?.id}`);
+						dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
+						dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
+					} catch (err) {
+						return Promise.reject(err);
+					}
+				};
+				getContactsAgain();
 				dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST });
 				if (data.message.senderId === currentChatUser?.id) {
 					dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST });
 				}
-				if (userInfo?.id) {
-					getContacts();
-				}
+				const localData =
+					localStorage.getItem("signedInUserInfo") !== "undefined"
+						? JSON.parse(localStorage.getItem("signedInUserInfo"))
+						: null;
 			});
 
 			socket.current.on("message-deleted", () => {
