@@ -71,16 +71,36 @@ const Main = () => {
 		// 	// dispatch({ type: reducerCases.SET_SOCKET, socket });
 		// }
 		const socketConnection = new WebSocket("ws://localhost:5002");
+
 		setTestSocket(socketConnection);
 		dispatch({ type: reducerCases.SET_SOCKET, socket: socketConnection });
+
+		if (socket?.readyState === 3) {
+			socket?.close();
+			const socketConnection = new WebSocket("ws://localhost:5002");
+			dispatch({ type: reducerCases.SET_SOCKET, socket: socketConnection });
+		}
 	}, []);
 
 	useEffect(() => {
+		// socket?.send(
+		// 	JSON.stringify({
+		// 		type: "reconnect",
+		// 	})
+		// );
+
 		socket?.addEventListener("message", function (event) {
-			const receivedData = JSON.parse(event.data);
-			if (receivedData.type === "msg-receive") {
-				alert("message received");
-				console.log(receivedData);
+			// alert("message received");
+			const eventData = event.data.toString();
+			const parsedData = JSON.parse(eventData);
+			if (parsedData.type === "msg-receive" && parseInt(parsedData.to) === userInfo?.id) {
+				console.log(parsedData);
+				dispatch({
+					type: reducerCases.ADD_MESSAGE,
+					newMessage: {
+						...parsedData.message,
+					},
+				});
 			}
 		});
 
@@ -116,19 +136,7 @@ const Main = () => {
 		// 		if (data.message.senderId === currentChatUser?.id) {
 		// 			dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST, listValue: Date.now() });
 		// 		}
-		// 		// const getMessages = async () => {
-		// 		// 	try {
-		// 		// 		const {
-		// 		// 			data: { messages },
-		// 		// 		} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
-		// 		// 		dispatch({ type: reducerCases.SET_MESSAGES, messages });
-		// 		// 	} catch (err) {
-		// 		// 		return Promise.reject(err);
-		// 		// 	}
-		// 		// };
-		// 		// if (currentChatUser?.id) {
-		// 		// 	getMessages();
-		// 		// }
+
 		// 	});
 
 		// 	socket.current.on("message-deleted", () => {

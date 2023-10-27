@@ -5,7 +5,7 @@ import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.js";
 import MessageRoutes from "./routes/MessageRoutes.js";
 import { Server } from "socket.io";
-import { WebSocketServer } from "ws";
+import { WebSocket, WebSocketServer } from "ws";
 import { BSON } from "bson";
 
 dotenv.config();
@@ -42,43 +42,65 @@ const wss = new WebSocketServer({
 	server: server,
 });
 
-const Users = [];
+const Users = {};
 
 // const object = JSON.parse("[name]");
 // console.log(object);
 
-wss.on("connection", function connection(ws) {
-	ws.on("message", function message(event) {
-		const eventData = JSON.parse(event.toString());
-		Users[eventData.to] = ws;
+wss.on("connection", function connection(ws, req) {
+	ws.isAlive = true;
 
-		if (eventData.type === "add-user") {
-			console.log("userr");
-			// Users[parsedData.userId] = ws;
-		} else if (eventData.type === "send-message") {
-			wss.clients.forEach((client) => {
-				if (client !== ws && client.readyState === WebSocket.OPEN) {
+	ws.timer = setInterval(() => {
+		ws.ping();
+		ws.deathTimer = setTimeout(() => {
+			ws.isAlive = false;
+			clearInterval(ws.timer);
+			ws.terminate();
+		}, 1000);
+	}, 5000);
+
+	ws.on("pong", () => {
+		clearTimeout(ws.deathTimer);
+	});
+
+	ws.on("message", function message(event) {
+		try {
+			const eventData = event.toString();
+			const parsedData = JSON.parse(eventData);
+			const to = parsedData.to;
+			Users[to] = ws;
+			// const eventData = JSON.parse(event.toString());
+			// const eventData = JSON.parse(event);
+
+			if (parsedData.type === "add-user") {
+				console.log("userr");
+			} else if (parsedData.type === "send-message") {
+				wss.clients.forEach((client) => {
 					client.send(
 						JSON.stringify({
-							from: data.from,
-							message: data.message,
+							type: "msg-receive",
+							to: parsedData.to,
+							from: parsedData.from,
+							message: parsedData.message,
 						})
 					);
-				}
-			});
-			// console.log(wss.clients);
-			// Users[eventData.to].send(
-			// 	JSON.stringify({
-			// 		type: "msg-receive",
-			// 		from: eventData.from,
-			// 		message: eventData.message,
-			// 	})
-			// );
+				});
+
+				// console.log(wss.clients);
+				// Users[to].send(
+				// 	JSON.stringify({
+				// 		type: "msg-receive",
+				// 		from: eventData.from,
+				// 		message: eventData.message,
+				// 	})
+				// );
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	});
-	// {
-	// 	onlineUsers: Array.from(wss.clients.keys()),
-	// }
+	// {onlineUsers: Array.from(wss.clients.keys())}
+	// {onlineUsers: Array.from(wss.clients)}
 	ws.on("error", console.error);
 
 	// wss.broadcast = function broadcast(data) {

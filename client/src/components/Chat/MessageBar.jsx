@@ -1,6 +1,11 @@
 import { useStateProvider } from "@/context/StateContext";
 import { reducerCases } from "@/context/constants";
-import { ADD_IMAGE_MESSAGE_ROUTE, ADD_MESSAGE_ROUTE, GET_INITIAL_CONTACTS_ROUTE } from "@/utils/ApiRoutes";
+import {
+	ADD_IMAGE_MESSAGE_ROUTE,
+	ADD_MESSAGE_ROUTE,
+	GET_INITIAL_CONTACTS_ROUTE,
+	GET_MESSAGES_ROUTE,
+} from "@/utils/ApiRoutes";
 import axios from "axios";
 import EmojiPicker from "emoji-picker-react";
 import React, { useEffect, useRef, useState, useId } from "react";
@@ -112,7 +117,7 @@ function MessageBar() {
 			socket?.send(
 				JSON.stringify({
 					type: "send-message",
-					message: "message",
+					message: data?.message,
 					from: userInfo.id,
 					to: currentChatUser?.id,
 				})
@@ -124,22 +129,7 @@ function MessageBar() {
 				}),
 			});
 			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { ...data?.message }, fromSelf: true });
-			const getContacts = async () => {
-				try {
-					const {
-						data: { users, onlineUsers },
-					} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo?.id}`);
-					dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
-					dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
-				} catch (err) {
-					return Promise.reject(err);
-				}
-			};
-			if (data) {
-				if (userInfo?.id) {
-					getContacts();
-				}
-			}
+			dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST, listValue: Date.now() });
 		} catch (err) {
 			return Promise.reject(err);
 		}
