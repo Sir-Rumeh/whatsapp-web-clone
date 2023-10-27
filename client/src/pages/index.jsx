@@ -11,7 +11,7 @@ import Loader from "@/components/common/Loader";
 
 function login() {
 	const router = useRouter();
-	const [{ userInfo, newUser, socket }, dispatch] = useStateProvider();
+	const [{ userInfo, newUser }, dispatch] = useStateProvider();
 	const [userName, setUserName] = useState("");
 	const [detailsValidated, setDetailsValidated] = useState(true);
 	const [loading, setLoading] = useState(false);
@@ -68,7 +68,6 @@ function login() {
 							status,
 						},
 					});
-					socket?.current.emit("add-user", { userId: id });
 					router.push("/home");
 				}
 				setLoading(false);

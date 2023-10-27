@@ -63,11 +63,12 @@ function MessageBar() {
 				},
 			});
 			if (response.status === 201) {
-				socket?.current.emit("send-msg", {
-					from: userInfo?.id,
-					to: currentChatUser?.id,
-					message: response.data.message,
-				});
+				// socket?.current.emit("send-msg", {
+				// 	from: userInfo?.id,
+				// 	to: currentChatUser?.id,
+				// 	message: response.data.message,
+				// });
+
 				dispatch({
 					type: reducerCases.ADD_MESSAGE,
 					newMessage: { ...response.data.message },
@@ -103,11 +104,19 @@ function MessageBar() {
 				from: userInfo?.id,
 				message,
 			});
-			socket?.current.emit("send-msg", {
-				to: currentChatUser?.id,
-				from: userInfo?.id,
-				message: data?.message,
-			});
+			// socket?.current.emit("send-msg", {
+			// 	to: currentChatUser?.id,
+			// 	from: userInfo?.id,
+			// 	message: data?.message,
+			// });
+			socket?.send(
+				JSON.stringify({
+					type: "send-message",
+					message: "message",
+					from: userInfo.id,
+					to: currentChatUser?.id,
+				})
+			);
 			dispatch({
 				type: reducerCases.SET_MESSAGES,
 				messages: messages.filter((msg) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ChatList from "./Chatlist/ChatList";
 import Empty from "./Empty";
-import { GET_INITIAL_CONTACTS_ROUTE, HOST } from "@/utils/ApiRoutes";
+import { GET_INITIAL_CONTACTS_ROUTE, GET_MESSAGES_ROUTE, HOST } from "@/utils/ApiRoutes";
 import { reducerCases } from "@/context/constants";
 import { useStateProvider } from "@/context/StateContext";
 import Chat from "./Chat/Chat";
@@ -17,13 +17,23 @@ import axios from "axios";
 const Main = () => {
 	const router = useRouter();
 	const [
-		{ userInfo, currentChatUser, messageSearch, voiceCall, videoCall, incomingVoiceCall, incomingVideoCall },
+		{
+			userInfo,
+			currentChatUser,
+			messageSearch,
+			voiceCall,
+			videoCall,
+			incomingVoiceCall,
+			incomingVideoCall,
+			socket,
+		},
 		dispatch,
 	] = useStateProvider();
 
 	const [socketEvent, setSocketEvent] = useState(false);
-	const socket = useRef();
+	// const socket = useRef();
 	const [pageHeight, setPageHeight] = useState(undefined);
+	const [testSocket, setTestSocket] = useState(undefined);
 
 	useEffect(() => {
 		const { innerHeight } = window;
@@ -35,11 +45,7 @@ const Main = () => {
 		if (hasSignedIn === "false") {
 			router.push("/");
 		}
-		if (userInfo) {
-			socket.current = io(HOST);
-			socket.current.emit("add-user", userInfo?.id);
-			dispatch({ type: reducerCases.SET_SOCKET, socket });
-		}
+
 		const localData =
 			localStorage.getItem("signedInUserInfo") !== "undefined"
 				? JSON.parse(localStorage.getItem("signedInUserInfo"))
@@ -58,100 +64,118 @@ const Main = () => {
 		}
 	}, []);
 
-	const getContacts = async () => {
-		try {
-			const {
-				data: { users, onlineUsers },
-			} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo?.id}`);
-			dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
-			dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
-		} catch (err) {
-			return Promise.reject(err);
-		}
-	};
+	useEffect(() => {
+		// if (userInfo) {
+		// 	socket.current = io(HOST);
+		// 	socket.current.emit("add-user", userInfo?.id);
+		// 	// dispatch({ type: reducerCases.SET_SOCKET, socket });
+		// }
+		const socketConnection = new WebSocket("ws://localhost:5002");
+		setTestSocket(socketConnection);
+		dispatch({ type: reducerCases.SET_SOCKET, socket: socketConnection });
+	}, []);
 
 	useEffect(() => {
-		if (socket.current && !socketEvent) {
-			socket.current.on("msg-receive", (data) => {
-				dispatch({
-					type: reducerCases.ADD_MESSAGE,
-					newMessage: {
-						...data.message,
-					},
-				});
-				const getContactsAgain = async () => {
-					try {
-						const {
-							data: { users, onlineUsers },
-						} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${localData?.id}`);
-						dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
-						dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
-					} catch (err) {
-						return Promise.reject(err);
-					}
-				};
-				getContactsAgain();
-				dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST });
-				if (data.message.senderId === currentChatUser?.id) {
-					dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST });
-				}
-				const localData =
-					localStorage.getItem("signedInUserInfo") !== "undefined"
-						? JSON.parse(localStorage.getItem("signedInUserInfo"))
-						: null;
-			});
+		socket?.addEventListener("message", function (event) {
+			const receivedData = JSON.parse(event.data);
+			if (receivedData.type === "msg-receive") {
+				alert("message received");
+				console.log(receivedData);
+			}
+		});
 
-			socket.current.on("message-deleted", () => {
-				dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST });
-			});
+		// socket.addEventListener("error", console.error);
 
-			socket.current.on("incoming-voice-call", ({ from, roomId, callType }) => {
-				dispatch({
-					type: reducerCases.SET_INCOMING_VOICE_CALL,
-					incomingVoiceCall: { ...from, roomId, callType },
-				});
-			});
+		// socket.addEventListener("open", function (event) {
+		// 	console.log("from frontend");
+		// });
+	}, [socket]);
 
-			socket.current.on("incoming-video-call", ({ from, roomId, callType }) => {
-				dispatch({
-					type: reducerCases.SET_INCOMING_VIDEO_CALL,
-					incomingVideoCall: { ...from, roomId, callType },
-				});
-			});
+	// const getContacts = async () => {
+	// 	try {
+	// 		const {
+	// 			data: { users, onlineUsers },
+	// 		} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo?.id}`);
+	// 		dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
+	// 		dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
+	// 	} catch (err) {
+	// 		return Promise.reject(err);
+	// 	}
+	// };
 
-			socket.current.on("voice-call-rejected", () => {
-				dispatch({
-					type: reducerCases.END_CALL,
-				});
-			});
+	useEffect(() => {
+		// if (socket.current && !socketEvent) {
+		// 	socket?.current.on("msg-receive", (data) => {
+		// 		dispatch({
+		// 			type: reducerCases.ADD_MESSAGE,
+		// 			newMessage: {
+		// 				...data.message,
+		// 			},
+		// 		});
+		// 		dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST, listValue: Date.now() });
+		// 		if (data.message.senderId === currentChatUser?.id) {
+		// 			dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST, listValue: Date.now() });
+		// 		}
+		// 		// const getMessages = async () => {
+		// 		// 	try {
+		// 		// 		const {
+		// 		// 			data: { messages },
+		// 		// 		} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
+		// 		// 		dispatch({ type: reducerCases.SET_MESSAGES, messages });
+		// 		// 	} catch (err) {
+		// 		// 		return Promise.reject(err);
+		// 		// 	}
+		// 		// };
+		// 		// if (currentChatUser?.id) {
+		// 		// 	getMessages();
+		// 		// }
+		// 	});
 
-			socket.current.on("video-call-rejected", () => {
-				dispatch({
-					type: reducerCases.END_CALL,
-				});
-			});
+		// 	socket.current.on("message-deleted", () => {
+		// 		dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST, listValue: Date.now() });
+		// 	});
 
-			socket.current.on("call-terminated", () => {
-				dispatch({
-					type: reducerCases.END_CALL,
-				});
-			});
+		// 	socket.current.on("incoming-voice-call", ({ from, roomId, callType }) => {
+		// 		dispatch({
+		// 			type: reducerCases.SET_INCOMING_VOICE_CALL,
+		// 			incomingVoiceCall: { ...from, roomId, callType },
+		// 		});
+		// 	});
 
-			socket.current.on("online-users", ({ onlineUsers }) => {
-				dispatch({
-					type: reducerCases.SET_ONLINE_USERS,
-					onlineUsers,
-				});
-			});
-			socket.current.on("offline-users", ({ onlineUsers }) => {
-				dispatch({
-					type: reducerCases.SET_ONLINE_USERS,
-					onlineUsers,
-				});
-			});
+		// 	socket.current.on("incoming-video-call", ({ from, roomId, callType }) => {
+		// 		dispatch({
+		// 			type: reducerCases.SET_INCOMING_VIDEO_CALL,
+		// 			incomingVideoCall: { ...from, roomId, callType },
+		// 		});
+		// 	});
 
-			setSocketEvent(true);
-		}
+		// 	socket.current.on("voice-call-rejected", () => {
+		// 		dispatch({
+		// 			type: reducerCases.END_CALL,
+		// 		});
+		// 	});
+
+		// 	socket.current.on("video-call-rejected", () => {
+		// 		dispatch({
+		// 			type: reducerCases.END_CALL,
+		// 		});
+		// 	});
+
+		// 	socket.current.on("call-terminated", () => {
+		// 		dispatch({
+		// 			type: reducerCases.END_CALL,
+		// 		});
+		// 	});
+
+		// 	socket.current.on("online-users", ({ onlineUsers }) => {
+		// 		dispatch({
+		// 			type: reducerCases.SET_ONLINE_USERS,
+		// 			onlineUsers,
+		// 		});
+		// 	});
+
+		// 	setSocketEvent(true);
+		// }
 		const localData =
 			localStorage.getItem("signedInUserInfo") !== "undefined"
 				? JSON.parse(localStorage.getItem("signedInUserInfo"))
@@ -168,7 +192,8 @@ const Main = () => {
 			}
 		};
 		getContactsAgain();
-	}, [socket.current]);
+	}, []);
+	// }, [socket.current]);
 
 	return (
 		<>

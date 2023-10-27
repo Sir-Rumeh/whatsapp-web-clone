@@ -12,20 +12,27 @@ import { reducerCases } from "@/context/constants";
 const VoiceMessage = dynamic(() => import("./VoiceMessage"), { ssr: false });
 
 function ChatContainer() {
-	const [{ messages, userInfo, currentChatUser, refreshChatList }, dispatch] = useStateProvider();
+	const [{ messages, userInfo, socket, currentChatUser, refreshChatList }, dispatch] = useStateProvider();
 	const bottomRef = useRef(null);
 
+	const getMessages = async () => {
+		try {
+			const {
+				data: { messages },
+			} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
+			dispatch({ type: reducerCases.SET_MESSAGES, messages });
+		} catch (err) {
+			return Promise.reject(err);
+		}
+	};
+
 	useEffect(() => {
-		const getMessages = async () => {
-			try {
-				const {
-					data: { messages },
-				} = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo?.id}/${currentChatUser?.id}`);
-				dispatch({ type: reducerCases.SET_MESSAGES, messages });
-			} catch (err) {
-				return Promise.reject(err);
-			}
-		};
+		console.log(refreshChatList);
+		const localData =
+			localStorage.getItem("signedInUserInfo") !== "undefined"
+				? JSON.parse(localStorage.getItem("signedInUserInfo"))
+				: null;
+
 		if (currentChatUser?.id) {
 			getMessages();
 		}

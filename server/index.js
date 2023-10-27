@@ -1,9 +1,12 @@
 import express from "express";
+import http from "http";
 import dotenv from "dotenv";
 import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.js";
 import MessageRoutes from "./routes/MessageRoutes.js";
 import { Server } from "socket.io";
+import { WebSocketServer } from "ws";
+import { BSON } from "bson";
 
 dotenv.config();
 const app = express();
@@ -16,6 +19,7 @@ app.use(
 		],
 	})
 );
+
 app.use(express.json());
 
 app.use("/uploads/images", express.static("uploads/images"));
@@ -25,6 +29,7 @@ app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);
 
 const PORT = process.env.PORT | 5002;
+// const PORT = process.env.PORT | 5002;
 
 app.get("/", (req, res) => {
 	res.send("Hey this is my API running 🥳");
@@ -32,6 +37,55 @@ app.get("/", (req, res) => {
 
 const server = app.listen(PORT, "0.0.0.0", () => {
 	console.log(`Server started on port ${PORT}`);
+});
+const wss = new WebSocketServer({
+	server: server,
+});
+
+const Users = [];
+
+// const object = JSON.parse("[name]");
+// console.log(object);
+
+wss.on("connection", function connection(ws) {
+	ws.on("message", function message(event) {
+		const eventData = JSON.parse(event.toString());
+		Users[eventData.to] = ws;
+
+		if (eventData.type === "add-user") {
+			console.log("userr");
+			// Users[parsedData.userId] = ws;
+		} else if (eventData.type === "send-message") {
+			wss.clients.forEach((client) => {
+				if (client !== ws && client.readyState === WebSocket.OPEN) {
+					client.send(
+						JSON.stringify({
+							from: data.from,
+							message: data.message,
+						})
+					);
+				}
+			});
+			// console.log(wss.clients);
+			// Users[eventData.to].send(
+			// 	JSON.stringify({
+			// 		type: "msg-receive",
+			// 		from: eventData.from,
+			// 		message: eventData.message,
+			// 	})
+			// );
+		}
+	});
+	// {
+	// 	onlineUsers: Array.from(wss.clients.keys()),
+	// }
+	ws.on("error", console.error);
+
+	// wss.broadcast = function broadcast(data) {
+	// 	wss.clients.forEach(function each(client) {
+	// 		client.send(data);
+	// 	});
+	// };
 });
 
 const io = new Server(server, {
@@ -49,16 +103,9 @@ global.onlineUsers = new Map();
 io.on("connection", (socket) => {
 	global.chatSocket = socket;
 
-	socket.on("add-user", ({ userId }) => {
+	socket.on("add-user", (userId) => {
 		onlineUsers.set(userId, socket.id);
 		socket.broadcast.emit("online-users", {
-			onlineUsers: Array.from(onlineUsers.keys()),
-		});
-	});
-
-	socket.on("logout", ({ userId }) => {
-		onlineUsers.delete(userId);
-		socket.broadcast.emit("offline-users", {
 			onlineUsers: Array.from(onlineUsers.keys()),
 		});
 	});
