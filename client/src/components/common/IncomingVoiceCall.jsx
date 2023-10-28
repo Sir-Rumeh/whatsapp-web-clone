@@ -9,10 +9,20 @@ function IncomingCall() {
 
 	useEffect(() => {
 		ringtone.play();
-		socket?.current.on("call-terminated", () => {
-			ringtone.pause();
-			ringtone.currentTime = 0;
+		socket?.addEventListener("message", function (event) {
+			const eventData = event.data.toString();
+			const parsedData = JSON.parse(eventData);
+			if (parseInt(parsedData.sendTo) === userInfo?.id) {
+				if (parsedData.type === "call-terminated") {
+					ringtone.pause();
+					ringtone.currentTime = 0;
+				}
+			}
 		});
+		// socket?.current.on("call-terminated", () => {
+		// 	ringtone.pause();
+		// 	ringtone.currentTime = 0;
+		// });
 	}, []);
 
 	const acceptCall = () => {
@@ -22,7 +32,7 @@ function IncomingCall() {
 			type: reducerCases.SET_VOICE_CALL,
 			voiceCall: { ...incomingVoiceCall, type: "in-coming" },
 		});
-		socket?.current.emit("accept-incoming-call", { id: incomingVoiceCall.id });
+		// socket?.current.emit("accept-incoming-call", { id: incomingVoiceCall.id });
 		dispatch({
 			type: reducerCases.SET_INCOMING_VOICE_CALL,
 			incomingVoiceCall: undefined,
@@ -32,7 +42,11 @@ function IncomingCall() {
 	const rejectCall = () => {
 		ringtone.pause();
 		ringtone.currentTime = 0;
-		socket?.current.emit("reject-voice-call", { from: incomingVoiceCall.id });
+		// socket?.current.emit("reject-voice-call", { from: incomingVoiceCall.id });
+		dispatch({
+			type: reducerCases.SET_INCOMING_VOICE_CALL,
+			incomingVoiceCall: undefined,
+		});
 		dispatch({ type: reducerCases.END_CALL });
 	};
 

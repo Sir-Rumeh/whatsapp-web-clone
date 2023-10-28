@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.js";
 import MessageRoutes from "./routes/MessageRoutes.js";
+import { stringify } from "./utils/helper.js";
 import { Server } from "socket.io";
 import { WebSocket, WebSocketServer } from "ws";
 import { BSON } from "bson";
@@ -38,16 +39,17 @@ app.get("/", (req, res) => {
 const server = app.listen(PORT, "0.0.0.0", () => {
 	console.log(`Server started on port ${PORT}`);
 });
+
+global.onlineUsers = new Map();
+
 const wss = new WebSocketServer({
 	server: server,
 });
 
-const Users = {};
-
 // const object = JSON.parse("[name]");
 // console.log(object);
 
-wss.on("connection", function connection(ws, req) {
+wss.on("connection", function connection(ws) {
 	ws.isAlive = true;
 
 	ws.timer = setInterval(() => {
@@ -67,42 +69,54 @@ wss.on("connection", function connection(ws, req) {
 		try {
 			const eventData = event.toString();
 			const parsedData = JSON.parse(eventData);
-			const to = parsedData.to;
-			Users[to] = ws;
-			// const eventData = JSON.parse(event.toString());
-			// const eventData = JSON.parse(event);
 
 			if (parsedData.type === "add-user") {
-				console.log("userr");
+				const { id } = parsedData;
+				onlineUsers.set(ws, id);
 			} else if (parsedData.type === "send-message") {
 				wss.clients.forEach((client) => {
 					client.send(
-						JSON.stringify({
+						stringify({
 							type: "msg-receive",
-							to: parsedData.to,
-							from: parsedData.from,
-							message: parsedData.message,
+							cameFrom: parsedData.from,
+							sendTo: parsedData.to,
+							messageObject: parsedData.sentMessage,
 						})
 					);
 				});
-
-				// console.log(wss.clients);
-				// Users[to].send(
-				// 	JSON.stringify({
-				// 		type: "msg-receive",
-				// 		from: eventData.from,
-				// 		message: eventData.message,
-				// 	})
-				// );
+			} else if (parsedData.type === "delete-message") {
+				wss.clients.forEach((client) => {
+					client.send(
+						stringify({
+							type: "message-deleted",
+							cameFrom: parsedData.from,
+							sendTo: parsedData.to,
+							messageId: parsedData.deletedMessageId,
+						})
+					);
+				});
+			} else if (parsedData.type === "outgoing-voice-call") {
+				wss.clients.forEach((client) => {
+					client.send(
+						stringify({
+							type: "incoming-voice-call",
+							cameFrom: parsedData.from,
+							sendTo: parsedData.to,
+							roomId: parsedData.roomId,
+							callType: parsedData.callType,
+						})
+					);
+				});
 			}
 		} catch (error) {
 			console.log(error);
 		}
 	});
-	// {onlineUsers: Array.from(wss.clients.keys())}
-	// {onlineUsers: Array.from(wss.clients)}
 	ws.on("error", console.error);
 
+	ws.on("close", () => {
+		onlineUsers.delete(ws);
+	});
 	// wss.broadcast = function broadcast(data) {
 	// 	wss.clients.forEach(function each(client) {
 	// 		client.send(data);
@@ -113,14 +127,14 @@ wss.on("connection", function connection(ws, req) {
 const io = new Server(server, {
 	cors: {
 		origin: [
-			"https://whatsapp-web-clone-client.vercel.app",
-			"https://whatsapp-web-clone.up.railway.app",
-			"http://localhost:3000",
+			// "https://whatsapp-web-clone-client.vercel.app",
+			// "https://whatsapp-web-clone.up.railway.app",
+			// "http://localhost:3000",
 		],
 	},
 });
 
-global.onlineUsers = new Map();
+// global.onlineUsers = new Map();
 
 io.on("connection", (socket) => {
 	global.chatSocket = socket;
@@ -132,35 +146,35 @@ io.on("connection", (socket) => {
 		});
 	});
 
-	socket.on("send-msg", (data) => {
-		const sendUserSocket = onlineUsers.get(data.to);
-		if (sendUserSocket) {
-			socket.to(sendUserSocket).emit("msg-receive", {
-				from: data.from,
-				message: data.message,
-			});
-		}
-	});
+	// socket.on("send-msg", (data) => {
+	// 	const sendUserSocket = onlineUsers.get(data.to);
+	// 	if (sendUserSocket) {
+	// 		socket.to(sendUserSocket).emit("msg-receive", {
+	// 			from: data.from,
+	// 			message: data.message,
+	// 		});
+	// 	}
+	// });
 
-	socket.on("delete-message", (data) => {
-		const sendUserSocket = onlineUsers.get(data.receiverId);
-		if (sendUserSocket) {
-			socket.to(sendUserSocket).emit("message-deleted", {
-				id: data.id,
-			});
-		}
-	});
+	// socket.on("delete-message", (data) => {
+	// 	const sendUserSocket = onlineUsers.get(data.receiverId);
+	// 	if (sendUserSocket) {
+	// 		socket.to(sendUserSocket).emit("message-deleted", {
+	// 			id: data.id,
+	// 		});
+	// 	}
+	// });
 
-	socket.on("outgoing-voice-call", (data) => {
-		const sendUserSocket = onlineUsers.get(data.to);
-		if (sendUserSocket) {
-			socket.to(sendUserSocket).emit("incoming-voice-call", {
-				from: data.from,
-				roomId: data.roomId,
-				callType: data.callType,
-			});
-		}
-	});
+	// socket.on("outgoing-voice-call", (data) => {
+	// 	const sendUserSocket = onlineUsers.get(data.to);
+	// 	if (sendUserSocket) {
+	// 		socket.to(sendUserSocket).emit("incoming-voice-call", {
+	// 			from: data.from,
+	// 			roomId: data.roomId,
+	// 			callType: data.callType,
+	// 		});
+	// 	}
+	// });
 
 	socket.on("outgoing-video-call", (data) => {
 		const sendUserSocket = onlineUsers.get(data.to);
@@ -194,7 +208,6 @@ io.on("connection", (socket) => {
 
 	socket.on("terminate-call", (data) => {
 		const sendUserSocket = onlineUsers.get(data.from);
-
 		socket.to(sendUserSocket).emit("call-terminated");
 	});
 });

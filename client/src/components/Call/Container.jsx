@@ -20,19 +20,36 @@ function Container({ data }) {
 
 	useEffect(() => {
 		if (data.type === "out-going") {
-			socket?.current.on("accept-call", () => {
-				setCallAccepted(true);
-				ringtone.pause();
-				ringtone.currentTime = 0;
+			socket?.addEventListener("message", function (event) {
+				const eventData = event.data.toString();
+				const parsedData = JSON.parse(eventData);
+				if (parseInt(parsedData.sendTo) === userInfo?.id) {
+					if (parsedData.type === "accept-call") {
+						setCallAccepted(true);
+						ringtone.pause();
+						ringtone.currentTime = 0;
+					} else if (parsedData.type === "voice-call-rejected") {
+						ringtone.pause();
+						ringtone.currentTime = 0;
+					} else if (parsedData.type === "video-call-rejected") {
+						ringtone.pause();
+						ringtone.currentTime = 0;
+					}
+				}
 			});
-			socket?.current.on("video-call-rejected", () => {
-				ringtone.pause();
-				ringtone.currentTime = 0;
-			});
-			socket?.current.on("voice-call-rejected", () => {
-				ringtone.pause();
-				ringtone.currentTime = 0;
-			});
+			// socket?.current.on("accept-call", () => {
+			// 	setCallAccepted(true);
+			// 	ringtone.pause();
+			// 	ringtone.currentTime = 0;
+			// });
+			// socket?.current.on("video-call-rejected", () => {
+			// 	ringtone.pause();
+			// 	ringtone.currentTime = 0;
+			// });
+			// socket?.current.on("voice-call-rejected", () => {
+			// 	ringtone.pause();
+			// 	ringtone.currentTime = 0;
+			// });
 		} else {
 			setTimeout(() => {
 				setCallAccepted(true);

@@ -30,10 +30,9 @@ const Main = () => {
 		dispatch,
 	] = useStateProvider();
 
-	const [socketEvent, setSocketEvent] = useState(false);
+	// const [socketEvent, setSocketEvent] = useState(false);
 	// const socket = useRef();
 	const [pageHeight, setPageHeight] = useState(undefined);
-	const [testSocket, setTestSocket] = useState(undefined);
 
 	useEffect(() => {
 		const { innerHeight } = window;
@@ -71,44 +70,49 @@ const Main = () => {
 		// 	// dispatch({ type: reducerCases.SET_SOCKET, socket });
 		// }
 		const socketConnection = new WebSocket("ws://localhost:5002");
-
-		setTestSocket(socketConnection);
 		dispatch({ type: reducerCases.SET_SOCKET, socket: socketConnection });
-
 		if (socket?.readyState === 3) {
 			socket?.close();
 			const socketConnection = new WebSocket("ws://localhost:5002");
 			dispatch({ type: reducerCases.SET_SOCKET, socket: socketConnection });
 		}
+		setTimeout(() => {
+			socket?.send(
+				JSON.stringify({
+					type: "add-user",
+					id: userInfo?.id,
+					userName: `user${userInfo?.id}`,
+				})
+			);
+		}, 1000);
 	}, []);
 
 	useEffect(() => {
-		// socket?.send(
-		// 	JSON.stringify({
-		// 		type: "reconnect",
-		// 	})
-		// );
-
 		socket?.addEventListener("message", function (event) {
 			// alert("message received");
 			const eventData = event.data.toString();
 			const parsedData = JSON.parse(eventData);
-			if (parsedData.type === "msg-receive" && parseInt(parsedData.to) === userInfo?.id) {
-				console.log(parsedData);
-				dispatch({
-					type: reducerCases.ADD_MESSAGE,
-					newMessage: {
-						...parsedData.message,
-					},
-				});
+			if (parseInt(parsedData.sendTo) === userInfo?.id) {
+				if (parsedData.type === "msg-receive") {
+					dispatch({
+						type: reducerCases.ADD_MESSAGE,
+						newMessage: {
+							...parsedData.messageObject,
+						},
+					});
+				} else if (parsedData.type === "message-deleted") {
+					dispatch({ type: reducerCases.DELETE_MESSAGE, deletedMessageId: parsedData.messageId });
+				} else if (parsedData.type === "incoming-voice-call") {
+					const { from, roomId, callType } = parsedData;
+					dispatch({
+						type: reducerCases.SET_INCOMING_VOICE_CALL,
+						incomingVoiceCall: { ...from, roomId, callType },
+					});
+				}
 			}
 		});
 
-		// socket.addEventListener("error", console.error);
-
-		// socket.addEventListener("open", function (event) {
-		// 	console.log("from frontend");
-		// });
+		socket?.addEventListener("error", console.error);
 	}, [socket]);
 
 	// const getContacts = async () => {

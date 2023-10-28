@@ -68,17 +68,24 @@ function MessageBar() {
 				},
 			});
 			if (response.status === 201) {
-				// socket?.current.emit("send-msg", {
-				// 	from: userInfo?.id,
-				// 	to: currentChatUser?.id,
-				// 	message: response.data.message,
-				// });
-
 				dispatch({
 					type: reducerCases.ADD_MESSAGE,
 					newMessage: { ...response.data.message },
 					fromSelf: true,
 				});
+				socket?.send(
+					JSON.stringify({
+						type: "send-message",
+						sentMessage: response.data.message,
+						from: userInfo?.id,
+						to: currentChatUser?.id,
+					})
+				);
+				// socket?.current.emit("send-msg", {
+				// 	from: userInfo?.id,
+				// 	to: currentChatUser?.id,
+				// 	message: response.data.message,
+				// });
 			}
 		} catch (err) {
 			return Promise.reject(err);
@@ -90,10 +97,11 @@ function MessageBar() {
 			return;
 		}
 		try {
+			const tempId = Date.now();
 			dispatch({
 				type: reducerCases.ADD_MESSAGE,
 				newMessage: {
-					id: "temp",
+					id: tempId,
 					senderId: userInfo?.id,
 					receiverId: currentChatUser?.id,
 					type: "text",
@@ -109,27 +117,27 @@ function MessageBar() {
 				from: userInfo?.id,
 				message,
 			});
+			socket?.send(
+				JSON.stringify({
+					type: "send-message",
+					sentMessage: data?.message,
+					from: userInfo?.id,
+					to: currentChatUser?.id,
+				})
+			);
 			// socket?.current.emit("send-msg", {
 			// 	to: currentChatUser?.id,
 			// 	from: userInfo?.id,
 			// 	message: data?.message,
 			// });
-			socket?.send(
-				JSON.stringify({
-					type: "send-message",
-					message: data?.message,
-					from: userInfo.id,
-					to: currentChatUser?.id,
-				})
-			);
 			dispatch({
 				type: reducerCases.SET_MESSAGES,
 				messages: messages.filter((msg) => {
-					return msg.id !== "temp";
+					return msg.id !== tempId;
 				}),
 			});
 			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { ...data?.message }, fromSelf: true });
-			dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST, listValue: Date.now() });
+			// dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST, listValue: Date.now() });
 		} catch (err) {
 			return Promise.reject(err);
 		}

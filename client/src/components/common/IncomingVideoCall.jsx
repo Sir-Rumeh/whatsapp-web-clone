@@ -9,10 +9,20 @@ function IncomingVideoCall() {
 
 	useEffect(() => {
 		ringtone.play();
-		socket?.current.on("call-terminated", () => {
-			ringtone.pause();
-			ringtone.currentTime = 0;
+		socket?.addEventListener("message", function (event) {
+			const eventData = event.data.toString();
+			const parsedData = JSON.parse(eventData);
+			if (parseInt(parsedData.sendTo) === userInfo?.id) {
+				if (parsedData.type === "call-terminated") {
+					ringtone.pause();
+					ringtone.currentTime = 0;
+				}
+			}
 		});
+		// socket?.current.on("call-terminated", () => {
+		// 	ringtone.pause();
+		// 	ringtone.currentTime = 0;
+		// });
 	}, []);
 
 	const acceptCall = () => {
@@ -22,7 +32,7 @@ function IncomingVideoCall() {
 			type: reducerCases.SET_VIDEO_CALL,
 			videoCall: { ...incomingVideoCall, type: "in-coming" },
 		});
-		socket?.current.emit("accept-incoming-call", { id: incomingVideoCall.id });
+		// socket?.current.emit("accept-incoming-call", { id: incomingVideoCall.id });
 		dispatch({
 			type: reducerCases.SET_INCOMING_VIDEO_CALL,
 			incomingVideoCall: undefined,
@@ -32,7 +42,11 @@ function IncomingVideoCall() {
 	const rejectCall = () => {
 		ringtone.pause();
 		ringtone.currentTime = 0;
-		socket?.current.emit("reject-video-call", { from: incomingVideoCall.id });
+		// socket?.current.emit("reject-video-call", { from: incomingVideoCall.id });
+		dispatch({
+			type: reducerCases.SET_INCOMING_VIDEO_CALL,
+			incomingVideoCall: undefined,
+		});
 		dispatch({ type: reducerCases.END_CALL });
 	};
 

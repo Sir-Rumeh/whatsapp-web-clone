@@ -31,7 +31,15 @@ function ImageMessage({ message }) {
 				data: { deletedMessage },
 			} = await axios.delete(`${DELETE_MESSAGE_ROUTE}/${message.id}/${userInfo?.id}/${currentChatUser?.id}`);
 			if (deletedMessage) {
-				socket?.current.emit("delete-message", { ...deletedMessage });
+				socket?.send(
+					JSON.stringify({
+						type: "delete-message",
+						from: userInfo?.id,
+						to: currentChatUser?.id,
+						deletedMessageId: deletedMessage?.id,
+					})
+				);
+				// socket?.current.emit("delete-message", { ...deletedMessage });
 			}
 		} catch (err) {
 			return Promise.reject(err);

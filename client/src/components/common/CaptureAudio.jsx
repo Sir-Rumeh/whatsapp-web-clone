@@ -107,16 +107,24 @@ function CaptureAudio({ setShowAudioRecorder }) {
 			});
 			if (response.status === 201) {
 				setShowAudioRecorder(false);
-				socket?.current.emit("send-msg", {
-					from: userInfo?.id,
-					to: currentChatUser?.id,
-					message: response.data.message,
-				});
 				dispatch({
 					type: reducerCases.ADD_MESSAGE,
 					newMessage: { ...response.data.message },
 					fromSelf: true,
 				});
+				socket?.send(
+					JSON.stringify({
+						type: "send-message",
+						sentMessage: response.data.message,
+						from: userInfo?.id,
+						to: currentChatUser?.id,
+					})
+				);
+				// socket?.current.emit("send-msg", {
+				// 	from: userInfo?.id,
+				// 	to: currentChatUser?.id,
+				// 	message: response.data.message,
+				// });
 			}
 		} catch (err) {
 			return Promise.reject(err);
