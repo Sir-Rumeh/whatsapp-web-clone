@@ -37,19 +37,6 @@ function Container({ data }) {
 					}
 				}
 			});
-			// socket?.current.on("accept-call", () => {
-			// 	setCallAccepted(true);
-			// 	ringtone.pause();
-			// 	ringtone.currentTime = 0;
-			// });
-			// socket?.current.on("video-call-rejected", () => {
-			// 	ringtone.pause();
-			// 	ringtone.currentTime = 0;
-			// });
-			// socket?.current.on("voice-call-rejected", () => {
-			// 	ringtone.pause();
-			// 	ringtone.currentTime = 0;
-			// });
 		} else {
 			setTimeout(() => {
 				setCallAccepted(true);
@@ -175,9 +162,12 @@ function Container({ data }) {
 			zgVar.stopPublishingStream(publishStream);
 			zgVar.logoutRoom(data.roomId.toString());
 		}
-		socket?.current.emit("terminate-call", {
-			from: data.id,
-		});
+		socket?.send(
+			JSON.stringify({
+				type: "terminate-call",
+				from: data.id,
+			})
+		);
 		dispatch({ type: reducerCases.END_CALL });
 		setCallAccepted(false);
 		ringtone.pause();

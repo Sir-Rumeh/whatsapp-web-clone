@@ -107,6 +107,18 @@ wss.on("connection", function connection(ws) {
 						})
 					);
 				});
+			} else if (parsedData.type === "outgoing-video-call") {
+				wss.clients.forEach((client) => {
+					client.send(
+						stringify({
+							type: "incoming-video-call",
+							cameFrom: parsedData.from,
+							sendTo: parsedData.to,
+							roomId: parsedData.roomId,
+							callType: parsedData.callType,
+						})
+					);
+				});
 			}
 		} catch (error) {
 			console.log(error);
@@ -176,38 +188,31 @@ io.on("connection", (socket) => {
 	// 	}
 	// });
 
-	socket.on("outgoing-video-call", (data) => {
-		const sendUserSocket = onlineUsers.get(data.to);
-		if (sendUserSocket) {
-			socket.to(sendUserSocket).emit("incoming-video-call", {
-				from: data.from,
-				roomId: data.roomId,
-				callType: data.callType,
-			});
-		}
-	});
-
-	socket.on("reject-voice-call", (data) => {
-		const sendUserSocket = onlineUsers.get(data.from);
-		if (sendUserSocket) {
-			socket.to(sendUserSocket).emit("voice-call-rejected");
-		}
-	});
-
-	socket.on("reject-video-call", (data) => {
-		const sendUserSocket = onlineUsers.get(data.from);
-		if (sendUserSocket) {
-			socket.to(sendUserSocket).emit("video-call-rejected");
-		}
-	});
+	// socket.on("outgoing-video-call", (data) => {
+	// 	const sendUserSocket = onlineUsers.get(data.to);
+	// 	if (sendUserSocket) {
+	// 		socket.to(sendUserSocket).emit("incoming-video-call", {
+	// 			from: data.from,
+	// 			roomId: data.roomId,
+	// 			callType: data.callType,
+	// 		});
+	// 	}
+	// });
 
 	socket.on("accept-incoming-call", ({ id }) => {
 		const sendUserSocket = onlineUsers.get(id);
 		socket.to(sendUserSocket).emit("accept-call");
 	});
 
-	socket.on("terminate-call", (data) => {
+	socket.on("reject-call", (data) => {
 		const sendUserSocket = onlineUsers.get(data.from);
+		if (sendUserSocket) {
+			socket.to(sendUserSocket).emit("call-rejected");
+		}
+	});
+
+	socket.on("terminate-call", ({ id }) => {
+		const sendUserSocket = onlineUsers.get(id);
 		socket.to(sendUserSocket).emit("call-terminated");
 	});
 });

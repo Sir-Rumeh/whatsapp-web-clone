@@ -21,16 +21,6 @@ function VideoCall() {
 					roomId: videoCall.roomId,
 				})
 			);
-			// socket?.current.emit("outgoing-video-call", {
-			// 	to: videoCall.id,
-			// 	from: {
-			// 		id: userInfo?.id,
-			// 		profilePicture: userInfo?.profileImage,
-			// 		name: userInfo?.name,
-			// 	},
-			// 	callType: videoCall.callType,
-			// 	roomId: videoCall.roomId,
-			// });
 		}
 	}, [videoCall]);
 	return <Container data={videoCall} />;

@@ -120,11 +120,6 @@ function CaptureAudio({ setShowAudioRecorder }) {
 						to: currentChatUser?.id,
 					})
 				);
-				// socket?.current.emit("send-msg", {
-				// 	from: userInfo?.id,
-				// 	to: currentChatUser?.id,
-				// 	message: response.data.message,
-				// });
 			}
 		} catch (err) {
 			return Promise.reject(err);

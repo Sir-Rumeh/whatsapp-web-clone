@@ -81,11 +81,6 @@ function MessageBar() {
 						to: currentChatUser?.id,
 					})
 				);
-				// socket?.current.emit("send-msg", {
-				// 	from: userInfo?.id,
-				// 	to: currentChatUser?.id,
-				// 	message: response.data.message,
-				// });
 			}
 		} catch (err) {
 			return Promise.reject(err);
@@ -125,11 +120,6 @@ function MessageBar() {
 					to: currentChatUser?.id,
 				})
 			);
-			// socket?.current.emit("send-msg", {
-			// 	to: currentChatUser?.id,
-			// 	from: userInfo?.id,
-			// 	message: data?.message,
-			// });
 			dispatch({
 				type: reducerCases.SET_MESSAGES,
 				messages: messages.filter((msg) => {
@@ -137,7 +127,6 @@ function MessageBar() {
 				}),
 			});
 			dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: { ...data?.message }, fromSelf: true });
-			// dispatch({ type: reducerCases.SET_REFRESH_CHAT_LIST, listValue: Date.now() });
 		} catch (err) {
 			return Promise.reject(err);
 		}

@@ -39,7 +39,6 @@ function ImageMessage({ message }) {
 						deletedMessageId: deletedMessage?.id,
 					})
 				);
-				// socket?.current.emit("delete-message", { ...deletedMessage });
 			}
 		} catch (err) {
 			return Promise.reject(err);
