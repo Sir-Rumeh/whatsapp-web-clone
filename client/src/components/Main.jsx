@@ -111,7 +111,10 @@ const Main = () => {
 			const eventData = event.data.toString();
 			const parsedData = JSON.parse(eventData);
 			if (parseInt(parsedData.sendTo) === userInfo?.id) {
-				if (parsedData.type === "msg-receive") {
+				if (
+					parsedData.type === "msg-receive" &&
+					currentChatUser?.id === parsedData.messageObject?.senderId
+				) {
 					dispatch({
 						type: reducerCases.ADD_MESSAGE,
 						newMessage: {
