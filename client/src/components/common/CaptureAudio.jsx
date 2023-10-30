@@ -127,7 +127,6 @@ function CaptureAudio({ setShowAudioRecorder }) {
 						data: { users, onlineUsers },
 					} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo?.id}`);
 					dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
-					dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers });
 				} catch (err) {
 					return Promise.reject(err);
 				}
