@@ -118,19 +118,19 @@ const Main = () => {
 							...parsedData.messageObject,
 						},
 					});
-					// const getContacts = async () => {
-					// 	try {
-					// 		const {
-					// 			data: { users, onlineUsers },
-					// 		} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo?.id}`);
-					// 		dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
-					// 	} catch (err) {
-					// 		return Promise.reject(err);
-					// 	}
-					// };
-					// if (userInfo?.id) {
-					// 	getContacts();
-					// }
+					const getContacts = async () => {
+						try {
+							const {
+								data: { users, onlineUsers },
+							} = await axios.get(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo?.id}`);
+							dispatch({ type: reducerCases.SET_USER_CONTACTS, userContacts: users });
+						} catch (err) {
+							return Promise.reject(err);
+						}
+					};
+					if (userInfo?.id) {
+						getContacts();
+					}
 				} else if (parsedData.type === "message-deleted") {
 					dispatch({ type: reducerCases.DELETE_MESSAGE, deletedMessageId: parsedData.messageId });
 				} else if (parsedData.type === "incoming-voice-call") {
