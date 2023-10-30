@@ -1,5 +1,4 @@
-export const HOST = "http://localhost:5002";
-// export const HOST = process.env.NEXT_HOST;
+export const HOST = process.env.NEXT_HOST;
 
 const AUTH_ROUTE = `${HOST}/api/auth`;
 const MESSAGE_ROUTE = `${HOST}/api/messages`;

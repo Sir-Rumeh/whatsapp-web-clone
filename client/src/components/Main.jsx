@@ -58,7 +58,7 @@ const Main = () => {
 			router.push("/");
 		}
 
-		const socketConnection = new WebSocket("ws://localhost:5002");
+		const socketConnection = new WebSocket(`wss://${process.env.NEXT_HOST_NAME}`);
 		dispatch({ type: reducerCases.SET_SOCKET, socket: socketConnection });
 		const timeout = setTimeout(() => {
 			socket?.send(
@@ -91,7 +91,7 @@ const Main = () => {
 	useEffect(() => {
 		if (socket?.readyState === 3) {
 			socket?.close();
-			const socketConnection = new WebSocket("ws://localhost:5002");
+			const socketConnection = new WebSocket(`wss://${process.env.NEXT_HOST_NAME}`);
 			dispatch({ type: reducerCases.SET_SOCKET, socket: socketConnection });
 		}
 	}, [socket?.readyState]);

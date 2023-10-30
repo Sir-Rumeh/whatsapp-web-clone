@@ -5,7 +5,6 @@ import AuthRoutes from "./routes/AuthRoutes.js";
 import MessageRoutes from "./routes/MessageRoutes.js";
 import { stringify } from "./utils/helper.js";
 import { WebSocketServer } from "ws";
-import { BSON } from "bson";
 
 dotenv.config();
 const app = express();
@@ -27,7 +26,7 @@ app.use("/uploads/recordings", express.static("uploads/recordings"));
 app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);
 
-const PORT = process.env.PORT | 5002;
+const PORT = process.env.PORT || 5002;
 
 app.get("/", (req, res) => {
 	res.send("Hey this is my API running 🥳");

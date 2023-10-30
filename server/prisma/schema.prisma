@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = "postgres://default:6rVow0WqeGFZ@ep-blue-sun-24629002-pooler.us-east-1.postgres.vercel-storage.com:5432/verceldb?pgbouncer=true&connect_timeout=15"
+  url = env("POSTGRES_PRISMA_URL") 
 }
 
 model User {
