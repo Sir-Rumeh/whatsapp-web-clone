@@ -4,7 +4,7 @@ import { reducerCases } from "@/context/constants";
 import Image from "next/image";
 
 function IncomingCall() {
-	const [{ incomingVoiceCall, socket }, dispatch] = useStateProvider();
+	const [{ incomingVoiceCall, socket, userInfo }, dispatch] = useStateProvider();
 	const [ringtone] = useState(new Audio("/call-sound.mp3"));
 
 	useEffect(() => {

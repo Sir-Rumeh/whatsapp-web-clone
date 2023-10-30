@@ -8,7 +8,7 @@ import ContextMenu from "../common/ContextMenu";
 
 function ChatListHeader() {
 	const router = useRouter();
-	const [{ userInfo }, dispatch] = useStateProvider();
+	const [{ userInfo, socket }, dispatch] = useStateProvider();
 
 	const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 	const [contextMenuCordinates, setContextMenuCordinates] = useState({ x: 0, y: 0 });
@@ -28,6 +28,12 @@ function ChatListHeader() {
 				dispatch({ type: reducerCases.CHANGE_CURRENT_CHAT_USER, user: undefined });
 				localStorage.removeItem("signedInUserInfo");
 				localStorage.setItem("hasSignedIn", false);
+				socket?.send(
+					JSON.stringify({
+						type: "logout-user",
+						id: userInfo?.id,
+					})
+				);
 				router.push("/");
 			},
 		},

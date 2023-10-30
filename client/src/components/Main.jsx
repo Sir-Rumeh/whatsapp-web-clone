@@ -58,6 +58,18 @@ const Main = () => {
 			router.push("/");
 		}
 
+		const socketConnection = new WebSocket("ws://localhost:5002");
+		dispatch({ type: reducerCases.SET_SOCKET, socket: socketConnection });
+		const timeout = setTimeout(() => {
+			socket?.send(
+				JSON.stringify({
+					type: "add-user",
+					id: userInfo?.id,
+					userName: `user${userInfo?.id}`,
+				})
+			);
+		}, 1000);
+
 		const getContactsAgain = async () => {
 			try {
 				const {
@@ -70,22 +82,22 @@ const Main = () => {
 			}
 		};
 		getContactsAgain();
+
+		return () => {
+			clearTimeout(timeout);
+		};
 	}, []);
 
 	useEffect(() => {
-		// if (userInfo) {
-		// 	socket.current = io(HOST);
-		// 	socket.current.emit("add-user", userInfo?.id);
-		// 	// dispatch({ type: reducerCases.SET_SOCKET, socket });
-		// }
-		const socketConnection = new WebSocket("ws://localhost:5002");
-		dispatch({ type: reducerCases.SET_SOCKET, socket: socketConnection });
 		if (socket?.readyState === 3) {
 			socket?.close();
 			const socketConnection = new WebSocket("ws://localhost:5002");
 			dispatch({ type: reducerCases.SET_SOCKET, socket: socketConnection });
 		}
-		setTimeout(() => {
+	}, [socket?.readyState]);
+
+	useEffect(() => {
+		const timeout = setTimeout(() => {
 			socket?.send(
 				JSON.stringify({
 					type: "add-user",
@@ -94,9 +106,7 @@ const Main = () => {
 				})
 			);
 		}, 1000);
-	}, []);
 
-	useEffect(() => {
 		socket?.addEventListener("message", function (event) {
 			const eventData = event.data.toString();
 			const parsedData = JSON.parse(eventData);
@@ -136,12 +146,16 @@ const Main = () => {
 			if (parsedData.type === "online-users") {
 				dispatch({
 					type: reducerCases.SET_ONLINE_USERS,
-					onlineUsers,
+					onlineUsers: parsedData.onlineUsers,
 				});
 			}
 		});
 
 		socket?.addEventListener("error", console.error);
+
+		return function () {
+			clearTimeout(timeout);
+		};
 	}, [socket]);
 
 	return (

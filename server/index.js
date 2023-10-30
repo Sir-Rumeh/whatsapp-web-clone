@@ -1,12 +1,10 @@
 import express from "express";
-import http from "http";
 import dotenv from "dotenv";
 import cors from "cors";
 import AuthRoutes from "./routes/AuthRoutes.js";
 import MessageRoutes from "./routes/MessageRoutes.js";
 import { stringify } from "./utils/helper.js";
-import { Server } from "socket.io";
-import { WebSocket, WebSocketServer } from "ws";
+import { WebSocketServer } from "ws";
 import { BSON } from "bson";
 
 dotenv.config();
@@ -30,7 +28,6 @@ app.use("/api/auth", AuthRoutes);
 app.use("/api/messages", MessageRoutes);
 
 const PORT = process.env.PORT | 5002;
-// const PORT = process.env.PORT | 5002;
 
 app.get("/", (req, res) => {
 	res.send("Hey this is my API running 🥳");
@@ -40,14 +37,11 @@ const server = app.listen(PORT, "0.0.0.0", () => {
 	console.log(`Server started on port ${PORT}`);
 });
 
-global.onlineUsers = new Map();
+global.onlineUsers = [];
 
 const wss = new WebSocketServer({
 	server: server,
 });
-
-// const object = JSON.parse("[name]");
-// console.log(object);
 
 wss.on("connection", function connection(ws) {
 	ws.isAlive = true;
@@ -66,155 +60,119 @@ wss.on("connection", function connection(ws) {
 	});
 
 	ws.on("message", function message(event) {
-		try {
-			const eventData = event.toString();
-			const parsedData = JSON.parse(eventData);
+		const eventData = event.toString();
+		const parsedData = JSON.parse(eventData);
 
-			if (parsedData.type === "add-user") {
-				const { id } = parsedData;
-				onlineUsers.set(ws, id);
-			} else if (parsedData.type === "send-message") {
-				wss.clients.forEach((client) => {
-					client.send(
-						stringify({
-							type: "msg-receive",
-							cameFrom: parsedData.from,
-							sendTo: parsedData.to,
-							messageObject: parsedData.sentMessage,
-						})
-					);
-				});
-			} else if (parsedData.type === "delete-message") {
-				wss.clients.forEach((client) => {
-					client.send(
-						stringify({
-							type: "message-deleted",
-							cameFrom: parsedData.from,
-							sendTo: parsedData.to,
-							messageId: parsedData.deletedMessageId,
-						})
-					);
-				});
-			} else if (parsedData.type === "outgoing-voice-call") {
-				wss.clients.forEach((client) => {
-					client.send(
-						stringify({
-							type: "incoming-voice-call",
-							cameFrom: parsedData.from,
-							sendTo: parsedData.to,
-							roomId: parsedData.roomId,
-							callType: parsedData.callType,
-						})
-					);
-				});
-			} else if (parsedData.type === "outgoing-video-call") {
-				wss.clients.forEach((client) => {
-					client.send(
-						stringify({
-							type: "incoming-video-call",
-							cameFrom: parsedData.from,
-							sendTo: parsedData.to,
-							roomId: parsedData.roomId,
-							callType: parsedData.callType,
-						})
-					);
-				});
+		if (parsedData.type === "add-user") {
+			const { id } = parsedData;
+			if (!onlineUsers.includes(id)) {
+				onlineUsers.push(id);
 			}
-		} catch (error) {
-			console.log(error);
+			wss.clients.forEach((client) => {
+				client.send(
+					stringify({
+						type: "online-users",
+						onlineUsers,
+					})
+				);
+			});
+		} else if (parsedData.type === "logout-user") {
+			const { id } = parsedData;
+			onlineUsers.filter((userId) => {
+				return userId !== id;
+			});
+			wss.clients.forEach((client) => {
+				client.send(
+					stringify({
+						type: "online-users",
+						onlineUsers: onlineUsers.filter((userId) => {
+							return userId !== id;
+						}),
+					})
+				);
+			});
+		} else if (parsedData.type === "send-message") {
+			wss.clients.forEach((client) => {
+				client.send(
+					stringify({
+						type: "msg-receive",
+						cameFrom: parsedData.from,
+						sendTo: parsedData.to,
+						messageObject: parsedData.sentMessage,
+					})
+				);
+			});
+		} else if (parsedData.type === "delete-message") {
+			wss.clients.forEach((client) => {
+				client.send(
+					stringify({
+						type: "message-deleted",
+						cameFrom: parsedData.from,
+						sendTo: parsedData.to,
+						messageId: parsedData.deletedMessageId,
+					})
+				);
+			});
+		} else if (parsedData.type === "outgoing-voice-call") {
+			wss.clients.forEach((client) => {
+				client.send(
+					stringify({
+						type: "incoming-voice-call",
+						from: { ...parsedData.from },
+						sendTo: parsedData.to,
+						roomId: parsedData.roomId,
+						callType: parsedData.callType,
+					})
+				);
+			});
+		} else if (parsedData.type === "outgoing-video-call") {
+			wss.clients.forEach((client) => {
+				client.send(
+					stringify({
+						type: "incoming-video-call",
+						from: { ...parsedData.from },
+						sendTo: parsedData.to,
+						roomId: parsedData.roomId,
+						callType: parsedData.callType,
+					})
+				);
+			});
+		} else if (parsedData.type === "accept-incoming-call") {
+			wss.clients.forEach((client) => {
+				client.send(
+					stringify({
+						type: "call-accepted",
+						sendTo: parsedData.id,
+					})
+				);
+			});
+		} else if (parsedData.type === "reject-call") {
+			wss.clients.forEach((client) => {
+				client.send(
+					stringify({
+						type: "call-rejected",
+						sendTo: parsedData.id,
+					})
+				);
+			});
+		} else if (parsedData.type === "terminate-call") {
+			wss.clients.forEach((client) => {
+				client.send(
+					stringify({
+						type: "call-terminated",
+						sendTo: parsedData.id,
+					})
+				);
+			});
 		}
 	});
 	ws.on("error", console.error);
 
-	ws.on("close", () => {
-		onlineUsers.delete(ws);
-	});
-	// wss.broadcast = function broadcast(data) {
-	// 	wss.clients.forEach(function each(client) {
-	// 		client.send(data);
-	// 	});
-	// };
-});
-
-const io = new Server(server, {
-	cors: {
-		origin: [
-			// "https://whatsapp-web-clone-client.vercel.app",
-			// "https://whatsapp-web-clone.up.railway.app",
-			// "http://localhost:3000",
-		],
-	},
-});
-
-// global.onlineUsers = new Map();
-
-io.on("connection", (socket) => {
-	global.chatSocket = socket;
-
-	socket.on("add-user", (userId) => {
-		onlineUsers.set(userId, socket.id);
-		socket.broadcast.emit("online-users", {
-			onlineUsers: Array.from(onlineUsers.keys()),
+	wss.broadcast = function broadcast(msg) {
+		wss.clients.forEach(function each(client) {
+			client.send(stringify(msg));
 		});
-	});
-
-	// socket.on("send-msg", (data) => {
-	// 	const sendUserSocket = onlineUsers.get(data.to);
-	// 	if (sendUserSocket) {
-	// 		socket.to(sendUserSocket).emit("msg-receive", {
-	// 			from: data.from,
-	// 			message: data.message,
-	// 		});
-	// 	}
-	// });
-
-	// socket.on("delete-message", (data) => {
-	// 	const sendUserSocket = onlineUsers.get(data.receiverId);
-	// 	if (sendUserSocket) {
-	// 		socket.to(sendUserSocket).emit("message-deleted", {
-	// 			id: data.id,
-	// 		});
-	// 	}
-	// });
-
-	// socket.on("outgoing-voice-call", (data) => {
-	// 	const sendUserSocket = onlineUsers.get(data.to);
-	// 	if (sendUserSocket) {
-	// 		socket.to(sendUserSocket).emit("incoming-voice-call", {
-	// 			from: data.from,
-	// 			roomId: data.roomId,
-	// 			callType: data.callType,
-	// 		});
-	// 	}
-	// });
-
-	// socket.on("outgoing-video-call", (data) => {
-	// 	const sendUserSocket = onlineUsers.get(data.to);
-	// 	if (sendUserSocket) {
-	// 		socket.to(sendUserSocket).emit("incoming-video-call", {
-	// 			from: data.from,
-	// 			roomId: data.roomId,
-	// 			callType: data.callType,
-	// 		});
-	// 	}
-	// });
-
-	socket.on("accept-incoming-call", ({ id }) => {
-		const sendUserSocket = onlineUsers.get(id);
-		socket.to(sendUserSocket).emit("accept-call");
-	});
-
-	socket.on("reject-call", (data) => {
-		const sendUserSocket = onlineUsers.get(data.from);
-		if (sendUserSocket) {
-			socket.to(sendUserSocket).emit("call-rejected");
-		}
-	});
-
-	socket.on("terminate-call", ({ id }) => {
-		const sendUserSocket = onlineUsers.get(id);
-		socket.to(sendUserSocket).emit("call-terminated");
-	});
+	};
 });
 
 export default app;

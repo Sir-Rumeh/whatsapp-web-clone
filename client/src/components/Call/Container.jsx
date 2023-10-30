@@ -24,14 +24,11 @@ function Container({ data }) {
 				const eventData = event.data.toString();
 				const parsedData = JSON.parse(eventData);
 				if (parseInt(parsedData.sendTo) === userInfo?.id) {
-					if (parsedData.type === "accept-call") {
+					if (parsedData.type === "call-accepted") {
 						setCallAccepted(true);
 						ringtone.pause();
 						ringtone.currentTime = 0;
-					} else if (parsedData.type === "voice-call-rejected") {
-						ringtone.pause();
-						ringtone.currentTime = 0;
-					} else if (parsedData.type === "video-call-rejected") {
+					} else if (parsedData.type === "call-rejected") {
 						ringtone.pause();
 						ringtone.currentTime = 0;
 					}

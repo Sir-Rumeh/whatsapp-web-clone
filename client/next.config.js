@@ -9,12 +9,15 @@ const nextConfig = {
 			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzk5ZTZkZWItNzM0OC00OWQ0LTgxNmEtMzVkYmI1MzgyNmYzIiwidHlwZSI6ImFwaV90b2tlbiJ9.P06bufY6AEpkanaLSkBy1kwzQd8XRr-WRluU4s7gv0s",
 	},
 	images: {
-		remotePatterns: [
-			{
-				protocol: "https",
-				hostname: "**",
-			},
-		],
+		domains: ["localhost"],
+		// remotePatterns: [
+		// 	{
+		// 		protocol: "http",
+		// 		hostname: "localhost:3000",
+		// 		// protocol: "https",
+		// 		// hostname: "**",
+		// 	},
+		// ],
 	},
 };
 

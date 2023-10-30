@@ -227,7 +227,7 @@ export const getInitialContactsWithMessages = async (req, res, next) => {
 		}
 		return res.status(200).json({
 			users: Array.from(users.values()),
-			onlineUsers: Array.from(onlineUsers.keys()),
+			onlineUsers,
 		});
 	} catch (err) {
 		next(err);

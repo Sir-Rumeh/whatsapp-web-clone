@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 function IncomingVideoCall() {
-	const [{ incomingVideoCall, socket }, dispatch] = useStateProvider();
+	const [{ incomingVideoCall, socket, userInfo }, dispatch] = useStateProvider();
 	const [ringtone] = useState(new Audio("/call-sound.mp3"));
 
 	useEffect(() => {
@@ -45,7 +45,7 @@ function IncomingVideoCall() {
 		ringtone.currentTime = 0;
 		socket?.send(
 			JSON.stringify({
-				type: "reject-video-call",
+				type: "reject-call",
 				id: incomingVideoCall.id,
 			})
 		);
