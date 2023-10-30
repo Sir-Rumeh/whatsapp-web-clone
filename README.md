@@ -2,11 +2,23 @@
 
 ## [Live Site Here](https://whatsapp-web-clone-client.vercel.app/)
 
-## Technologies used for this application
+##🌟 Key Features:
+
+1. User Authentication.
+2. Real-time Messaging.
+3. Voice / Audio Messaging
+4. Voice / Video Call.
+5. File Sharing.
+6. Responsive Design.
+7. User Online / Offline Status.
+8. AI Chat Bot.
+   
+
+##👨‍💻 Technologies used for this application
 
 1. Next.js 13 and Node.js Express framework.
 2. Tailwind CSS.
-3. PostgresSQL database
+3. PostgreSQL database
 4. Prisma ORM For database manipulation.
 5. Sockets for real-time connections.
 6. Zegocloud voice and video call SDK.
