@@ -77,7 +77,7 @@ wss.on("connection", function connection(ws) {
 			});
 		} else if (parsedData.type === "logout-user") {
 			const { id } = parsedData;
-			onlineUsers.filter((userId) => {
+			global.onlineUsers = onlineUsers.filter((userId) => {
 				return userId !== id;
 			});
 			wss.clients.forEach((client) => {
