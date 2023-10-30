@@ -148,6 +148,10 @@ const Main = () => {
 					type: reducerCases.SET_ONLINE_USERS,
 					onlineUsers: parsedData.onlineUsers,
 				});
+			} else if (parsedData.type === "call-terminated") {
+				dispatch({
+					type: reducerCases.END_CALL,
+				});
 			}
 		});
 
