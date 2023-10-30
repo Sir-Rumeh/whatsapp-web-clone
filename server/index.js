@@ -29,7 +29,7 @@ app.use("/api/messages", MessageRoutes);
 const PORT = process.env.PORT || 5002;
 
 app.get("/", (req, res) => {
-	res.send("Hey this is my API running 🥳");
+	res.send("Hey this is my API app running 🥳");
 });
 
 const server = app.listen(PORT, "0.0.0.0", () => {

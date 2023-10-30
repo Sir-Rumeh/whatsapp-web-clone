@@ -54,7 +54,7 @@ export const addMessage = async (req, res, next) => {
 		const prisma = getPrismaInstance();
 
 		const { message, from, to } = req.body;
-		const getUser = onlineUsers.get(to);
+		const getUser = onlineUsers.includes(to);
 		if (message && from && to) {
 			const newMessage = await prisma.messages.create({
 				data: {
