@@ -8,7 +8,7 @@ import ContextMenu from "../common/ContextMenu";
 
 function ChatListHeader() {
 	const router = useRouter();
-	const [{ userInfo, socket }, dispatch] = useStateProvider();
+	const [{ userInfo, socket, messageSearch }, dispatch] = useStateProvider();
 
 	const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
 	const [contextMenuCordinates, setContextMenuCordinates] = useState({ x: 0, y: 0 });
@@ -24,6 +24,9 @@ function ChatListHeader() {
 			name: "Logout",
 			callback: async () => {
 				setIsContextMenuVisible(false);
+				if (messageSearch) {
+					dispatch({ type: reducerCases.SET_MESSAGE_SEARCH });
+				}
 				dispatch({ type: reducerCases.SET_USER_INFO, userInfo: undefined });
 				dispatch({ type: reducerCases.CHANGE_CURRENT_CHAT_USER, user: undefined });
 				localStorage.removeItem("signedInUserInfo");
