@@ -28,9 +28,9 @@
 
 ![1](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/1964cfb9-2242-4d87-99d7-1d7140dbcea6)
 
-![2](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/13d82c41-7db2-470d-bdc6-b415e2b33e37)
+![2](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/29ae37db-bed8-4b83-804c-c02fe118dccc)
 
-![3](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/e4d0d1e3-979b-4c49-83fd-353f9efa0711)
+![3](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/fa1425df-9f63-4a37-b6ef-94c8a48b9723)
 
 ![4](https://github.com/Sir-Rumeh/whatsapp-web-clone/assets/95687544/89cb4b14-4808-44e7-90f2-6dd5ff040ced)
 
