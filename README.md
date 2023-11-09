@@ -8,7 +8,7 @@
 2. Real-time Messaging.
 3. Voice / Audio Messaging
 4. Voice / Video Call.
-5. File Sharing.
+5. Image File Sharing.
 6. Responsive Design.
 7. User Online / Offline Status.
 8. AI Chat Bot.
