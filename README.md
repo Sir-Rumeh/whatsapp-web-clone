@@ -1,4 +1,4 @@
-## nextjs-whatsapp-web-clone
+## Next JS Whatsapp Web Clone
 
 ## [Live Site Here](https://whatsapp-web-clone-client.vercel.app/)
 
