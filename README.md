@@ -15,7 +15,7 @@
 7. User Online / Offline Status.
 8. AI Chat Bot.
 
-   <br>
+<br>
 
 ##👨‍💻 Technologies used for this application
 
