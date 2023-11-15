@@ -2,8 +2,6 @@
 
 ## [Live Site Here](https://whatsapp-web-clone-client.vercel.app/)
 
-<br>
-
 ## 🌟 Key Features:
 
 1. User Authentication.
