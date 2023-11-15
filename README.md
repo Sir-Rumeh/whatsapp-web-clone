@@ -4,7 +4,7 @@
 
 <br>
 
-##🌟 Key Features:
+## 🌟 Key Features:
 
 1. User Authentication.
 2. Real-time Messaging.
@@ -17,7 +17,7 @@
 
 <br>
 
-##👨‍💻 Technologies used for this application
+## 👨‍💻 Technologies used for this application
 
 1. Next.js 13 and Node.js Express framework.
 2. Tailwind CSS.
