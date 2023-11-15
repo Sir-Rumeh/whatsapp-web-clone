@@ -8,12 +8,15 @@
 
 1. User Authentication.
 2. Real-time Messaging.
-3. Voice / Audio Messaging
-4. Voice / Video Call.
-5. Image File Sharing.
-6. Responsive Design.
-7. User Online / Offline Status.
-8. AI Chat Bot.
+3. Message Read Status & Message Time.
+4. Search Messages.
+5. Camera Photo Capture.
+6. Voice / Audio Messaging
+7. Voice / Video Call.
+8. Image File Sharing.
+9. Responsive Design.
+10. User Online / Offline Status.
+11. AI Chat Bot.
 
 <br>
 
